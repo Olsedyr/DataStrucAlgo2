@@ -1,5 +1,5 @@
 
-public class Exercise1 {
+public class SumEvenSquaresFibLinearSeachFunctions {
 
     //Sum of the first n natural numbers
     public int sum(int n) {
@@ -60,7 +60,7 @@ public class Exercise1 {
 
 
     public static void main(String[] args) {
-        Exercise1 rec = new Exercise1();
+        SumEvenSquaresFibLinearSeachFunctions rec = new SumEvenSquaresFibLinearSeachFunctions();
 
         // Test sum function
         System.out.println("Sum of first 5 natural numbers: " + rec.sum(5)); // Output: 15

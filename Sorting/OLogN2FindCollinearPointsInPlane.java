@@ -18,7 +18,7 @@ package Sorting;//Write a program that reads N points in a plane and outputs any
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class SevenThirtyEight {
+public class OLogN2FindCollinearPointsInPlane {
     // Class to represent a point in a 2D plane
     static class Point implements Comparable<Point> {
         int x, y;

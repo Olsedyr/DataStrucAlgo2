@@ -1,4 +1,4 @@
-public class ExerciseTwo {
+public class TreeSearchBranchCounting {
     public static class BinaryNode {
         int value;
         BinaryNode left;
@@ -62,7 +62,7 @@ public class ExerciseTwo {
         root.right.left.left = new BinaryNode(35);
         root.right.left.left.left = new BinaryNode(57);
 
-        ExerciseTwo exercise = new ExerciseTwo();
+        TreeSearchBranchCounting exercise = new TreeSearchBranchCounting();
         int numberOfBranches = exercise.countBranches(root);
         System.out.println("Number of branches in the tree: " + numberOfBranches);
 

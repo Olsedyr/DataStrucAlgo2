@@ -2,6 +2,9 @@ package Sorting;
 
 import java.util.Arrays;
 
+// An anagram is a word or phrase formed by rearranging the letters
+// of another word or phrase, typically using all the original
+// letters exactly once.
 public class StringsAnagram {
 
         public static boolean areAnagrams(String s1, String s2)

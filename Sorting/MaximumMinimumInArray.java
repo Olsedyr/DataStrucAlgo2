@@ -21,7 +21,7 @@ package Sorting;
 
 
 
-public class SevenForty {
+public class MaximumMinimumInArray {
     // Function to find maximum and minimum
     public static int[] findMaxMin(int[] arr, int left, int right) {
         // Base cases

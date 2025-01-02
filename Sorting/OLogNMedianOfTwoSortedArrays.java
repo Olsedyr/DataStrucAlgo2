@@ -7,7 +7,7 @@ package Sorting;
 //the left half of the combined array contains all the smaller elements and
 // the right half contains all the larger elements.
 
-public class SevenFortyThree {
+public class OLogNMedianOfTwoSortedArrays {
 
     public static double findMedianSortedArrays(int[] A, int[] B) {
         // Ensure A is the smaller array

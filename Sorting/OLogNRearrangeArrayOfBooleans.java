@@ -3,7 +3,7 @@ package Sorting;
 //and false. Give an O(N) algorithm to rearrange the list so that all false elements
 //precede the true elements. You may use only constant extra space.
 
-public class SevenPointFourFour {
+public class OLogNRearrangeArrayOfBooleans {
 
     public static void rearrange(boolean[] arr) {
         int left = 0;

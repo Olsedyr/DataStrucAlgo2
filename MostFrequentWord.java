@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExerciseOne {
+public class MostFrequentWord {
 
     public static String findMostFrequentWord(String input) {
         // Clean and split input into words
