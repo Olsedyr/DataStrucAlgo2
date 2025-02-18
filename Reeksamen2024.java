@@ -67,6 +67,8 @@ public class Reeksamen2024 {
 
 // Opgave 5: Heap-order overtrædelser
 // Funktionen identificerer og korrigerer værdier for at genoprette heap-order.
+    //Elementer der bryder heap-order: 106, 10
+    //De bør ændres for at passe til heap-struktur
 
     // Opgave 6: Hash-tabel implementering
 // Tabel 1: Linear probing
