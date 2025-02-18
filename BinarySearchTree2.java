@@ -256,6 +256,46 @@ public class BinarySearchTree2<AnyType extends Comparable<? super AnyType>>
     /** The tree root. */
     private BinaryNode<AnyType> root;
 
+    /**
+     * Returnerer ruten fra roden til den node, der indeholder x.
+     * Hvis x ikke findes, returneres en fejlmeddelelse.
+     */
+    public String findRoute(AnyType x) {
+        String route = findRoute(root, x);
+        if (route == null) {
+            return "Værdi " + x + " findes ikke i træet.";
+        }
+        return route;
+    }
+
+    /**
+     * Privat rekursiv hjælpe-metode, der finder ruten fra 'node' til værdien x.
+     */
+    private String findRoute(BinaryNode<AnyType> node, AnyType x) {
+        if (node == null) {
+            return null;
+        }
+
+        int cmp = x.compareTo(node.element);
+        if (cmp == 0) {
+            return node.element.toString();
+        }
+
+        // Søg i venstre eller højre deltræ afhængigt af sammenligningen
+        if (cmp < 0) {
+            String leftRoute = findRoute(node.left, x);
+            if (leftRoute != null) {
+                return node.element + " " + leftRoute;
+            }
+        } else {
+            String rightRoute = findRoute(node.right, x);
+            if (rightRoute != null) {
+                return node.element + " " + rightRoute;
+            }
+        }
+        return null;
+    }
+
 
     // Test program
     public static void main( String [ ] args )
@@ -263,6 +303,20 @@ public class BinarySearchTree2<AnyType extends Comparable<? super AnyType>>
         BinarySearchTree2<Integer> t = new BinarySearchTree2<>( );
         final int NUMS = 4000;
         final int GAP  =   37;
+
+        // Indsæt værdier i træet
+        t.insert(45);
+        t.insert(15);
+        t.insert(79);
+        t.insert(10);
+        t.insert(55);
+        t.insert(50);
+
+        System.out.println("Route til 50: " + t.findRoute(50));
+
+        // Udskriv træet i sorteret rækkefølge
+        t.printTree();
+
 
         System.out.println( "Checking... (no more output means success)" );
 
