@@ -1,3 +1,5 @@
+package BallsIntoBins;
+
 import java.util.Random;
 
 public class BallsIntoBinsTwoChoices {
