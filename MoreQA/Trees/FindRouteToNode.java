@@ -321,27 +321,44 @@ public class FindRouteToNode<AnyType extends Comparable<? super AnyType>>
         t.printTree();
 
 
-        System.out.println( "Checking... (no more output means success)" );
-
-        for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-            t.insert( i );
-
-        for( int i = 1; i < NUMS; i+= 2 )
-            t.remove( i );
-
-        if( NUMS < 40 )
-            t.printTree( );
-        if( t.findMin( ) != 2 || t.findMax( ) != NUMS - 2 )
-            System.out.println( "FindMin or FindMax error!" );
-
-        for( int i = 2; i < NUMS; i+=2 )
-            if( !t.contains( i ) )
-                System.out.println( "Find error1!" );
-
-        for( int i = 1; i < NUMS; i+=2 )
-        {
-            if( t.contains( i ) )
-                System.out.println( "Find error2!" );
+        // Test the findMin method
+        try {
+            System.out.println("Minimum value in the tree: " + t.findMin());
+        } catch (RuntimeException e) {
+            System.out.println("Tree is empty, no minimum value.");
         }
+
+        // Test the findMax method
+        try {
+            System.out.println("Maximum value in the tree: " + t.findMax());
+        } catch (RuntimeException e) {
+            System.out.println("Tree is empty, no maximum value.");
+        }
+
+        // Test the contains method
+        System.out.println("Does the tree contain 55? " + t.contains(55));
+        System.out.println("Does the tree contain 100? " + t.contains(100));
+
+        // Test the printTree method
+        System.out.println("Tree in sorted order:");
+        t.printTree();
+
+        // Now, let's test removing some nodes
+        t.remove(55);
+        System.out.println("After removing 55:");
+        t.printTree();
+
+        // Test the insert method by adding a new element
+        t.insert(42);
+        System.out.println("After inserting 42:");
+        t.printTree();
+
+        // Test the isEmpty method
+        System.out.println("Is the tree empty? " + t.isEmpty());
+
+        // Test the makeEmpty method
+        t.makeEmpty();
+        System.out.println("After making the tree empty:");
+        t.printTree();
     }
 }

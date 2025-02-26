@@ -1,4 +1,4 @@
-public class BinarySearch {
+public class BinarySearchOnSortedArray {
     // This method performs a binary search on a sorted array
     public static int binarySearch(int[] arr, int target) {
         int left = 0; // Initialize the left boundary of the search range

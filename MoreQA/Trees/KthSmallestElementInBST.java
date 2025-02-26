@@ -27,7 +27,7 @@ public class KthSmallestElementInBST {
         root.right.right = new Node(80);
 
         // Find the 3rd smallest element in the BST
-        int k = 3;
+        int k = 2;
         kthSmallestElement(root, k);
         if (kthSmallest != -1) {
             System.out.println("The " + k + "-th smallest element in the BST is: " + kthSmallest);
