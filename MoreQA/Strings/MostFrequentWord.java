@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class MostFrequentWord {
 
-    // Normal approach to find the most frequent word
-    public static String findMostFrequentWord(String input) {
+    // Normal approach to find the most frequent word and its count
+    public static Map.Entry<String, Integer> findMostFrequentWord(String input) {
         // Clean and split input into words
         String[] words = input.toLowerCase().replaceAll("[.,]", "").split(" ");
 
@@ -27,11 +27,11 @@ public class MostFrequentWord {
                 maxCount = wordCounts.get(word);
             }
         }
-        return mostFrequentWord;
+        return Map.entry(mostFrequentWord, maxCount);
     }
 
-    // Recursive approach to find the most frequent word
-    public static String findMostFrequentWordRecursive(String input) {
+    // Recursive approach to find the most frequent word and its count
+    public static Map.Entry<String, Integer> findMostFrequentWordRecursive(String input) {
         // Clean and split input into words
         String[] words = input.toLowerCase().replaceAll("[.,]", "").split(" ");
 
@@ -51,7 +51,7 @@ public class MostFrequentWord {
             }
         }
 
-        return mostFrequentWord;
+        return Map.entry(mostFrequentWord, maxCount);
     }
 
     // Recursive method to count words
@@ -73,11 +73,11 @@ public class MostFrequentWord {
                 "to take a little nap in a bed of grass and early summer flowers. Soon he was awakened by a sound he had never heard before.";
 
         // Test the normal method
-        String mostFrequentNormal = findMostFrequentWord(input);
-        System.out.println("Most frequent word (normal method): " + mostFrequentNormal);  // Output: "the"
+        Map.Entry<String, Integer> mostFrequentNormal = findMostFrequentWord(input);
+        System.out.println("Most frequent word (normal method): " + mostFrequentNormal.getKey() + " (count: " + mostFrequentNormal.getValue() + ")");
 
         // Test the recursive method
-        String mostFrequentRecursive = findMostFrequentWordRecursive(input);
-        System.out.println("Most frequent word (recursive method): " + mostFrequentRecursive);  // Output: "the"
+        Map.Entry<String, Integer> mostFrequentRecursive = findMostFrequentWordRecursive(input);
+        System.out.println("Most frequent word (recursive method): " + mostFrequentRecursive.getKey() + " (count: " + mostFrequentRecursive.getValue() + ")");
     }
 }

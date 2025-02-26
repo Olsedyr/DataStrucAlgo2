@@ -1,4 +1,4 @@
-public class RecursiveFindTheNumberOccurrence {
+public class RecursiveFindTheNumberOccurrenceGivenAValue {
     // Recursive method to count occurrences of val in array x
     public static int getNumberEqual(int[] x, int n, int val) {
         // Base case: if n is 0, return 0

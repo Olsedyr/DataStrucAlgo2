@@ -32,7 +32,7 @@ public class PriorityQueueChecker {
     }
 
     public static void main(String[] args) {
-        int[] priorities = {7, 19, 11, 22, 28, 13, 26, 34, 26, 42, 27, 21, 14, 81, 18, 66, 38, 69, 27};
+        int[] priorities = {0,17,21,23,44,32,65,38,56,46,69,33,77,67,56,39,61,60,62,50,71};
         System.out.println(checkMaxHeap(priorities));
     }
 }

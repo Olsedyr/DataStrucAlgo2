@@ -5,6 +5,10 @@ import java.util.HashMap;
 
 public class AnagramChecker {
 
+    //BEst approach is approach 3 or 4 both
+    // have a time complexity of O(n),
+    // where n is the length of the strings.
+
     public static void main(String[] args) {
         String str1 = "listen";
         String str2 = "silent";
