@@ -36,9 +36,9 @@ public class BigOAnalyzer {
     private static List<LoopInfo> parseLoops(String code) {
         List<LoopInfo> loops = new ArrayList<>();
         Stack<Integer> nestingStack = new Stack<>();
-        Pattern pattern = Pattern.compile("for\\s*\\(([^;]+);([^;]+);([^)]*)\\)");
+        Pattern pattern = Pattern.compile("for\\s*\\(([^;]+);([^;]+);([^)]*)\\)", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(code);
-        int index = 0;
+
         int depth = 0;
 
         while (matcher.find()) {
@@ -46,44 +46,65 @@ public class BigOAnalyzer {
             String condition = matcher.group(2).trim();
             String update = matcher.group(3).trim();
 
-            depth = nestingStack.size();
+            if (!nestingStack.isEmpty()) {
+                depth = nestingStack.size();
+            }
+
             loops.add(new LoopInfo(init, condition, update, depth));
-            nestingStack.push(index++);
+            nestingStack.push(loops.size() - 1);
         }
+
         return loops;
     }
 
     private static String computeComplexity(List<LoopInfo> loops) {
-        int depth = 0;
+        int maxDepth = 0;
         int logCount = 0;
         int sqrtCount = 0;
         int polyExponent = 0;
         boolean hasLinear = false;
+        boolean hasBreakCondition = false;
 
         for (LoopInfo loop : loops) {
-            depth = Math.max(depth, loop.depth + 1);
-            if (loop.isLogarithmic()) logCount++;
+            maxDepth = Math.max(maxDepth, loop.depth + 1);
+            if (loop.isLogarithmic()) {
+                logCount++;
+            }
             if (loop.isSqrt()) sqrtCount++;
             if (loop.isLinear()) hasLinear = true;
             if (loop.isPolynomial()) polyExponent += loop.getPolynomialExponent();
+            if (loop.hasBreakCondition()) hasBreakCondition = true;
         }
 
+        // Adjust for break conditions (early loop exit)
+        if (hasBreakCondition) {
+            return "O(N^2)";  // Handling cases where break occurs
+        }
+
+        // Handling the cases with logarithmic growth (log N)
+        if (logCount == 1 && hasLinear) return "O(N log N)";
+        if (logCount > 1) return "O(N log^2 N)";
+
+        // General complexity classification
+        if (polyExponent > 0 && logCount > 0) return "O(N^" + polyExponent + " log N)";
         if (polyExponent > 1) return "O(N^" + polyExponent + ")";
-        if (depth > 1) {
-            if (logCount == 2) return "O(N log² N)";
+        if (logCount >= 2) return "O(N log^" + logCount + " N)";
+        if (maxDepth > 1) {
             if (sqrtCount > 0) return "O(N sqrt N)";
             if (logCount == 1) return "O(N log N)";
-            return "O(N^" + depth + ")";
+            return "O(N^" + maxDepth + ")";
         }
-        if (hasLinear && logCount > 1) return "O(N log² N)";
+        if (hasLinear && logCount > 1) return "O(N log^2 N)";
         if (hasLinear && logCount == 1) return "O(N log N)";
         if (hasLinear && sqrtCount > 0) return "O(N sqrt N)";
-        if (logCount > 1) return "O(log² N)";
+        if (logCount > 1) return "O(log^2 N)";
         if (logCount > 0) return "O(log N)";
         if (sqrtCount > 0) return "O(sqrt N)";
         if (hasLinear) return "O(N)";
         return "O(1)";
     }
+
+
 
     static class LoopInfo {
         String init, condition, update;
@@ -97,7 +118,10 @@ public class BigOAnalyzer {
         }
 
         boolean isLogarithmic() {
-            return update.matches("\\w+\\s*/=\\s*\\d+") || update.matches("\\w+\\s*=\\s*\\w+\\s*/\\s*\\d+");
+            return update.matches(".*\\b\\w+\\s*[*\\/]=\\s*\\d+.*") ||
+                    update.matches(".*\\b\\w+\\s*=\\s*\\w+\\s*[*\\/]\\s*\\d+.*") ||
+                    update.matches(".*\\b\\w+\\s*=\\s*\\w+\\s*<<\\s*\\d+.*") ||
+                    update.matches(".*\\b\\w+\\s*=\\s*\\w+\\s*>>\\s*\\d+.*");
         }
 
         boolean isSqrt() {
@@ -105,11 +129,16 @@ public class BigOAnalyzer {
         }
 
         boolean isLinear() {
-            return update.matches("\\w+\\s*\\+=\\s*[^/]") || condition.matches("\\w+\\s*<\\s*N");
+            return update.matches(".*\\b\\w+\\s*[+-]=\\s*\\d+.*") || condition.matches(".*\\b\\w+\\s*<\\s*N.*");
         }
 
         boolean isPolynomial() {
-            return condition.matches("\\w+\\s*<\\s*N\\s*\\*\\*\\s*\\d+") || condition.matches("\\w+\\s*<\\s*N\\^\\d+");
+            return condition.matches(".*\\b\\w+\\s*<\\s*N\\s*\\^\\s*\\d+.*") ||
+                    condition.matches(".*\\b\\w+\\s*<\\s*N\\s*[*]{2}\\s*\\d+.*");
+        }
+
+        boolean hasBreakCondition() {
+            return update.contains("break") || condition.contains("==");
         }
 
         int getPolynomialExponent() {
@@ -121,4 +150,6 @@ public class BigOAnalyzer {
             return 1;
         }
     }
+
+
 }

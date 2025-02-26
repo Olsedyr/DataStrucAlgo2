@@ -5,19 +5,23 @@ import java.util.*;
 
 public class BigOCode {
 
-    public static long myM(int N)
+    public static String myM(int N)
     {
-        long x = 0;
-        for (int i = 0; i < 10000; i++)
+        int x = 0, y = 0;
+        for (int j = 0; j < N; j++)
         {
-            for (int j = 0; j < N*10; j++)
+            for (int i = N; i > 0; i=i/3)
             {
-                for (int k = N; k > 0; k = k/10)
+                for (int k = N; k > 0; k=k/2)
                 {
                     x++;
                 }
             }
         }
-        return x;
+        for (float v = 0; v < N; v+=Math.sqrt(0.001)) //C++: #include <math.h>
+            y++;
+        return x+" "+y;
     }
+
+
 }
