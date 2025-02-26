@@ -5,24 +5,19 @@ import java.util.*;
 
 public class BigOCode {
 
-    public static long bigOh(double N)
+    public static long myM(int N)
     {
-        long x = 0; long y = 0;
-        for (int i = 0; i < N; i++) //for-loop nummer 1
+        long x = 0;
+        for (int i = 0; i < 10000; i++)
         {
-            for (int j = 0; j < Math.pow(Math.log(N),2); j++)
-// log er ln (den naturlige logaritme)
+            for (int j = 0; j < N*10; j++)
             {
-                for (int k = 0; k <= Math.sqrt(N); k++)
+                for (int k = N; k > 0; k = k/10)
                 {
                     x++;
                 }
             }
-            i += i;
         }
-        for (long k = 0; k < N*Math.sqrt(N); k++) //for-loop nummer 2
-            y++;
-        System.out.println(x+" "+y);
-        return x+y;
+        return x;
     }
 }

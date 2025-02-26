@@ -1,13 +1,10 @@
 package MoreQA.BigONotation;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
 public class BigOAnalyzer {
-
-
 
     public static void main(String[] args) {
         String filePath = "MoreQA/BigONotation/BigOCode.java";
@@ -31,163 +28,97 @@ public class BigOAnalyzer {
     }
 
     public static void analyzeComplexity(String code) {
-        if (containsRecursion(code, "weirdRecursion")) {
-            System.out.println("Tidskompleksitet: O(2^N)"); // Exponential time complexity
-        } else if (containsRecursion(code, "nestedRecursion")) {
-            System.out.println("Tidskompleksitet: O(2^N)"); // Exponential time complexity
-        } else if (containsSorting(code)) {
-            System.out.println("Tidskompleksitet: O(N log N)"); // Sorting-based complexity
-        } else if (containsGraphTraversal(code)) {
-            System.out.println("Tidskompleksitet: O(V + E)"); // Graph traversal complexity
-        } else if (containsLogarithmicRecursion(code, "mysteryFunction")) {
-            System.out.println("Tidskompleksitet: O(log N)"); // Logarithmic recursion complexity
-        } else if (containsNestedLogarithmicLoop(code, "strangeNestedLoop")) {
-            System.out.println("Tidskompleksitet: O(N log N)"); // Nested logarithmic loop complexity
-        } else if (containsIterativeFibonacci(code, "iterativeFibonacci")) {
-            System.out.println("Tidskompleksitet: O(N)"); // Iterative Fibonacci complexity
-        } else if (containsRecursiveExponentiation(code, "power")) {
-            System.out.println("Tidskompleksitet: O(log N)"); // Recursive exponentiation complexity
-        } else if (containsMatrixTraversal(code, "traverseMatrix")) {
-            System.out.println("Tidskompleksitet: O(N^2)"); // Matrix traversal complexity
-        } else if (containsTripleLoop(code, "tripleLoop")) {
-            System.out.println("Tidskompleksitet: O(N^2 log N)"); // Triple loop complexity
-        } else {
-            int loopCount = countLoops(code);
-            int nestedLoopCount = countNestedLoops(code);
-            int logLoops = countLogLoops(code);
-            int sqrtLoops = countSqrtLoops(code);
-            int logSquaredLoops = countLogSquaredLoops(code);
-            int logLinearLoops = countLogLinearLoops(code);
+        List<LoopInfo> loops = parseLoops(code);
+        String complexity = computeComplexity(loops);
+        System.out.println("Tidskompleksitet: " + complexity);
+    }
 
-            if (nestedLoopCount > 0) {
-                System.out.println("Tidskompleksitet: O(N^" + (nestedLoopCount + 1) + ")");
-            } else if (logSquaredLoops > 0 && sqrtLoops > 0) {
-                System.out.println("Tidskompleksitet: O(N * log^2(N) * sqrt(N))");
-            } else if (logLoops > 0 && sqrtLoops > 0) {
-                System.out.println("Tidskompleksitet: O(N * log(N) * sqrt(N))");
-            } else if (logSquaredLoops > 0) {
-                System.out.println("Tidskompleksitet: O(N * log^2(N))");
-            } else if (logLinearLoops > 0) {
-                System.out.println("Tidskompleksitet: O(N * log(N))");
-            } else if (logLoops > 0) {
-                System.out.println("Tidskompleksitet: O(log(N))");
-            } else if (sqrtLoops > 0) {
-                System.out.println("Tidskompleksitet: O(N * sqrt(N))");
-            } else if (loopCount > 0) {
-                System.out.println("Tidskompleksitet: O(N)");
-            } else {
-                System.out.println("Tidskompleksitet: Konstant tid O(1)");
+    private static List<LoopInfo> parseLoops(String code) {
+        List<LoopInfo> loops = new ArrayList<>();
+        Stack<Integer> nestingStack = new Stack<>();
+        Pattern pattern = Pattern.compile("for\\s*\\(([^;]+);([^;]+);([^)]*)\\)");
+        Matcher matcher = pattern.matcher(code);
+        int index = 0;
+        int depth = 0;
+
+        while (matcher.find()) {
+            String init = matcher.group(1).trim();
+            String condition = matcher.group(2).trim();
+            String update = matcher.group(3).trim();
+
+            depth = nestingStack.size();
+            loops.add(new LoopInfo(init, condition, update, depth));
+            nestingStack.push(index++);
+        }
+        return loops;
+    }
+
+    private static String computeComplexity(List<LoopInfo> loops) {
+        int depth = 0;
+        int logCount = 0;
+        int sqrtCount = 0;
+        int polyExponent = 0;
+        boolean hasLinear = false;
+
+        for (LoopInfo loop : loops) {
+            depth = Math.max(depth, loop.depth + 1);
+            if (loop.isLogarithmic()) logCount++;
+            if (loop.isSqrt()) sqrtCount++;
+            if (loop.isLinear()) hasLinear = true;
+            if (loop.isPolynomial()) polyExponent += loop.getPolynomialExponent();
+        }
+
+        if (polyExponent > 1) return "O(N^" + polyExponent + ")";
+        if (depth > 1) {
+            if (logCount == 2) return "O(N log² N)";
+            if (sqrtCount > 0) return "O(N sqrt N)";
+            if (logCount == 1) return "O(N log N)";
+            return "O(N^" + depth + ")";
+        }
+        if (hasLinear && logCount > 1) return "O(N log² N)";
+        if (hasLinear && logCount == 1) return "O(N log N)";
+        if (hasLinear && sqrtCount > 0) return "O(N sqrt N)";
+        if (logCount > 1) return "O(log² N)";
+        if (logCount > 0) return "O(log N)";
+        if (sqrtCount > 0) return "O(sqrt N)";
+        if (hasLinear) return "O(N)";
+        return "O(1)";
+    }
+
+    static class LoopInfo {
+        String init, condition, update;
+        int depth;
+
+        LoopInfo(String init, String condition, String update, int depth) {
+            this.init = init;
+            this.condition = condition;
+            this.update = update;
+            this.depth = depth;
+        }
+
+        boolean isLogarithmic() {
+            return update.matches("\\w+\\s*/=\\s*\\d+") || update.matches("\\w+\\s*=\\s*\\w+\\s*/\\s*\\d+");
+        }
+
+        boolean isSqrt() {
+            return update.contains("Math.sqrt") || condition.contains("Math.sqrt");
+        }
+
+        boolean isLinear() {
+            return update.matches("\\w+\\s*\\+=\\s*[^/]") || condition.matches("\\w+\\s*<\\s*N");
+        }
+
+        boolean isPolynomial() {
+            return condition.matches("\\w+\\s*<\\s*N\\s*\\*\\*\\s*\\d+") || condition.matches("\\w+\\s*<\\s*N\\^\\d+");
+        }
+
+        int getPolynomialExponent() {
+            Pattern polyPattern = Pattern.compile("N\\s*\\^\\s*(\\d+)");
+            Matcher matcher = polyPattern.matcher(condition);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
             }
+            return 1;
         }
-    }
-
-    private static boolean containsRecursion(String code, String methodName) {
-        Pattern pattern = Pattern.compile(methodName + "\\s*\\(");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static boolean containsSorting(String code) {
-        return code.contains("Arrays.sort");
-    }
-
-    private static boolean containsGraphTraversal(String code) {
-        return code.contains("Queue") && code.contains("Set") && code.contains("queue.poll");
-    }
-
-    private static boolean containsLogarithmicRecursion(String code, String methodName) {
-        Pattern pattern = Pattern.compile(methodName + "\\s*\\(\\s*n\\s*/\\s*2\\s*\\)");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static boolean containsNestedLogarithmicLoop(String code, String methodName) {
-        Pattern pattern = Pattern.compile("for\\s*\\(.*;\\s*j\\s*/=\\s*2\\s*;.*\\)");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static boolean containsIterativeFibonacci(String code, String methodName) {
-        Pattern pattern = Pattern.compile(methodName + "\\s*\\(\\s*n\\s*\\)");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static boolean containsRecursiveExponentiation(String code, String methodName) {
-        Pattern pattern = Pattern.compile(methodName + "\\s*\\(\\s*x\\s*,\\s*y\\s*/\\s*2\\s*\\)");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static boolean containsMatrixTraversal(String code, String methodName) {
-        Pattern pattern = Pattern.compile(methodName + "\\s*\\(\\s*int\\[\\]\\[\\]\\s*matrix\\s*\\)");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static boolean containsTripleLoop(String code, String methodName) {
-        Pattern pattern = Pattern.compile("for\\s*\\(.*;\\s*j\\s*\\+=\\s*2\\s*;.*\\).*for\\s*\\(.*;\\s*k\\s*\\*=\\s*2\\s*;.*\\)");
-        Matcher matcher = pattern.matcher(code);
-        return matcher.find();
-    }
-
-    private static int countLoops(String code) {
-        Pattern pattern = Pattern.compile("for\\s*\\(");
-        Matcher matcher = pattern.matcher(code);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    private static int countNestedLoops(String code) {
-        Pattern pattern = Pattern.compile("for\\s*\\(.*for\\s*\\(");
-        Matcher matcher = pattern.matcher(code);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    private static int countLogLoops(String code) {
-        Pattern pattern = Pattern.compile("Math\\.log\\s*\\(");
-        Matcher matcher = pattern.matcher(code);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    private static int countLogSquaredLoops(String code) {
-        Pattern pattern = Pattern.compile("Math\\.pow\\s*\\(\\s*Math\\.log\\s*\\(");
-        Matcher matcher = pattern.matcher(code);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    private static int countLogLinearLoops(String code) {
-        Pattern pattern = Pattern.compile("for\\s*\\(.*;\\s*k\\s*\\*=\\s*2\\s*;.*\\)");
-        Matcher matcher = pattern.matcher(code);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    private static int countSqrtLoops(String code) {
-        Pattern pattern = Pattern.compile("Math\\.sqrt\\s*\\(");
-        Matcher matcher = pattern.matcher(code);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
     }
 }
