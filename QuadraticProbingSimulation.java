@@ -2,10 +2,13 @@ public class QuadraticProbingSimulation {
     public static void main(String[] args) {
         final int TABLE_SIZE = 13;
         String[] table = new String[TABLE_SIZE];
-        int hashIndex = 3;  // alle elementer hasher til 3
+        int hashIndex = 3;  // alle elementer hasher til indeks 3
         int elementCount = 0;
 
         // For at markere rækkefølge: Y1, Y2, Y3, ...
+        //13 er antal elementer i tabellen
+
+
         for (int i = 1; i <= 13; i++) {
             int probe = 0;
             int index;

@@ -1,4 +1,4 @@
-// BinarySearchTree class
+package MoreQA.Trees;// BinarySearchTree class
 //
 // CONSTRUCTION: with no initializer
 //
@@ -19,12 +19,12 @@
  * Note that all "matching" is based on the compareTo method.
  * @author Mark Allen Weiss
  */
-public class BinarySearchTree2<AnyType extends Comparable<? super AnyType>>
+public class FindRouteToNode<AnyType extends Comparable<? super AnyType>>
 {
     /**
      * Construct the tree.
      */
-    public BinarySearchTree2( )
+    public FindRouteToNode( )
     {
         root = null;
     }
@@ -300,7 +300,7 @@ public class BinarySearchTree2<AnyType extends Comparable<? super AnyType>>
     // Test program
     public static void main( String [ ] args )
     {
-        BinarySearchTree2<Integer> t = new BinarySearchTree2<>( );
+        FindRouteToNode<Integer> t = new FindRouteToNode<>( );
         final int NUMS = 4000;
         final int GAP  =   37;
 
@@ -309,7 +309,10 @@ public class BinarySearchTree2<AnyType extends Comparable<? super AnyType>>
         t.insert(15);
         t.insert(79);
         t.insert(10);
+        t.insert(20);
         t.insert(55);
+        t.insert(90);
+        t.insert(12);
         t.insert(50);
 
         System.out.println("Route til 50: " + t.findRoute(50));
