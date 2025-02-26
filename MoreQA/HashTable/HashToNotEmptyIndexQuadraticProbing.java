@@ -45,27 +45,27 @@ public class HashToNotEmptyIndexQuadraticProbing {
     public static void main(String[] args) {
         //Set Inital size here index 0
         HashToNotEmptyIndexQuadraticProbing qph
-                = new HashToNotEmptyIndexQuadraticProbing(16);
+                = new HashToNotEmptyIndexQuadraticProbing
+                (11);
 
         // -1 is empty
         // Pre-fill the hash table with given values
-        qph.hashTable[0] = 68;
-        qph.hashTable[1] = 72;
-        qph.hashTable[2] = 86;
-        qph.hashTable[5] = 80;
-        qph.hashTable[7] = 88;
-        qph.hashTable[8] = 69;
+        qph.hashTable[0] = 22;
+
+        qph.hashTable[5] = 5;
+        qph.hashTable[6] = 16;
+        qph.hashTable[9] = 27;
 
         // Display the initial state of the hash table
         System.out.println("Initial hash table:");
         qph.display();
 
         // Insert a new element that hashes to index 1
-        int newValue = 78;
-        int newValue2 = 79;
-        int newValue3 = 80;
-        int newValue4 = 81;
-        int newValue5 = 82;
+        int newValue = 1;
+        int newValue2 = 12;
+        int newValue3 = 23;
+        int newValue4 = 22;
+        int newValue5 = 123;
 
         //Insert elements
         qph.insert(newValue);

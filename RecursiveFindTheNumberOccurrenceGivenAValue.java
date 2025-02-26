@@ -12,7 +12,7 @@ public class RecursiveFindTheNumberOccurrenceGivenAValue {
     }
 
     public static void main(String[] args) {
-        int[] x = {7, 4, 1, 3, 5, 6, 4, 8};
+        int[] x = {7, 4, 1, 4, 5, 6, 4, 8};
         int n = 8;
         int val = 4;
         System.out.println("Number of occurrences of " + val + ": " + getNumberEqual(x, n, val));

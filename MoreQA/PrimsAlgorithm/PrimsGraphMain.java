@@ -88,7 +88,7 @@ public class PrimsGraphMain {
     // Main function to test Prim's Algorithm
     public static void main(String[] args) {
         // Default graph
-        int V = 9; // Number of vertices
+        int V = 7; // Number of vertices
         PrimsGraph pg = new PrimsGraph(V);
 
         //Source, destination, weight
@@ -99,12 +99,13 @@ public class PrimsGraphMain {
         pg.addEdge(3, 4, 1);
         pg.addEdge(3, 5, 7);
         pg.addEdge(4, 5, 1);
-        pg.addEdge(4, 7, 1);
-        pg.addEdge(5, 6, 5);
-        pg.addEdge(6, 7, 7);
-        pg.addEdge(7, 2, 2);
-        pg.addEdge(7, 8, 5);
-        pg.addEdge(8, 9, 10);
+        pg.addEdge(0, 1, 4);
+        pg.addEdge(1, 2, 1);
+        pg.addEdge(2, 3, 9);
+        pg.addEdge(3, 4, 1);
+        pg.addEdge(3, 5, 7);
+        pg.addEdge(4, 5, 1);
+
 
         System.out.println("Running Prim's Algorithm (Minimum Spanning Tree):");
         pg.primMST();

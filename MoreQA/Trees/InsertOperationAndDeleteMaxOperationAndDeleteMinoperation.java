@@ -3,70 +3,63 @@ package MoreQA.Trees;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public class InsertOperationAndDeleteMaxOperationAndDeleteMinoperation {
 
     public static void main(String[] args) {
+        // Min-heaps (default behavior of PriorityQueue)
         PriorityQueue<Integer> minHeap1 = new PriorityQueue<>();
         PriorityQueue<Integer> minHeap2 = new PriorityQueue<>();
 
-        // Example elements
-        int[] elements1 = {5, 9, 11, 14, 18, 19, 21, 33, 17, 27};
-        int[] elements2 = {29, 10, 8, 1, 9, 3, 6};
+        // Max-heap (using a custom comparator to reverse the natural order)
+        PriorityQueue<Integer> maxHeap1 = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> maxHeap2 = new PriorityQueue<>(Collections.reverseOrder());
 
+        // Example elements
+        int[] elements1 = {42, 33, 37, 3, 15, 17, 4};
+        // Another tree
+        int[] elements2 = {42, 33, 37, 3, 15, 17, 4};
+
+        // Insert elements into minHeap1 and maxHeap1
         for (int elem : elements1) {
             minHeap1.add(elem);
+            maxHeap1.add(elem);
         }
 
+        // Insert elements into minHeap2 and maxHeap2
         for (int elem : elements2) {
             minHeap2.add(elem);
+            maxHeap2.add(elem);
         }
 
+        // Insert operation on maxHeap2
+        maxHeap2.add(35);
 
+        System.out.println("Original maxHeap2");
+        System.out.println(maxHeap2); // Shows the internal priority queue
 
-        // insert operations on minHeap1
-        minHeap1.add(7);
-        minHeap1.add(15);
+        System.out.println("Original maxHeap1");
+        System.out.println(maxHeap1); // Shows the internal priority queue
 
-        System.out.println(" ");
-        System.out.println("minHeap1 after insert(7) and insert(15):");
-        printHeap(minHeap1);
-        System.out.println(" ");
+        System.out.println("\nmaxHeap2 after insert(35):");
+        printHeap(maxHeap2);
+        System.out.println("Corresponding priority queue: " + maxHeap2);
 
-        System.out.println("Corresponding priority queue: " + minHeap1);
-        System.out.println(" ");
-        System.out.println(" ");
+        System.out.println("\nmaxHeap1 after deleteMax:");
+        maxHeap1.poll();  // Remove the largest element from maxHeap1 (deleteMax operation)
+        printHeap(maxHeap1);
+        System.out.println("Corresponding priority queue: " + maxHeap1);
 
-
-
-
-        // deleteMin operation on minHeap1
-        minHeap1.poll();
-        System.out.println("minHeap1 after deleteMin");
-        printHeap(minHeap1);
-
-
-        System.out.println("Corresponding priority queue: " + minHeap1);
-        System.out.println(" ");
-        System.out.println(" ");
-
-
-        // deleteMin operation on minHeap2
-        minHeap2.poll();
-
-        System.out.println(" ");
-        System.out.println(" ");
-
-
-        System.out.println("minHeap2 after deleteMin:");
-        printHeap(minHeap2);
-        System.out.println("Corresponding priority queue: " + minHeap2);
+        System.out.println("\nmaxHeap1 after deleteMax (removed element):");
+        int maxElement = maxHeap1.poll();  // Remove the largest element again
+        printHeap(maxHeap1);
+        System.out.println("Corresponding priority queue: " + maxHeap1);
     }
 
     public static void printHeap(PriorityQueue<Integer> heap) {
         List<Integer> list = new ArrayList<>(heap);
-        list.sort(null); // Sort to maintain min-heap order
-
+        // No need to sort here since we are dealing with max-heap and PriorityQueue itself is sorted.
         int depth = (int) (Math.log(list.size()) / Math.log(2)) + 1;
         int index = 0;
 

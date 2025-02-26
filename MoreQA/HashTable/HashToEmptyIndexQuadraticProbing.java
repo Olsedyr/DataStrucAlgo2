@@ -51,22 +51,19 @@ public class HashToEmptyIndexQuadraticProbing {
                 new HashToEmptyIndexQuadraticProbing(11);
 
         // Pre-fill the hash table with given values
-        qph.hashTable[2] = 86;
-        qph.hashTable[3] = 82;
-        qph.hashTable[6] = 80;
-        qph.hashTable[8] = 69;
-        qph.hashTable[10] = 70;
+        qph.hashTable[0] = 86;
+        qph.hashTable[1] = 82;
+        qph.hashTable[2] = 80;
+        qph.hashTable[5] = 69;
+        qph.hashTable[7] = 70;
+        qph.hashTable[8] = 71;
 
         // Display the initial state of the hash table
         System.out.println("Initial hash table:");
         qph.display();
 
         // Insert new elements with specified hash indices
-        qph.insert(81, 7); // Hashes to index 7
-        qph.insert(67, 7); // Hashes to index 8
-        qph.insert(72, 7); // Hashes to index 2
-        qph.insert(81, 7); // Hashes to index 7
-        qph.insert(69, 7); // Hashes to index 8
+        qph.insert(81, 1); // Hashes to index 7
 
 
         // Display the hash table after insertion

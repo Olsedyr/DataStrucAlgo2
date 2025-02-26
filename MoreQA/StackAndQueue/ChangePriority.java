@@ -8,29 +8,42 @@ import java.util.NoSuchElementException;
 public class ChangePriority {
     static class MaxHeap {
         private List<Integer> heap;
+        private int size; // Fixed size of the heap
 
-        public MaxHeap() {
-            heap = new ArrayList<>();
+        // Constructor to initialize the heap with a fixed size and default values
+        public MaxHeap(int size) {
+            this.size = size;
+            heap = new ArrayList<>(Collections.nCopies(size, -1)); // Initialize with -1
         }
 
-        public void insert(int value) {
-            heap.add(value);
-            bubbleUp(heap.size() - 1);
+        // Insert a value into the heap at a specific index
+        public void insert(int value, int index) {
+            if (index < 0 || index >= size) {
+                throw new IllegalArgumentException("Index out of bounds");
+            }
+            if (heap.get(index) != -1) {
+                throw new IllegalStateException("Index " + index + " is already occupied");
+            }
+            heap.set(index, value);
+            bubbleUp(index);
         }
 
+        // Extract the maximum value from the heap
         public int extractMax() {
-            if (heap.isEmpty()) {
+            if (heap.isEmpty() || heap.get(0) == -1) {
                 throw new NoSuchElementException("Heap is empty");
             }
             int max = heap.get(0);
-            int last = heap.remove(heap.size() - 1);
-            if (!heap.isEmpty()) {
-                heap.set(0, last);
+            int last = heap.get(heap.size() - 1);
+            heap.set(0, last); // Move the last element to the root
+            heap.set(heap.size() - 1, -1); // Mark the last position as empty
+            if (heap.get(0) != -1) {
                 bubbleDown(0);
             }
             return max;
         }
 
+        // Change the priority of an element in the heap
         public void changePriority(int fromP, int toP) {
             int index = heap.indexOf(fromP);
             if (index == -1) {
@@ -44,6 +57,7 @@ public class ChangePriority {
             }
         }
 
+        // Bubble up to maintain the heap property
         private void bubbleUp(int index) {
             while (index > 0) {
                 int parentIndex = (index - 1) / 2;
@@ -55,6 +69,7 @@ public class ChangePriority {
             }
         }
 
+        // Bubble down to maintain the heap property
         private void bubbleDown(int index) {
             int size = heap.size();
             while (index < size) {
@@ -77,29 +92,39 @@ public class ChangePriority {
             }
         }
 
+        // Display the heap
         public void display() {
             System.out.println(heap);
         }
     }
 
     public static void main(String[] args) {
-        MaxHeap maxHeap = new MaxHeap();
-        maxHeap.insert(5);
-        maxHeap.insert(3);
-        maxHeap.insert(8);
-        maxHeap.insert(1);
-        maxHeap.insert(6);
+        // Create a heap with a fixed size of 10
+        MaxHeap maxHeap = new MaxHeap(10);
+
+        // Insert some elements at specific indices
+        maxHeap.insert(5, 0); // Insert 5 at index 0
+        maxHeap.insert(3, 1); // Insert 3 at index 1
+        maxHeap.insert(8, 2); // Insert 8 at index 2
+        maxHeap.insert(1, 3); // Insert 1 at index 3
+        maxHeap.insert(6, 4); // Insert 6 at index 4
 
         System.out.println("Initial heap:");
         maxHeap.display();
 
+        // Change priority of 3 to 10
         maxHeap.changePriority(3, 10);
         System.out.println("Heap after changing priority of 3 to 10:");
         maxHeap.display();
 
+        // Change priority of 8 to 2
         maxHeap.changePriority(8, 2);
         System.out.println("Heap after changing priority of 8 to 2:");
         maxHeap.display();
+
+        // Extract the maximum value
+        System.out.println("Extracted max: " + maxHeap.extractMax());
+        System.out.println("Heap after extracting max:");
+        maxHeap.display();
     }
 }
-

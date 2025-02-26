@@ -1,7 +1,9 @@
 package MoreQA.Trees;
 
+import java.util.*;
+
 public class BSTisOfMinimalHeight {
-    class Node {
+    static class Node {
         int data;
         Node left, right;
 
@@ -44,35 +46,86 @@ public class BSTisOfMinimalHeight {
         return actualHeight == minHeight;
     }
 
-    // Method to insert a new node in the BST
-    public void insert(int data) {
-        root = insertRec(root, data);
+    // In-order traversal
+    public void inOrderTraversal(Node root) {
+        if (root != null) {
+            inOrderTraversal(root.left);
+            System.out.print(root.data + " ");
+            inOrderTraversal(root.right);
+        }
     }
 
-    // Recursive method to insert a new node in the BST
-    private Node insertRec(Node root, int data) {
-        if (root == null) {
-            root = new Node(data);
-            return root;
+    // Level-order traversal
+    public void levelOrderTraversal(Node root) {
+        if (root == null) return;
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+            System.out.print(node.data + " ");
+
+            if (node.left != null) queue.add(node.left);
+            if (node.right != null) queue.add(node.right);
         }
-        if (data < root.data) {
-            root.left = insertRec(root.left, data);
-        } else if (data > root.data) {
-            root.right = insertRec(root.right, data);
+    }
+
+    // Post-order traversal
+    public void postOrderTraversal(Node root) {
+        if (root != null) {
+            postOrderTraversal(root.left);
+            postOrderTraversal(root.right);
+            System.out.print(root.data + " ");
         }
-        return root;
+    }
+
+    // Pre-order traversal
+    public void preOrderTraversal(Node root) {
+        if (root != null) {
+            System.out.print(root.data + " ");
+            preOrderTraversal(root.left);
+            preOrderTraversal(root.right);
+        }
     }
 
     public static void main(String[] args) {
         BSTisOfMinimalHeight bst = new BSTisOfMinimalHeight();
-        bst.insert(15);
-        bst.insert(10);
-        bst.insert(20);
-        bst.insert(8);
-        bst.insert(12);
-        bst.insert(17);
-        bst.insert(25);
 
+        // Manually construct the tree using root.left, root.right, etc.
+        bst.root = new Node(11);
+
+        // Right side of root
+        bst.root.right = new Node(13);
+        bst.root.right.right = new Node(57);
+        bst.root.right.right.right = new Node(90);
+        bst.root.right.right.left = new Node(25);
+        bst.root.right.right.left.left = new Node(17);
+
+        // Left side of root
+        bst.root.left = new Node(2);
+        bst.root.left.left = new Node(1);
+        bst.root.left.right = new Node(9);
+        bst.root.left.right.left = new Node(3);
+
+        // Check if the tree is of minimal height
         System.out.println("Is the tree of minimal height? " + bst.minimalHeight());
+
+        // Perform traversals
+        System.out.print("In-order traversal: ");
+        bst.inOrderTraversal(bst.root);
+        System.out.println();
+
+        System.out.print("Level-order traversal: ");
+        bst.levelOrderTraversal(bst.root);
+        System.out.println();
+
+        System.out.print("Post-order traversal: ");
+        bst.postOrderTraversal(bst.root);
+        System.out.println();
+
+        System.out.print("Pre-order traversal: ");
+        bst.preOrderTraversal(bst.root);
+        System.out.println();
     }
 }

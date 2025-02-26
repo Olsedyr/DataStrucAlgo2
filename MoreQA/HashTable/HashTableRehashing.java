@@ -7,19 +7,49 @@ public class HashTableRehashing {
     static class HashTable {
         private String[] table;
         private int size;
+        private int numElements; // Track the number of elements
 
         public HashTable(int size) {
             this.size = size;
             table = new String[size];
+            numElements = 0;
         }
 
         public void insert(String value, int key) {
+            // Check load factor and rehash if necessary
+            if ((double) numElements / size > 0.5) {
+                rehash();
+            }
+
+            // Insert the new element
             int index = key % size;
             int i = 0;
             while (table[(index + i * i) % size] != null) {
                 i++;
             }
             table[(index + i * i) % size] = value;
+            numElements++; // Increment the number of elements
+        }
+
+        private void rehash() {
+            System.out.println("Load factor exceeded 0.5. Rehashing...");
+
+            // Determine new table size (next prime after doubling the current size)
+            int newSize = getNextPrime(2 * size);
+
+            // Create new hash table
+            HashTable newHashTable = new HashTable(newSize);
+
+            // Rehash elements
+            for (String element : getElements()) {
+                int key = element.charAt(0) - 'A' + 1; // Calculate key based on letter position
+                newHashTable.insert(element, key);
+            }
+
+            // Update the current table and size
+            this.table = newHashTable.table;
+            this.size = newHashTable.size;
+            this.numElements = newHashTable.numElements;
         }
 
         public void display() {
@@ -69,20 +99,12 @@ public class HashTableRehashing {
         System.out.println("Current Hash Table:");
         hashTable.display();
 
-        // Determine new table size
-        int newSize = getNextPrime(2 * 11);
+        // Insert more elements to trigger rehashing
+        hashTable.insert("B", 2);
+        hashTable.insert("D", 4);
+        hashTable.insert("F", 6);
 
-        // Create new hash table
-        HashTable newHashTable = new HashTable(newSize);
-
-        // Rehash elements
-        List<String> elements = hashTable.getElements();
-        for (String element : elements) {
-            int key = element.charAt(0) - 'A' + 1; // Calculate key based on letter position
-            newHashTable.insert(element, key);
-        }
-
-        System.out.println("\nNew Hash Table after Rehashing:");
-        newHashTable.display();
+        System.out.println("\nHash Table after Rehashing:");
+        hashTable.display();
     }
 }

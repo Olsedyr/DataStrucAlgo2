@@ -2,7 +2,7 @@ public class LogarithmCalculator {
 
     public static void main(String[] args) {
         // Test the logarithm methods with example values
-        System.out.println("log2(32): " + logBase2(32));   // Output: 5
+        System.out.println("log2(32): " + logBase2(4096));   // Output: 5
         System.out.println("log3(27): " + logBase3(27));   // Output: 3
         System.out.println("log4(64): " + logBase4(64));   // Output: 3
         System.out.println("log5(125): " + logBase5(125)); // Output: 3

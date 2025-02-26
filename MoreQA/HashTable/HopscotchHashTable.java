@@ -3,7 +3,7 @@ package MoreQA.HashTable;
 import java.util.Arrays;
 
 public class HopscotchHashTable {
-    private static final int SIZE = 16; // Size of the hash table
+    private static final int SIZE = 13; // Size of the hash table
     private Integer[] table; // Hash table to store values
     private int[] hops; // Hops array to track hop distances
 

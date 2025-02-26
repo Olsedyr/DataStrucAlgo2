@@ -65,7 +65,7 @@ public class RecursiveFindTheNumberOccurrenceNoValueGiven {
     }
 
     public static void main(String[] args) {
-        int[] array = {1, 3, 2, 3, 4, 3, 5, 1, 2, 3};
+        int[] array = {28,5,28,7,25,7,9,28,11,67,5,33,2};
 
         // Test brute force method
         int mostOccurringBruteForce = mostOccurringNumberBruteForce(array);
