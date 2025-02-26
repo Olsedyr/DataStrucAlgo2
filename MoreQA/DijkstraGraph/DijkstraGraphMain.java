@@ -134,56 +134,30 @@ public class DijkstraGraphMain {
 
     // Main function to test Dijkstra's and Kruskal's Algorithms
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Default graph data from Opgave 5
-        int V = 9; // Number of vertices
+        // Default graph
+        int V = 10; // Number of vertices (index 0)
         DijkstraGraph dg = new DijkstraGraph(V);
 
-        // Add edges from Opgave 5
+        // Add edges
         dg.addEdge(0, 1, 4);
-        dg.addEdge(0, 7, 8);
-        dg.addEdge(1, 2, 8);
-        dg.addEdge(1, 7, 11);
-        dg.addEdge(2, 3, 7);
-        dg.addEdge(2, 8, 2);
-        dg.addEdge(2, 5, 4);
-        dg.addEdge(3, 4, 9);
-        dg.addEdge(3, 5, 14);
-        dg.addEdge(4, 5, 10);
-        dg.addEdge(5, 6, 2);
-        dg.addEdge(6, 7, 1);
-        dg.addEdge(6, 8, 6);
-        dg.addEdge(7, 8, 7);
+        dg.addEdge(1, 2, 1);
+        dg.addEdge(2, 3, 9);
+        dg.addEdge(3, 4, 1);
+        dg.addEdge(3, 5, 7);
+        dg.addEdge(4, 5, 1);
+        dg.addEdge(4, 7, 1);
+        dg.addEdge(5, 6, 5);
+        dg.addEdge(6, 7, 7);
+        dg.addEdge(7, 2, 2);
+        dg.addEdge(7, 8, 5);
+        dg.addEdge(8, 9, 10);
 
-        System.out.print("Do you want to use the default graph from code? (yes/no): ");
-        String useDefault = scanner.nextLine().trim().toLowerCase();
-
-        if (!useDefault.equals("yes")) {
-            System.out.print("Enter the number of vertices (Nodes) (count 1..2..3...): ");
-            V = scanner.nextInt();
-            dg = new DijkstraGraph(V);
-
-            System.out.print("Enter the number of edges (Lines between vertices) (count 1..2..3...): ");
-            int E = scanner.nextInt();
-            System.out.println("Enter edges in the format: source destination weight(Start from 0..Index0)");
-            for (int i = 0; i < E; i++) {
-                int src = scanner.nextInt();
-                int dest = scanner.nextInt();
-                int weight = scanner.nextInt();
-                dg.addEdge(src, dest, weight);
-            }
-        }
-
-        System.out.print("Enter the source vertex for Dijkstra's algorithm: ");
-        int source = scanner.nextInt();
+        int source = 0; // Source vertex for Dijkstra's algorithm
 
         System.out.println("Running Dijkstra's Algorithm (Shortest Path):");
         dg.dijkstra(source);
 
         System.out.println("\nRunning Kruskal's Algorithm (Minimum Spanning Tree):");
         dg.kruskalMST();
-
-        scanner.close();
     }
 }
