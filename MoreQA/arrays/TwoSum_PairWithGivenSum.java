@@ -56,6 +56,7 @@ public class TwoSum_PairWithGivenSum {
 
     public static void main(String[] args) {
         int[] arr = {1, 4, 45, 6, 10, 8};
+
         int sum = 16;
 
         System.out.println("Brute Force Approach: " + hasPairBruteForce(arr, sum));

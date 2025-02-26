@@ -1,6 +1,6 @@
 public class QuadraticProbingSimulation {
     public static void main(String[] args) {
-        final int TABLE_SIZE = 13;
+        final int TABLE_SIZE = 11;
         String[] table = new String[TABLE_SIZE];
         int hashIndex = 3;  // alle elementer hasher til indeks 3
         int elementCount = 0;

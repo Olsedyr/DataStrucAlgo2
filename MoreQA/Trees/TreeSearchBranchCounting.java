@@ -1,3 +1,5 @@
+package MoreQA.Trees;
+
 public class TreeSearchBranchCounting {
     public static class BinaryNode {
         int value;

@@ -5,19 +5,5 @@ import java.util.*;
 
 public class BigOCode {
 
-    public static long myM(int N)
-    {
-        long x = 0;
-        for (int i = 0; i < 10000; i++)
-        {
-            for (int j = 0; j < N*10; j++)
-            {
-                for (int k = N; k > 0; k = k/10)
-                {
-                    x++;
-                }
-            }
-        }
-        return x;
-    }
+    public static int myMethod( int N )     {        int x = 0;        for (int i = 0; i < N; i++)             for (int j = 0; j < N/2; j++)                 for (int k = 1; k < N;)                 {                     x++;                     k *= 2;                 }        return x;     }
 }
