@@ -10,8 +10,8 @@ public class AnagramChecker {
     // where n is the length of the strings.
 
     public static void main(String[] args) {
-        String str1 = "listen";
-        String str2 = "silent";
+        String str1 = "stale";
+        String str2 = "least";
 
         // Test each approach
         System.out.println("Approach 1 - Using sorting: " + areAnagrams1(str1, str2));

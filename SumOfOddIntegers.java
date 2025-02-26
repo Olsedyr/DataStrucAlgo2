@@ -16,7 +16,7 @@ public class SumOfOddIntegers {
 
     public static void main(String[] args) {
         //Summen det skal køre op til
-        int N = 9; // Example value
+        int N = 8; // Example value
         int result = sumOddIntegers(N);
         System.out.println("The sum of odd integers from 1 to " + N + " is: " + result);
     }

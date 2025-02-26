@@ -12,7 +12,7 @@ public class BalancedParentheses {
 
         // Testing all approaches
         System.out.println("Approach 1 (Stack) - Expression 1 is balanced: " + isBalancedStack(expression1));
-        System.out.println("Approach 2 (Counter) - Expression 1 is balanced: " + isBalancedCounter(expression1));
+        /*System.out.println("Approach 2 (Counter) - Expression 1 is balanced: " + isBalancedCounter(expression1));
         System.out.println("Approach 3 (Improved Counter) - Expression 1 is balanced: " + isBalancedImprovedCounter(expression1));
         System.out.println("Approach 1 (Stack) - Expression 2 is balanced: " + isBalancedStack(expression2));
         System.out.println("Approach 2 (Counter) - Expression 2 is balanced: " + isBalancedCounter(expression2));
@@ -20,6 +20,8 @@ public class BalancedParentheses {
         System.out.println("Approach 1 (Stack) - Expression 3 is balanced: " + isBalancedStack(expression3));
         System.out.println("Approach 2 (Counter) - Expression 3 is balanced: " + isBalancedCounter(expression3));
         System.out.println("Approach 3 (Improved Counter) - Expression 3 is balanced: " + isBalancedImprovedCounter(expression3));
+
+         */
     }
 
     // Approach 1: Using Stack (Optimal Solution)

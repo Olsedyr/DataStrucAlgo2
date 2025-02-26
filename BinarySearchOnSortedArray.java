@@ -3,7 +3,7 @@ public class BinarySearchOnSortedArray {
     public static int binarySearch(int[] arr, int target) {
         int left = 0; // Initialize the left boundary of the search range
         int right = arr.length - 1; // Initialize the right boundary of the search range
-
+        boolean contains = false;
         // Continue searching while the search range is valid
         while (left <= right) {
             // Calculate the middle index to avoid potential overflow
@@ -23,6 +23,7 @@ public class BinarySearchOnSortedArray {
     }
 
     public static void main(String[] args) {
+        boolean contains = false;
         // Example usage of the binary search method
         int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9}; // Sorted array to search in
         int target = 5; // Target value to search for
@@ -30,9 +31,11 @@ public class BinarySearchOnSortedArray {
 
         // Print the result of the search
         if (result != -1) {
-            System.out.println("Element found at index: " + result);
+            contains=true;
+            System.out.println("Element found at index: " + result + " " + contains);
+
         } else {
-            System.out.println("Element not found");
+            System.out.println("Element not found: " + contains);
         }
     }
 }

@@ -1,6 +1,4 @@
-package MoreQA.Heap;
-
-import MoreQA.HashTable.QuadraticProbingHashTable;
+package MoreQA.HashTable;
 
 public class HashToNotEmptyIndexQuadraticProbing {
     private int[] hashTable;

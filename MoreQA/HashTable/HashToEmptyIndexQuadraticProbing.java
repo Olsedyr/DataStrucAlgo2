@@ -1,4 +1,4 @@
-package MoreQA.Heap;
+package MoreQA.HashTable;
 
 public class HashToEmptyIndexQuadraticProbing {
     private int[] hashTable;
@@ -47,7 +47,8 @@ public class HashToEmptyIndexQuadraticProbing {
     }
 
     public static void main(String[] args) {
-        HashToEmptyIndexQuadraticProbing qph = new HashToEmptyIndexQuadraticProbing(11);
+        HashToEmptyIndexQuadraticProbing qph =
+                new HashToEmptyIndexQuadraticProbing(11);
 
         // Pre-fill the hash table with given values
         qph.hashTable[2] = 86;
@@ -62,11 +63,15 @@ public class HashToEmptyIndexQuadraticProbing {
 
         // Insert new elements with specified hash indices
         qph.insert(81, 7); // Hashes to index 7
-        qph.insert(67, 8); // Hashes to index 8
-        qph.insert(72, 2); // Hashes to index 2
+        qph.insert(67, 7); // Hashes to index 8
+        qph.insert(72, 7); // Hashes to index 2
+        qph.insert(81, 7); // Hashes to index 7
+        qph.insert(69, 7); // Hashes to index 8
+
 
         // Display the hash table after insertion
         System.out.println("Hash table after insertion:");
         qph.display();
+
     }
 }

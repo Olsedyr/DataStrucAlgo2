@@ -1,6 +1,5 @@
 package MoreQA.Trees;
 
-
 import java.util.*;
 
 public class InOrderAndLevelOrderTraversalAndPostOrderAndPreOrder {
@@ -49,52 +48,31 @@ public class InOrderAndLevelOrderTraversalAndPostOrderAndPreOrder {
         }
     }
 
-    // In-order traversal is a depth-first traversal method
-    // used primarily for binary trees. The nodes are visited
-    // in the following order:
-    //
-    //    Left Subtree: Traverse the left subtree.
-    //    Root Node: Visit the root node.
-    //    Right Subtree: Traverse the right subtree.
-    //
-    // This traversal method ensures that the nodes are visited
-    // in non-decreasing order for binary search trees (BSTs).
-
-    // Level-order traversal is a breadth-first traversal method
-    // where nodes are visited level by level from left to right.
-    // This traversal uses a queue to keep track of the nodes at
-    // each level. The process is as follows:
-    //
-    //    Root Node: Start with the root node.
-    //    Level by Level: Visit all nodes at the current level
-    //    before moving to the next level.
-
-    // Post-order traversal is a depth-first traversal method
-    // where nodes are visited in the following order:
-    //
-    //    Left Subtree: Traverse the left subtree.
-    //    Right Subtree: Traverse the right subtree.
-    //    Root Node: Visit the root node.
+    // Pre-order traversal
+    public static void preOrderTraversal(TreeNode root) {
+        if (root != null) {
+            System.out.print(root.val + " ");
+            preOrderTraversal(root.left);
+            preOrderTraversal(root.right);
+        }
+    }
 
     public static void main(String[] args) {
         // Example tree
         TreeNode root = new TreeNode(11);
 
-        //Right Side of root
+        // Right Side of root
         root.right = new TreeNode(13);
         root.right.right = new TreeNode(57);
         root.right.right.right = new TreeNode(90);
         root.right.right.left = new TreeNode(25);
         root.right.right.left.left = new TreeNode(17);
 
-        //Left side of root
+        // Left side of root
         root.left = new TreeNode(2);
         root.left.left = new TreeNode(1);
         root.left.right = new TreeNode(9);
         root.left.right.left = new TreeNode(3);
-
-
-
 
         System.out.print("In-order traversal: ");
         inOrderTraversal(root);
@@ -106,6 +84,10 @@ public class InOrderAndLevelOrderTraversalAndPostOrderAndPreOrder {
 
         System.out.print("Post-order traversal: ");
         postOrderTraversal(root);
+        System.out.println();
+
+        System.out.print("Pre-order traversal: ");
+        preOrderTraversal(root);
         System.out.println();
     }
 }
