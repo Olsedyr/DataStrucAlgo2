@@ -1,3 +1,5 @@
+package MoreQA.HashTable;
+
 import java.util.Arrays;
 
 public class HopscotchHashTable {

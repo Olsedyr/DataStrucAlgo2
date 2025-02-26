@@ -1,3 +1,5 @@
+package MoreQA.arrays;
+
 public class CircularArray {
     private int[] buffer;  // Array to store the elements
     private int head;      // Points to the start of the circular array

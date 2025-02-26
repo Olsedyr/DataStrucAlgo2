@@ -1,4 +1,4 @@
-//A palindrome is a word, phrase, number, or other sequence of characters
+package MoreQA.Strings;//A palindrome is a word, phrase, number, or other sequence of characters
 // that reads the same forward and backward
 // (ignoring spaces, punctuation, and capitalization)
 
@@ -43,4 +43,14 @@
             System.out.println("\"" + test + "\" is " + (isPalindrome(test) ? "a palindrome." : "not a palindrome."));
         }
     }
-}
+
+     public static class VokalTæller {
+         public static int antalVokaler(String str, int l) {
+             if (l < 0) return 0;
+             return ("aeiouy".indexOf(str.charAt(l)) != -1 ? 1 : 0) + antalVokaler(str, l - 1);
+         }
+         public static void main(String[] args) {
+             System.out.println(antalVokaler("stationsbygninger", "stationsbygninger".length() - 1));
+         }
+     }
+ }

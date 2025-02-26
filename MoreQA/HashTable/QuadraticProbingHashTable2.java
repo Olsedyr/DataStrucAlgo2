@@ -1,3 +1,5 @@
+package MoreQA.HashTable;
+
 public class QuadraticProbingHashTable2 {
     private String[] table;
     private int size;

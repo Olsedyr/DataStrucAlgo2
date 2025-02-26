@@ -1,4 +1,5 @@
-import java.util.Arrays;
+package MoreQA.HashTable;
+
 import java.util.Random;
 
 public class CuckooHashTable<K, V> {

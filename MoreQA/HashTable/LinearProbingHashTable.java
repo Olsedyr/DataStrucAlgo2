@@ -1,3 +1,4 @@
+package MoreQA.HashTable;
 
 public class LinearProbingHashTable {
         private String[] table;

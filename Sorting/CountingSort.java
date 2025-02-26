@@ -1,3 +1,5 @@
+package Sorting;
+
 // Opgave 4: Counting Sort
 public class CountingSort {
     public static void minSortering(int[] arr) {
