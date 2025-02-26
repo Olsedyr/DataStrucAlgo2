@@ -160,11 +160,11 @@ public class DijkstraGraphMain {
         String useDefault = scanner.nextLine().trim().toLowerCase();
 
         if (!useDefault.equals("yes")) {
-            System.out.print("Enter the number of vertices (count 1..2..3...): ");
+            System.out.print("Enter the number of vertices (Nodes) (count 1..2..3...): ");
             V = scanner.nextInt();
             dg = new DijkstraGraph(V);
 
-            System.out.print("Enter the number of edges (count 1..2..3...): ");
+            System.out.print("Enter the number of edges (Lines between vertices) (count 1..2..3...): ");
             int E = scanner.nextInt();
             System.out.println("Enter edges in the format: source destination weight(Start from 0..Index0)");
             for (int i = 0; i < E; i++) {
