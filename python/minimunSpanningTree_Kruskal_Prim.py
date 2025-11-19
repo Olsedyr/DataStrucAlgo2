@@ -7,19 +7,20 @@ import heapq
 # ---------------------------------------------
 G = nx.Graph()
 edges = [
-    ('A', 'C', 3),
-    ('A', 'D', 4),
-    ('A', 'E', 4),  # Første 'E'
-    ('B', 'C', 2),
-    ('B', 'F', 2),
-    ('C', 'E', 4),
-    ('C', 'G', 5),
-    ('C', 'F', 5),
-    ('D', 'E', 2),
-    ('E', 'G', 5),
-    ('F', 'G', 5),
+    ('A', 'B', 10),
+    ('A', 'F', 5),
+    ('B', 'C', 3),
+    ('B', 'E', 3),
+    ('C', 'D', 4),
+    ('C', 'H', 5),
+    ('E', 'C', 4),
+    ('E', 'G', 2),
+    ('F', 'B', 3),
+    ('F', 'J', 2),
+    ('G', 'D', 7),
+    ('H', 'D', 4),
+    ('H', 'I', 3),
 ]
-
 # Fjern dubletter (håndteres automatisk i nx.Graph, men vi gør det alligevel)
 unique_edges = {}
 for u, v, w in edges:
