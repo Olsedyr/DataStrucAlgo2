@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/DataStrucAlgo2.iml" filepath="$PROJECT_DIR$/.idea/DataStrucAlgo2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Java/src/Java.iml" filepath="$PROJECT_DIR$/Java/src/Java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/python/python.iml" filepath="$PROJECT_DIR$/python/python.iml" />
     </modules>
   </component>
 </project>
