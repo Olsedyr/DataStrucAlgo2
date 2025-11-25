@@ -13,86 +13,75 @@ public class LinkedList {
 
     private Node head;  // Head of the linked list
 
-    // Constructor to initialize an empty list
     public LinkedList() {
         head = null;
     }
 
-    // Method to add a new element to the end of the list
+    // Public method to add an element to the end (rekursivt)
     public void add(int data) {
-        Node newNode = new Node(data);
-
-        if (head == null) {  // If the list is empty, make the new node the head
-            head = newNode;
-        } else {
-            Node current = head;
-            // Traverse to the last node
-            while (current.next != null) {
-                current = current.next;
-            }
-            // Set the new node at the end
-            current.next = newNode;
-        }
+        head = addRecursive(head, data);
     }
 
-    // Method to display all elements in the list
+    // Rekursiv hjælpefunktion til at tilføje element
+    private Node addRecursive(Node current, int data) {
+        if (current == null) {
+            return new Node(data);  // base case: tom plads, lav ny node
+        }
+        current.next = addRecursive(current.next, data); // gå videre til næste
+        return current;
+    }
+
+    // Public method to display list rekursivt
     public void display() {
         if (head == null) {
             System.out.println("The list is empty.");
-            return;
-        }
-
-        Node current = head;
-        while (current != null) {
-            System.out.print(current.data + " ");
-            current = current.next;
-        }
-        System.out.println();
-    }
-
-    // Method to remove an element from the list
-    public void remove(int data) {
-        if (head == null) {  // If the list is empty
-            System.out.println("List is empty, nothing to remove.");
-            return;
-        }
-
-        // If the element to remove is the head
-        if (head.data == data) {
-            head = head.next;  // Move head to the next node
-            return;
-        }
-
-        // Otherwise, search for the element
-        Node current = head;
-        while (current.next != null && current.next.data != data) {
-            current = current.next;
-        }
-
-        // If the element is found, unlink it
-        if (current.next != null) {
-            current.next = current.next.next;
         } else {
-            System.out.println("Element not found in the list.");
+            displayRecursive(head);
+            System.out.println();
         }
     }
 
-    // Main method to test the linked list
+    private void displayRecursive(Node node) {
+        if (node == null) return;
+        System.out.print(node.data + " ");
+        displayRecursive(node.next);
+    }
+
+    // Public method to remove element rekursivt
+    public void remove(int data) {
+        head = removeRecursive(head, data);
+    }
+
+    // Rekursiv hjælpefunktion til at fjerne element
+    private Node removeRecursive(Node current, int data) {
+        if (current == null) {
+            System.out.println("Element not found in the list.");
+            return null;
+        }
+
+        if (current.data == data) {
+            // Found element — fjern ved at returnere næste node (spring current over)
+            return current.next;
+        }
+
+        current.next = removeRecursive(current.next, data);
+        return current;
+    }
+
     public static void main(String[] args) {
-       LinkedList list = new LinkedList();
+        LinkedList list = new LinkedList();
 
         list.add(10);
         list.add(20);
         list.add(30);
 
         System.out.print("List after adding elements: ");
-        list.display();  // Expected output: 10 20 30
+        list.display();  // 10 20 30
 
         list.remove(20);
         System.out.print("List after removing 20: ");
-        list.display();  // Expected output: 10 30
+        list.display();  // 10 30
 
-        list.remove(40);  // Element not in the list
+        list.remove(40);  // Element ikke i listen - printer "Element not found in the list."
     }
 }
-

@@ -25,12 +25,20 @@ public class MergeSortedLinkedLists {
         System.out.println("List 2: ");
         list2.printList();
 
-        // Merging the two sorted lists
+        // Merging the two sorted lists recursively
         LinkedList mergedList = new LinkedList();
-        mergedList.head = mergeSortedLists(list1.head, list2.head);
+        mergedList.head = mergeSortedListsRecursive(list1.head, list2.head);
 
-        System.out.println("Merged List: ");
+        System.out.println("Merged List (Recursive): ");
         mergedList.printList();
+
+        // Optional: merge using iterative method
+        /*
+        LinkedList mergedListIter = new LinkedList();
+        mergedListIter.head = mergeSortedLists(list1.head, list2.head);
+        System.out.println("Merged List (Iterative): ");
+        mergedListIter.printList();
+        */
     }
 
     // Linked list Node
@@ -73,11 +81,8 @@ public class MergeSortedLinkedLists {
         }
     }
 
-    // Approach 1: Merge two sorted linked lists iteratively
-    // Time Complexity: O(m + n), where m and n are the lengths of the two lists
-    // Space Complexity: O(1), as we are modifying the nodes in-place
+    // Iterative merge of two sorted linked lists
     public static Node mergeSortedLists(Node head1, Node head2) {
-        // Create a dummy node to simplify the merge logic
         Node dummy = new Node(-1);
         Node current = dummy;
 
@@ -92,13 +97,26 @@ public class MergeSortedLinkedLists {
             current = current.next;
         }
 
-        // Append remaining nodes from either list (if any)
         if (head1 != null) {
             current.next = head1;
         } else {
             current.next = head2;
         }
 
-        return dummy.next;  // Return the merged list starting from the next of dummy
+        return dummy.next;
+    }
+
+    // Recursive merge of two sorted linked lists
+    public static Node mergeSortedListsRecursive(Node head1, Node head2) {
+        if (head1 == null) return head2;
+        if (head2 == null) return head1;
+
+        if (head1.data <= head2.data) {
+            head1.next = mergeSortedListsRecursive(head1.next, head2);
+            return head1;
+        } else {
+            head2.next = mergeSortedListsRecursive(head1, head2.next);
+            return head2;
+        }
     }
 }

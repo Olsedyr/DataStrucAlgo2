@@ -26,10 +26,12 @@ public class ReverseLinkedList {
         list1.append(4);
         list1.append(5);
 
-        list1.reverseRecursive(list1.head); // Recursive approach
+        // Opdater head med det nye reversed head fra reverseRecursive
+        list1.head = list1.reverseRecursive(list1.head); // Recursive approach
         System.out.println("Reversed List (Recursive):");
         list1.printList();
     }
+
 
     // Linked list Node
     static class Node {
