@@ -126,7 +126,7 @@ def max_heap_extract(arr):
 
 # Demo run
 if __name__ == "__main__":
-    arr = [5, 3, 8, 4, 1, 2]
+    arr = [7, 4, 28, 3, 55, 2, 51, 60, 1, 48, 58, 69, 40, 57, 36]
     print("Original array:", arr)
 
     # Min heap build and visualize

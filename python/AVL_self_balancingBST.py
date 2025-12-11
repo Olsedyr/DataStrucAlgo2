@@ -208,7 +208,7 @@ def draw_bst(G, edge_labels, title, subplot):
 
 # --- Main program ---
 
-input_numbers = [50, 48, 70, 30, 65, 90, 20, 32, 67, 98, 15, 25, 31, 35, 66, 69, 94, 99]
+input_numbers = [11,2,13,1,9,57,3,25,90,17]
 
 # Build original BST
 print("Building original BST...")

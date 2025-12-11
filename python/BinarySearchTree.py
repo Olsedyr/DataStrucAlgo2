@@ -230,8 +230,6 @@ def run_bst_analysis(numbers):
     draw_bst(G, edge_labels)
 
 # Skift til dit input til eksamen
-input_numbers = [50, 48, 70, 30, 65, 90, 20,
-                 32, 67, 98, 15, 25, 31, 35,
-                 66, 69, 94, 99]
+input_numbers = [25,20,36,10,22,30,40,5,12,28,38,48,1,8,15,45,50]
 
 run_bst_analysis(input_numbers)
