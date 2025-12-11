@@ -367,7 +367,7 @@ public class BranchCounter {
         BinaryNode n1 = tree.new BinaryNode(1, n2);
         n2.left = n1;
 
-        BinaryNode n52 = tree.new BinaryNode(52, n28);
+        BinaryNode n52 = tree.new BinaryNode(55, n28);
         n28.right = n52;
 
         BinaryNode n51 = tree.new BinaryNode(51, n52);

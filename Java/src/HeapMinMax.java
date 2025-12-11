@@ -350,7 +350,7 @@ public class HeapMinMax {
         // REDIGÉR KUN HER: Indtast dit array
         // Format: {0, værdi1, værdi2, ...} hvis der står 0 på index 0
         // Format: {værdi1, værdi2, ...} hvis arrayet starter direkte med værdier
-        int[] ditArray = {0, 14, 16, 17, 22, 26, 29, 28, 31, 23, 65, 46, 89, 35, 64, 32, 90, 47, 48, 45};
+        int[] ditArray = {7, 4, 28, 3, 55, 2, 51, 60, 1, 48, 58, 69, 40, 57, 36};
         // -------------------------------------------------------------------
 
         // Find størrelsen (ignorer index 0 hvis det er 0)

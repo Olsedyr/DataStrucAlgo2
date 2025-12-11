@@ -173,19 +173,25 @@ public class TreeSearchBranchCounting {
         - Node X's child has one child (leaf)
         */
 
-        BinaryNode root = new BinaryNode(50);
+        BinaryNode root = new BinaryNode(7);
 
         // Branch 1: 5 → 6 → 7 (leaf)
-        root.left = new BinaryNode(10);
-        root.left.left = new BinaryNode(5);     // Node X - has one child (6), no siblings
-        root.left.left.right = new BinaryNode(6); // X's child - has one child (7), no siblings
-        root.left.left.right.left = new BinaryNode(7); // Leaf - has no children
+        root.left = new BinaryNode(4);
+        root.left.left = new BinaryNode(3);     // Node X - has one child (6), no siblings
+        root.left.left.left = new BinaryNode(2); // X's child - has one child (7), no siblings
+        root.left.left.left.left = new BinaryNode(1); // Leaf - has no children
 
         // Branch 2: 35 → 36 → 37 (leaf)
-        root.right = new BinaryNode(20);
-        root.right.right = new BinaryNode(35);  // Node X - has one child (36), no siblings
-        root.right.right.left = new BinaryNode(36); // X's child - has one child (37), no siblings
-        root.right.right.left.right = new BinaryNode(37); // Leaf - has no children
+        root.right = new BinaryNode(28);
+        root.right.right = new BinaryNode(55);  // Node X - has one child (36), no siblings
+        root.right.right.left = new BinaryNode(51); // X's child - has one child (37), no siblings
+        root.right.right.left.left = new BinaryNode(48);
+        root.right.right.left.left.left = new BinaryNode(40);
+        root.right.right.left.left.left.left = new BinaryNode(36);
+        root.right.right.right = new BinaryNode(60);    // Leaf - has no children
+        root.right.right.right.right = new BinaryNode(69);
+        root.right.right.right.left = new BinaryNode(58);
+        root.right.right.right.left.left = new BinaryNode(57);
 
         return root;
     }
