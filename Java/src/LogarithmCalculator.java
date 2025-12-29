@@ -2,6 +2,7 @@ public class LogarithmCalculator {
 
     public static void main(String[] args) {
         // Test the logarithm methods with example values
+        //O(LogN)
         System.out.println("log2(32): " + logBase2(4096));   // Output: 5
         System.out.println("log3(27): " + logBase3(27));   // Output: 3
         System.out.println("log4(64): " + logBase4(64));   // Output: 3
@@ -18,6 +19,9 @@ public class LogarithmCalculator {
         // Base case: if N is 1, the log base 2 of 1 is 0
         if (N == 1) {
             return 0;
+        }
+        else if (N <= 0 || (N & (N - 1)) != 0) {
+            throw new IllegalArgumentException("N must be a positive power of 2");
         }
         // Recursive case: divide N by 2 and add 1 to the result
         return 1 + logBase2(N / 2);

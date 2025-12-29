@@ -1,41 +1,65 @@
 public class BinarySearchOnSortedArray {
-    // This method performs a binary search on a sorted array
-    public static int binarySearch(int[] arr, int target) {
-        int left = 0; // Initialize the left boundary of the search range
-        int right = arr.length - 1; // Initialize the right boundary of the search range
-        boolean contains = false;
-        // Continue searching while the search range is valid
+
+    // ITERATIVE binary search
+    public static int binarySearchIterative(int[] arr, int target) {
+        int left = 0;
+        int right = arr.length - 1;
+
         while (left <= right) {
-            // Calculate the middle index to avoid potential overflow
             int mid = left + (right - left) / 2;
 
-            // Check if the middle element is the target
             if (arr[mid] == target) {
-                return mid; // Target found, return its index
+                return mid;
             } else if (arr[mid] < target) {
-                left = mid + 1; // Target is in the right half, adjust the left boundary
+                left = mid + 1;
             } else {
-                right = mid - 1; // Target is in the left half, adjust the right boundary
+                right = mid - 1;
             }
         }
 
-        return -1; // Target not found, return -1
+        return -1;
+    }
+
+    // RECURSIVE binary search (public)
+    public static int binarySearchRecursive(int[] arr, int target) {
+        return binarySearchRecursive(arr, target, 0, arr.length - 1);
+    }
+
+    // RECURSIVE binary search (actual recursion)
+    private static int binarySearchRecursive(int[] arr, int target, int left, int right) {
+        // Base case: search space exhausted
+        if (left > right) {
+            return -1;
+        }
+
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] == target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            return binarySearchRecursive(arr, target, mid + 1, right);
+        } else {
+            return binarySearchRecursive(arr, target, left, mid - 1);
+        }
     }
 
     public static void main(String[] args) {
-        boolean contains = false;
-        // Example usage of the binary search method
-        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9}; // Sorted array to search in
-        int target = 5; // Target value to search for
-        int result = binarySearch(arr, target); // Perform the binary search
+        int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int target = 5;
 
-        // Print the result of the search
-        if (result != -1) {
-            contains=true;
-            System.out.println("Element found at index: " + result + " " + contains);
+        int iterativeResult = binarySearchIterative(arr, target);
+        int recursiveResult = binarySearchRecursive(arr, target);
 
+        if (iterativeResult != -1) {
+            System.out.println("Iterative: Element found at index: " + iterativeResult);
         } else {
-            System.out.println("Element not found: " + contains);
+            System.out.println("Iterative: Element not found");
+        }
+
+        if (recursiveResult != -1) {
+            System.out.println("Recursive: Element found at index: " + recursiveResult);
+        } else {
+            System.out.println("Recursive: Element not found");
         }
     }
 }

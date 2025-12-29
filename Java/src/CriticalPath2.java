@@ -40,7 +40,7 @@ public class CriticalPath2
     public static void main(String[] args)
     {
         List <CriticalPath2> tabel = new ArrayList<CriticalPath2>();
-        String aktivitetFile = "data.txt";
+        String aktivitetFile = "data2.txt";
 
         try (BufferedReader br = new BufferedReader(new FileReader(aktivitetFile)))
         {

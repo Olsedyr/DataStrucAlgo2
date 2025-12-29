@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class BallsIntoBinsTwoChoices {
     public static void main(String[] args) {
-        int[] trials = {10007, 32749}; // Antal bolde og beholdere
+        int[] trials = {65536, 65536}; // Antal bolde og beholdere
         for (int n : trials) {
             simulate(n);
         }
@@ -45,3 +45,28 @@ public class BallsIntoBinsTwoChoices {
         System.out.println();
     }
 }
+
+//“Balls into Bins” med to valg – “Power of Two Choices”
+//
+//For hver bold vælger man to beholdere tilfældigt.
+//
+//Bolden placeres i den af de to, som har færrest bolde.
+//
+//Denne simple ændring har stor effekt:
+//
+//Maksimum belastning (antallet af bolde i den mest fyldte beholder) bliver dramatisk lavere.
+//
+//Belastningen bliver meget mere jævnt fordelt.
+//
+//Fordel: Ved at bruge kun to valg (i stedet for én) opnår man næsten optimal fordeling, næsten ligesom hvis man kunne se alle beholdere.
+//
+//Dette er et ekstremt effektivt trick i load balancing, caching, hashing osv.
+
+//power of two choices “bryder” det tilfældige mønster ved at give lidt information og vælge det bedste af to valg, hvilket drastisk forbedrer den maksimale belastning.
+
+//1 choise: max load = ln(N) / ln ln(N)
+//2 choise: max load = ln ln(N)
+
+//as N grows:
+//1 choise: Imbalance grows quickly
+//2 choise: Imbalance grows extremly slow

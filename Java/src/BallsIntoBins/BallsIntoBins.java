@@ -38,3 +38,13 @@ public class BallsIntoBins {
         System.out.println();
     }
 }
+
+//Klassisk “Balls into Bins” (én tilfældig beholder pr. bold)
+//
+//Hver bold placeres tilfældigt i én af n beholdere.
+//
+//Forventet gennemsnitligt antal bolde per beholder er 1 (hvis vi har lige mange bolde som beholdere).
+//
+//Udfordring: Nogle få beholdere kan ende med mange bolde, mens andre næsten er tomme.
+//
+//Maksimalt antal bolde i én beholder kan være relativt højt

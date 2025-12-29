@@ -31,3 +31,20 @@ public class BallsIntoBinsN2 {
                 (1.0 - (double)overflowCount / numberOfBins));
     }
 }
+
+//3. “Balls into Bins” med
+//𝑛
+//2
+//n
+//2
+// beholdere
+//
+//Her har vi mange flere beholdere end bolde (kvadratisk flere).
+//
+//Chancen for at flere bolde havner i samme beholder (overfyldte beholdere) er meget lille.
+//
+//Sandsynligheden for ingen overfyldte beholdere er høj.
+//
+//Ulempe: Kræver meget mere plads (pladskrævende), fordi man bruger mange flere beholdere.
+//
+//Fordel: Meget lav risiko for kollisioner (overfyldninger), men ineffektivt rumligt.
