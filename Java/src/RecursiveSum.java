@@ -1,4 +1,4 @@
-public class RecursiveSum {
+public class RecursiveSum    {
 
     // Summerer fra 0 op til n (kun positive n)
     public static int sumPositiveUpTo(int n) {

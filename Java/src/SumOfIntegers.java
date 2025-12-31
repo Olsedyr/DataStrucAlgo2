@@ -12,7 +12,7 @@ public class SumOfIntegers {
 
     public static void main(String[] args) {
         //Summen op til N
-        int N = 5; // Example value
+        int N = 1024; // Example value
         int result = sum(N);
         System.out.println("The sum of integers from 1 to " + N + " is: " + result);
     }
