@@ -1,20 +1,57 @@
 import matplotlib.pyplot as plt
+def find_error_chaining(hash_table, hash_index):
+    """Analyze chaining - all elements should be in a chain at hash_index"""
+    table = hash_table.get_table()
+    insertion_order = hash_table.get_insertion_order()
+
+    print(f"\n{'='*70}")
+    print(f"ANALYZING TABLE - All elements hash to index {hash_index}")
+    print(f"Method: CHAINING")
+    print(f"{'='*70}")
+
+    print("\nWith chaining, all elements that hash to the same index")
+    print(f"should be in a chain at index {hash_index}.")
+
+    elements_at_hash = []
+    elements_elsewhere = []
+
+    for idx, val in enumerate(table):
+        if val != '#' and val is not None:
+            if isinstance(val, list):
+                for v in val:
+                    if idx == hash_index:
+                        elements_at_hash.append(key_to_char(v))
+                    else:
+                        elements_elsewhere.append((key_to_char(v), idx))
+            else:
+                if idx == hash_index:
+                    elements_at_hash.append(key_to_char(val))
+                else:
+                    elements_elsewhere.append((key_to_char(val), idx))
+
+    print(f"\nElements at index {hash_index}: {elements_at_hash}")
+    print(f"Elements elsewhere: {elements_elsewhere}")
+
+    if elements_elsewhere:
+        print(f"\n{'='*70}")
+        print("ERROR FOUND:")
+        for char, idx in elements_elsewhere:
+            print(f"  '{char}' is at index {idx}, should be at index {hash_index}")
+        print(f"{'='*70}")
+        return elements_elsewhere[0][0], elements_elsewhere[0][1], hash_index
+
+    print("\nAll elements correctly placed!")
+    return None, None, None
 
 def hash_function(key, table_size):
+    """Default hash function"""
     return key % table_size
 
-def next_prime(n):
-    def is_prime(x):
-        if x < 2:
-            return False
-        for i in range(2, int(x**0.5) + 1):
-            if x % i == 0:
-                return False
-        return True
-    candidate = n + 1
-    while not is_prime(candidate):
-        candidate += 1
-    return candidate
+def char_to_key(c):
+    return ord(c.upper()) - ord('A') + 1
+
+def key_to_char(k):
+    return chr(k - 1 + ord('A'))
 
 def calculate_load_factor(table):
     filled = 0
@@ -24,12 +61,6 @@ def calculate_load_factor(table):
         elif isinstance(val, list) and len(val) > 0:
             filled += 1
     return filled / len(table)
-
-def char_to_key(c):
-    return ord(c.upper()) - ord('A') + 1
-
-def key_to_char(k):
-    return chr(k - 1 + ord('A'))
 
 def print_table_with_index(name, table):
     print(f"\n{name}:")
@@ -45,95 +76,6 @@ def print_table_with_index(name, table):
             display_val = key_to_char(val)
             display_key = str(val)
         print(f"{i:5} : {display_val:<8} ({display_key})")
-
-def linear_probing_insert(table, key, table_size, start_idx=None):
-    if start_idx is None:
-        idx = hash_function(key, table_size)
-    else:
-        idx = start_idx
-    start = idx
-    steps = []
-    while table[idx] != '#' and table[idx] is not None:
-        steps.append(idx)
-        idx = (idx + 1) % table_size
-        if idx == start:
-            return -1, steps  # Table full
-    table[idx] = key
-    steps.append(idx)
-    return idx, steps
-
-def quadratic_probing_insert(table, key, table_size, start_idx=None):
-    if start_idx is None:
-        start_idx = hash_function(key, table_size)
-    i = 0
-    steps = []
-    while True:
-        idx = (start_idx + i*i) % table_size
-        if table[idx] == '#' or table[idx] is None:
-            table[idx] = key
-            steps.append(idx)
-            return idx, steps
-        else:
-            steps.append(idx)
-            i += 1
-            if i > table_size:
-                return -1, steps  # Table full
-
-def chaining_insert(table, key, table_size):
-    idx = hash_function(key, table_size)
-    if table[idx] is None:
-        table[idx] = []
-    table[idx].append(key)
-    return idx, []
-
-def linear_probing_delete(table, key, table_size):
-    idx = hash_function(key, table_size)
-    start = idx
-    while table[idx] != key:
-        idx = (idx + 1) % table_size
-        if idx == start:
-            return False
-    table[idx] = '#'
-    return True
-
-def quadratic_probing_delete(table, key, table_size):
-    start_idx = hash_function(key, table_size)
-    i = 0
-    while True:
-        idx = (start_idx + i*i) % table_size
-        if table[idx] == key:
-            table[idx] = '#'
-            return True
-        elif table[idx] == '#' or table[idx] is None:
-            return False
-        else:
-            i += 1
-            if i > table_size:
-                return False
-
-def chaining_delete(table, key, table_size):
-    idx = hash_function(key, table_size)
-    if table[idx] is None:
-        return False
-    if key in table[idx]:
-        table[idx].remove(key)
-        if len(table[idx]) == 0:
-            table[idx] = None
-        return True
-    return False
-
-def needs_rehash(table):
-    lf = calculate_load_factor(table)
-    if lf > 0.7:
-        return True
-    if isinstance(table[0], list) or table[0] is None:
-        # Chaining: rehash on high load factor
-        return lf > 0.7
-    else:
-        # Linear/quadratic: if no free slot, rehash
-        if '#' not in table:
-            return True
-    return False
 
 def visualize_table(table, ax, title):
     ax.set_title(f"{title}\nLoad factor: {calculate_load_factor(table):.2f}")
@@ -157,122 +99,435 @@ def visualize_table(table, ax, title):
     ax.set_xlim(0, table_size)
     ax.set_ylim(-0.5, 1)
 
-def deep_copy_table(table):
-    if isinstance(table[0], list) or table[0] is None:
-        new_table = [None if v is None else v.copy() for v in table]
-    else:
-        new_table = table.copy()
-    return new_table
+class HashTable:
+    def __init__(self, table_size, method='quadratic', hash_index=None, secondary_hash=None):
+        self.table_size = table_size
+        self.table = ['#'] * table_size
+        self.insertion_order = []
+        self.method = method
+        self.hash_index = hash_index  # If None, uses hash_function; if set, all hash here
+        self.secondary_hash = secondary_hash  # For double hashing, if None uses default
 
-def convert_to_chaining_table(linear_table):
-    size = len(linear_table)
-    chaining_table = [None] * size
-    for val in linear_table:
-        if val != '#' and val is not None:
-            idx = hash_function(val, size)
-            if chaining_table[idx] is None:
-                chaining_table[idx] = []
-            chaining_table[idx].append(val)
-    return chaining_table
+    def insert(self, letter_or_index, letter=None):
+        """
+        Two modes:
+        1. insert(letter) - automatically places using probing method
+        2. insert(index, letter) - manually place at specific index (for given tables)
+        """
+        if letter is None:
+            # Mode 1: insert(letter) - auto placement
+            letter = letter_or_index
+            key = char_to_key(letter)
 
-def apply_operations_with_rehash(original_table, operations):
-    size = len(original_table)
-
-    linear_table = deep_copy_table(original_table)
-    quadratic_table = deep_copy_table(original_table)
-    chaining_table = convert_to_chaining_table(original_table)
-
-    print("\nApplying operations (insert/delete) with rehash only if necessary:")
-
-    for op, char, *start_idx_opt in operations:
-        key = char_to_key(char)
-        start_idx = start_idx_opt[0] if start_idx_opt else None
-        print(f"\nOperation: {op.upper()} '{char}' (key={key})" + (f", start index={start_idx}" if start_idx is not None else ""))
-
-        if op == 'insert':
-            # Linear probing
-            print(f"Trying to insert '{char}' (key={key}) in linear probing:")
-            idx, steps = linear_probing_insert(linear_table, key, size, start_idx)
-            if idx == -1 or needs_rehash(linear_table):
-                print("  No space or high load factor -> Rehashing linear table...")
-                # Simple rehash logic here (you can add your own if needed)
-                # For ops.py we only rehash if needed; skip complex rehash here for brevity
+            # Determine starting hash index
+            if self.hash_index is not None:
+                start_idx = self.hash_index
             else:
-                print(f"  Inserted at index {idx}, probe steps: {steps}")
+                start_idx = hash_function(key, self.table_size)
 
-            # Quadratic probing
-            print(f"Trying to insert '{char}' (key={key}) in quadratic probing:")
-            idx, steps = quadratic_probing_insert(quadratic_table, key, size, start_idx)
-            if idx == -1 or needs_rehash(quadratic_table):
-                print("  No space or high load factor -> Rehashing quadratic table...")
+            # Insert based on method
+            if self.method == 'quadratic':
+                idx = self._insert_quadratic(key, start_idx)
+            elif self.method == 'linear':
+                idx = self._insert_linear(key, start_idx)
+            elif self.method == 'chaining':
+                idx = self._insert_chaining(key, start_idx)
+            elif self.method == 'double':
+                idx = self._insert_double_hashing(key, start_idx)
             else:
-                print(f"  Inserted at index {idx}, probe steps: {steps}")
+                print(f"Unknown method: {self.method}")
+                return
 
-            # Chaining
-            print(f"Trying to insert '{char}' (key={key}) in chaining:")
-            chaining_insert(chaining_table, key, size)
-            if needs_rehash(chaining_table):
-                print("  High load factor -> Rehashing chaining table...")
+            self.insertion_order.append(letter)
+            print(f"Inserted '{letter}' (key={key}) at index {idx} using {self.method} probing")
+        else:
+            # Mode 2: insert(index, letter) - manual placement
+            index = letter_or_index
+            key = char_to_key(letter)
+            self.table[index] = key
+            self.insertion_order.append(letter)
+            print(f"Manually inserted '{letter}' (key={key}) at index {index}")
+
+    def _get_secondary_hash(self, key):
+        """Calculate secondary hash for double hashing"""
+        if self.secondary_hash is not None:
+            # Use provided secondary hash value
+            return self.secondary_hash
+        else:
+            # Default secondary hash: h2(k) = 1 + (k % (table_size - 1))
+            return 1 + (key % (self.table_size - 1))
+
+    def _insert_linear(self, key, start_idx):
+        """Insert using linear probing"""
+        idx = start_idx
+        while self.table[idx] != '#' and self.table[idx] is not None:
+            idx = (idx + 1) % self.table_size
+        self.table[idx] = key
+        return idx
+
+    def _insert_quadratic(self, key, start_idx):
+        """Insert using quadratic probing"""
+        i = 0
+        while i <= self.table_size:
+            idx = (start_idx + i*i) % self.table_size
+            if self.table[idx] == '#' or self.table[idx] is None:
+                self.table[idx] = key
+                return idx
+            i += 1
+        return -1  # Table full
+
+    def _insert_double_hashing(self, key, start_idx):
+        """Insert using double hashing"""
+        h2 = self._get_secondary_hash(key)
+        i = 0
+        while i <= self.table_size:
+            idx = (start_idx + i * h2) % self.table_size
+            if self.table[idx] == '#' or self.table[idx] is None:
+                self.table[idx] = key
+                return idx
+            i += 1
+        return -1  # Table full
+
+    def _insert_chaining(self, key, start_idx):
+        """Insert using chaining"""
+        if self.table[start_idx] == '#' or self.table[start_idx] is None:
+            self.table[start_idx] = []
+        if not isinstance(self.table[start_idx], list):
+            # Convert single element to list
+            old_val = self.table[start_idx]
+            self.table[start_idx] = [old_val]
+        self.table[start_idx].append(key)
+        return start_idx
+
+    def get_table(self):
+        return self.table
+
+    def get_insertion_order(self):
+        return self.insertion_order
+
+    def display(self):
+        print_table_with_index("Current Hash Table", self.table)
+
+    def visualize(self):
+        fig, ax = plt.subplots(1, 1, figsize=(15, 2))
+        visualize_table(self.table, ax, "Hash Table")
+        plt.tight_layout()
+        plt.show()
+
+def find_error_quadratic(hash_table, hash_index):
+    """Find the ONE incorrectly placed element using quadratic probing"""
+    table = hash_table.get_table()
+    insertion_order = hash_table.get_insertion_order()
+    table_size = hash_table.table_size
+
+    print(f"\n{'='*70}")
+    print(f"ANALYZING TABLE - All elements hash to index {hash_index}")
+    print(f"Method: QUADRATIC PROBING")
+    print(f"{'='*70}")
+
+    # Get current positions
+    current_positions = {}
+    for idx, val in enumerate(table):
+        if val != '#' and val is not None and not isinstance(val, list):
+            current_positions[key_to_char(val)] = idx
+
+    print(f"\nCurrent table state:")
+    for char in insertion_order:
+        if char in current_positions:
+            print(f"  '{char}' is at index {current_positions[char]}")
+
+    print(f"\n{'='*70}")
+    print("STRATEGY: Find which ONE element, if removed, allows all others to fit correctly")
+    print(f"{'='*70}")
+
+    for suspect_char in insertion_order:
+        print(f"\nTrying: What if '{suspect_char}' is the wrong one?")
+
+        test_order = [c for c in insertion_order if c != suspect_char]
+        occupied = set()
+        all_correct = True
+
+        for char in test_order:
+            current_idx = current_positions[char]
+
+            i = 0
+            expected_idx = None
+            while i <= table_size:
+                probe_idx = (hash_index + i*i) % table_size
+                if probe_idx not in occupied:
+                    expected_idx = probe_idx
+                    occupied.add(probe_idx)
+                    break
+                i += 1
+
+            if expected_idx != current_idx:
+                all_correct = False
+                print(f"  '{char}' at {current_idx}, expected {expected_idx} - doesn't match")
+                break
+
+        if all_correct:
+            print(f"  ✓ All other elements fit correctly!")
+
+            suspect_current = current_positions[suspect_char]
+
+            i = 0
+            suspect_correct = None
+            while i <= table_size:
+                probe_idx = (hash_index + i*i) % table_size
+                if probe_idx not in occupied:
+                    suspect_correct = probe_idx
+                    break
+                i += 1
+
+            print(f"\n{'='*70}")
+            print(f"ERROR FOUND:")
+            print(f"  Element: '{suspect_char}'")
+            print(f"  Currently at index: {suspect_current}")
+            print(f"  Should be at index: {suspect_correct}")
+            print(f"  Calculation: ({hash_index} + {i}²) % {table_size} = ({hash_index} + {i*i}) % {table_size} = {suspect_correct}")
+            print(f"{'='*70}")
+
+            return suspect_char, suspect_current, suspect_correct
+
+    print(f"\nNo single error found")
+    return None, None, None
+
+def find_error_linear(hash_table, hash_index):
+    """Find the ONE incorrectly placed element using linear probing"""
+    table = hash_table.get_table()
+    insertion_order = hash_table.get_insertion_order()
+    table_size = hash_table.table_size
+
+    print(f"\n{'='*70}")
+    print(f"ANALYZING TABLE - All elements hash to index {hash_index}")
+    print(f"Method: LINEAR PROBING")
+    print(f"{'='*70}")
+
+    current_positions = {}
+    for idx, val in enumerate(table):
+        if val != '#' and val is not None and not isinstance(val, list):
+            current_positions[key_to_char(val)] = idx
+
+    print(f"\nCurrent table state:")
+    for char in insertion_order:
+        if char in current_positions:
+            print(f"  '{char}' is at index {current_positions[char]}")
+
+    print(f"\n{'='*70}")
+    print("STRATEGY: Find which ONE element, if removed, allows all others to fit correctly")
+    print(f"{'='*70}")
+
+    for suspect_char in insertion_order:
+        print(f"\nTrying: What if '{suspect_char}' is the wrong one?")
+
+        test_order = [c for c in insertion_order if c != suspect_char]
+        occupied = set()
+        all_correct = True
+
+        next_idx = hash_index
+        for char in test_order:
+            current_idx = current_positions[char]
+
+            while next_idx in occupied:
+                next_idx = (next_idx + 1) % table_size
+
+            if next_idx != current_idx:
+                all_correct = False
+                print(f"  '{char}' at {current_idx}, expected {next_idx} - doesn't match")
+                break
+
+            occupied.add(next_idx)
+            next_idx = (next_idx + 1) % table_size
+
+        if all_correct:
+            print(f"  ✓ All other elements fit correctly!")
+
+            suspect_current = current_positions[suspect_char]
+
+            suspect_correct = hash_index
+            while suspect_correct in occupied:
+                suspect_correct = (suspect_correct + 1) % table_size
+
+            print(f"\n{'='*70}")
+            print(f"ERROR FOUND:")
+            print(f"  Element: '{suspect_char}'")
+            print(f"  Currently at index: {suspect_current}")
+            print(f"  Should be at index: {suspect_correct}")
+            print(f"{'='*70}")
+
+            return suspect_char, suspect_current, suspect_correct
+
+    print(f"\nNo single error found")
+    return None, None, None
+
+def find_error_double_hashing(hash_table, hash_index, secondary_hash_func=None):
+    """Find the ONE incorrectly placed element using double hashing"""
+    table = hash_table.get_table()
+    insertion_order = hash_table.get_insertion_order()
+    table_size = hash_table.table_size
+
+    print(f"\n{'='*70}")
+    print(f"ANALYZING TABLE - All elements hash to index {hash_index}")
+    print(f"Method: DOUBLE HASHING")
+    print(f"{'='*70}")
+
+    current_positions = {}
+    for idx, val in enumerate(table):
+        if val != '#' and val is not None and not isinstance(val, list):
+            current_positions[key_to_char(val)] = idx
+
+    print(f"\nCurrent table state:")
+    for char in insertion_order:
+        if char in current_positions:
+            print(f"  '{char}' is at index {current_positions[char]}")
+
+    print(f"\n{'='*70}")
+    print("STRATEGY: Find which ONE element, if removed, allows all others to fit correctly")
+    print(f"{'='*70}")
+
+    for suspect_char in insertion_order:
+        print(f"\nTrying: What if '{suspect_char}' is the wrong one?")
+
+        test_order = [c for c in insertion_order if c != suspect_char]
+        occupied = set()
+        all_correct = True
+
+        for char in test_order:
+            current_idx = current_positions[char]
+            key = char_to_key(char)
+
+            # Calculate h2
+            if secondary_hash_func is not None:
+                h2 = secondary_hash_func
             else:
-                print(f"  Inserted '{char}' at index {hash_function(key, size)}")
+                h2 = hash_table._get_secondary_hash(key)
 
-        elif op == 'delete':
-            print(f"Trying to delete '{char}' (key={key}) in linear probing:")
-            deleted = linear_probing_delete(linear_table, key, size)
-            print(f"  Deleted: {deleted}")
+            i = 0
+            expected_idx = None
+            while i <= table_size:
+                probe_idx = (hash_index + i * h2) % table_size
+                if probe_idx not in occupied:
+                    expected_idx = probe_idx
+                    occupied.add(probe_idx)
+                    break
+                i += 1
 
-            print(f"Trying to delete '{char}' (key={key}) in quadratic probing:")
-            deleted = quadratic_probing_delete(quadratic_table, key, size)
-            print(f"  Deleted: {deleted}")
+            if expected_idx != current_idx:
+                all_correct = False
+                print(f"  '{char}' at {current_idx}, expected {expected_idx} - doesn't match")
+                break
 
-            print(f"Trying to delete '{char}' (key={key}) in chaining:")
-            deleted = chaining_delete(chaining_table, key, size)
-            print(f"  Deleted: {deleted}")
+        if all_correct:
+            print(f"  ✓ All other elements fit correctly!")
 
-    return linear_table, quadratic_table, chaining_table
+            suspect_current = current_positions[suspect_char]
+            suspect_key = char_to_key(suspect_char)
 
-# === Main program ===
+            # Calculate h2 for suspect
+            if secondary_hash_func is not None:
+                h2 = secondary_hash_func
+            else:
+                h2 = hash_table._get_secondary_hash(suspect_key)
 
-original_data = [
-    0, '#',
-    1, 'A',
-    2, 'W',
-    3, 'C',
-    4, 'O',
-    5, 'E',
-    6, '#',
-    7, '#',
-    8, 'S',
-    9, '#',
-    10, '#'
-]
+            i = 0
+            suspect_correct = None
+            while i <= table_size:
+                probe_idx = (hash_index + i * h2) % table_size
+                if probe_idx not in occupied:
+                    suspect_correct = probe_idx
+                    break
+                i += 1
 
-table_size = 11
-original_table = ['#'] * table_size
-for i in range(0, len(original_data), 2):
-    idx = original_data[i]
-    val = original_data[i+1]
-    if val == '#':
-        original_table[idx] = '#'
-    else:
-        original_table[idx] = char_to_key(val)
+            print(f"\n{'='*70}")
+            print(f"ERROR FOUND:")
+            print(f"  Element: '{suspect_char}'")
+            print(f"  Currently at index: {suspect_current}")
+            print(f"  Should be at index: {suspect_correct}")
+            print(f"  h2({suspect_key}) = {h2}")
+            print(f"  Calculation: ({hash_index} + {i} × {h2}) % {table_size} = ({hash_index + i * h2}) % {table_size} = {suspect_correct}")
+            print(f"{'='*70}")
 
-print_table_with_index("Original Table (Hash Only)", original_table)
+            return suspect_char, suspect_current, suspect_correct
 
-operations = [
-    ('insert', 'G'),
-    ('delete', 'S'),
-    ('insert', 'M', 5),
-]
+    print(f"\nNo single error found")
+    return None, None, None
 
-linear_after, quadratic_after, chaining_after = apply_operations_with_rehash(original_table, operations)
+# ============================================================================
+# MAIN PROGRAM - CONFIGURE YOUR PROBLEM HERE
+# ============================================================================
 
-print_table_with_index("Linear Probing (After Operations)", linear_after)
-print_table_with_index("Quadratic Probing (After Operations)", quadratic_after)
-print_table_with_index("Chaining (After Operations)", chaining_after)
+# Configuration
+TABLE_SIZE = 17
+METHOD = 'quadratic'  # Options: 'quadratic', 'linear', 'chaining', 'double'
+HASH_INDEX = 5        # Set to None for normal hashing, or a number if all elements hash to same index
+SECONDARY_HASH = None # For double hashing: set to None for default h2(k) = 1 + (k % (size-1)), or specify a constant
 
-fig2, axs2 = plt.subplots(3, 1, figsize=(15, 6), constrained_layout=True)
-visualize_table(linear_after, axs2[0], "Linear Probing (After Operations)")
-visualize_table(quadratic_after, axs2[1], "Quadratic Probing (After Operations)")
-visualize_table(chaining_after, axs2[2], "Chaining (After Operations)")
-plt.show()
+# ============================================================================
+# EXAMPLE 1: Given table (manual insertion) - for finding errors in existing tables
+# ============================================================================
+print("="*70)
+print("EXAMPLE 1: Analyzing a given table with known positions")
+print("="*70)
+
+ht1 = HashTable(TABLE_SIZE, METHOD, HASH_INDEX, SECONDARY_HASH)
+
+# Manual insertion at specific indices (use when you have a table from a problem)
+ht1.insert(3, 'G')
+ht1.insert(4, 'F')
+ht1.insert(5, 'C')
+ht1.insert(6, 'L')
+ht1.insert(8, 'P')
+ht1.insert(9, 'U')
+ht1.insert(13, 'Y')
+ht1.insert(14, 'M')
+
+ht1.display()
+
+# Find the error
+if METHOD == 'quadratic':
+    char, wrong_idx, correct_idx = find_error_quadratic(ht1, HASH_INDEX)
+elif METHOD == 'linear':
+    char, wrong_idx, correct_idx = find_error_linear(ht1, HASH_INDEX)
+elif METHOD == 'chaining':
+    char, wrong_idx, correct_idx = find_error_chaining(ht1, HASH_INDEX)
+elif METHOD == 'double':
+    char, wrong_idx, correct_idx = find_error_double_hashing(ht1, HASH_INDEX, SECONDARY_HASH)
+
+if char:
+    print(f"\n{'='*70}")
+    print(f"FINAL ANSWER:")
+    print(f"  Element: '{char}'")
+    print(f"  Currently at index: {wrong_idx}")
+    print(f"  Should be at index: {correct_idx}")
+    print(f"{'='*70}")
+
+ht1.visualize()
+
+# ============================================================================
+# EXAMPLE 2: Auto insertion - let the algorithm place elements
+# ============================================================================
+print("\n" + "="*70)
+print("EXAMPLE 2: Building a table from scratch with auto-insertion")
+print("="*70)
+
+ht2 = HashTable(TABLE_SIZE, METHOD, HASH_INDEX, SECONDARY_HASH)
+
+# Auto insertion - just provide letters, algorithm places them
+print("\nInserting elements automatically:")
+ht2.insert('G')
+ht2.insert('F')
+ht2.insert('C')
+ht2.insert('L')
+ht2.insert('P')
+ht2.insert('U')
+ht2.insert('Y')
+ht2.insert('M')
+
+ht2.display()
+ht2.visualize()
+
+# ============================================================================
+# Choose which example to use:
+# - Comment out Example 1 if you want to build from scratch
+# - Comment out Example 2 if you have a given table to analyze
+# ============================================================================

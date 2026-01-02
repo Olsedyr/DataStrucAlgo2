@@ -345,16 +345,20 @@ public class BigOEstimator extends JPanel {
 
     public static void main(String[] args) {
         TestFunction func = n -> {
-            long sum = 0;
+            long x = 0;
             // O(n³) algoritme - husk at reducere TEST_SIZES for eksponentiel!
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    sum += i + j;
+
+                for (int i = 1; i <= n; i *= 2) {
+                    for (int j = 1; j <= n; j++) {
+                        for (int k = 1; k <= j; k += i) {
+                            x++;
+                        }
+                    }
                 }
-            }
+
             // Prevent dead code elimination
-            if (sum == Long.MAX_VALUE) System.out.println(sum);
+            if (x == Long.MAX_VALUE) System.out.println(x);
         };
 
 

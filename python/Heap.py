@@ -86,6 +86,25 @@ def build_max_heap(arr):
     for i in range(n//2 -1, -1, -1):
         max_heapify(arr, n, i)
 
+
+def heapsort(arr):
+    n = len(arr)
+
+    # Step 1: Byg max heap
+    for i in range(n // 2 - 1, -1, -1):
+        max_heapify(arr, n, i)
+
+    # Step 2-5: Ekstraher elementer én efter én
+    for i in range(n - 1, 0, -1):
+        # Byt øverste (største) med element i slutningen
+        arr[0], arr[i] = arr[i], arr[0]
+
+        # Heap-størrelse reduceres
+        max_heapify(arr, i, 0)
+
+    return arr
+
+
 # Insert value in min heap
 def min_heap_insert(arr, val):
     arr.append(val)
@@ -126,7 +145,7 @@ def max_heap_extract(arr):
 
 # Demo run
 if __name__ == "__main__":
-    arr = [7, 4, 28, 3, 55, 2, 51, 60, 1, 48, 58, 69, 40, 57, 36]
+    arr = [14,17,16,28,22,65,29,31,30,26,23]
     print("Original array:", arr)
 
     # Min heap build and visualize
@@ -164,3 +183,7 @@ if __name__ == "__main__":
     print(f"\nExtracted max value: {max_val}")
     print("Max Heap after extract:", max_heap)
     draw_heap(max_heap, "Max Heap after Extract")
+
+
+    sorted_arr = heapsort(arr.copy())
+    print("Sorted array (heapsort):", sorted_arr)
