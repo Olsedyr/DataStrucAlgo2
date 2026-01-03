@@ -145,8 +145,9 @@ def max_heap_extract(arr):
 
 # Demo run
 if __name__ == "__main__":
-    arr = [14,17,16,28,22,65,29,31,30,26,23]
+    arr = [7,19,11,22,28,13,26,34,26,42,27,21,14,81,18,66,38,69,67]
     print("Original array:", arr)
+    draw_heap(arr, "original")
 
     # Min heap build and visualize
     min_heap = arr.copy()

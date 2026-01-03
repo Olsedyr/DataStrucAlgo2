@@ -286,9 +286,9 @@ def main():
     """Hovedfunktion - konfigurer og kør rehashing demonstration"""
 
     # ========================= KONFIGURATION =========================
-    INITIAL_TABLE_SIZE = 5        # Startstørrelse af hashtable
+    INITIAL_TABLE_SIZE = 13        # Startstørrelse af hashtable
     MAX_LOAD_FACTOR = 0.3         # Grænse for rehashing - PRØV 0.3!
-    ELEMENTS_TO_INSERT = "AFKPBG" # Elementer der indsættes
+    ELEMENTS_TO_INSERT = "ABCDEFGHI" # Elementer der indsættes
     # ================================================================
 
     print("="*80)

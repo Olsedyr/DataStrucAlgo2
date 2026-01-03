@@ -1,4 +1,4 @@
-public class LinkedList {
+public class LinkedList<I extends Number> {
 
     // Node class to represent each element in the linked list
     private class Node {
@@ -69,7 +69,7 @@ public class LinkedList {
     }
 
     public static void main(String[] args) {
-        LinkedList list = new LinkedList();
+        LinkedList<Number> list = new LinkedList<Number>();
 
         list.add(10);
         list.add(20);

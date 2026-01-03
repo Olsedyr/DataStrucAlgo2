@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 class Edge {
     String from, to;
@@ -39,37 +40,41 @@ class Graph {
 class DijkstraResult {
     Map<String, Integer> dist;
     Map<String, String> prev;
+    Set<String> visited;
+    List<Map<String, Object>> steps; // Tilføjet for at gemme hvert trin
 
-    DijkstraResult(Map<String, Integer> dist, Map<String, String> prev) {
+    DijkstraResult(Map<String, Integer> dist, Map<String, String> prev, Set<String> visited, List<Map<String, Object>> steps) {
         this.dist = dist;
         this.prev = prev;
+        this.visited = visited;
+        this.steps = steps;
     }
 }
 
 public class Dijkstra {
 
-    private static final String START_NODE = "A";
+    private static final String START_NODE = "F";
 
+    // DIN GRAF - INDKORPORERET KORREKT
     private static final List<Edge> EDGES = Arrays.asList(
-            new Edge("A", "B", 5),
-            new Edge("A", "C", 3),
-            new Edge("B", "G", 1),
-            new Edge("B", "C", 2),
-            new Edge("B", "E", 3),
-            new Edge("C", "E", 7),
-            new Edge("C", "D", 7),
-            new Edge("D", "A", 2),
-            new Edge("D", "F", 6),
-            new Edge("E", "F", 1),
-            new Edge("E", "D", 2),
-            new Edge("G", "E", 1)
+            new Edge("F", "E", 4),
+            new Edge("E", "D", 1),
+            new Edge("D", "B", 9),
+            new Edge("B", "C", 7),
+            new Edge("B", "A", 1),
+            new Edge("C", "H", 5),
+            new Edge("H", "I", 7),
+            new Edge("I", "J", 5),
+            new Edge("I", "D", 2),
+            new Edge("J", "G", 10),
+            new Edge("A", "C", 1)
     );
 
-    // KORREKT Dijkstra med PriorityQueue (distance, node)
-    public static DijkstraResult dijkstra(Graph graph, String source) {
+    public static DijkstraResult dijkstra(Graph graph, String source, boolean writeSteps) {
         Map<String, Integer> dist = new HashMap<>();
         Map<String, String> prev = new HashMap<>();
         Set<String> visited = new HashSet<>();
+        List<Map<String, Object>> steps = new ArrayList<>();
 
         // Initialiser alle noder
         for (String node : graph.nodes()) {
@@ -78,13 +83,21 @@ public class Dijkstra {
         }
         dist.put(source, 0);
 
-        // PriorityQueue: (afstand, node)
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
-        pq.offer(new int[]{0, source.hashCode()}); // Vi bruger hashCode som placeholder – vi finder node via dist
+        // Gem starttilstand (Step 0)
+        if (writeSteps) {
+            Map<String, Object> step0 = new HashMap<>();
+            step0.put("step", 0);
+            step0.put("current", "-");
+            step0.put("dist", new HashMap<>(dist));
+            step0.put("prev", new HashMap<>(prev));
+            step0.put("visited", new HashSet<>(visited));
+            steps.add(step0);
+        }
 
-        // Bedre: brug en klasse eller Pair
         PriorityQueue<Object[]> queue = new PriorityQueue<>((a, b) -> Integer.compare((Integer)a[0], (Integer)b[0]));
         queue.offer(new Object[]{0, source});
+
+        int stepCounter = 1;
 
         while (!queue.isEmpty()) {
             Object[] entry = queue.poll();
@@ -94,6 +107,17 @@ public class Dijkstra {
             if (visited.contains(u)) continue;
             visited.add(u);
 
+            // Gem tilstand før vi behandler naboer (dette er trinnet hvor u bliver "known")
+            if (writeSteps) {
+                Map<String, Object> step = new HashMap<>();
+                step.put("step", stepCounter++);
+                step.put("current", u);
+                step.put("dist", new HashMap<>(dist));
+                step.put("prev", new HashMap<>(prev));
+                step.put("visited", new HashSet<>(visited));
+                steps.add(step);
+            }
+
             for (Map.Entry<String, Integer> neighbor : graph.neighbors(u).entrySet()) {
                 String v = neighbor.getKey();
                 int weight = neighbor.getValue();
@@ -102,16 +126,100 @@ public class Dijkstra {
                 if (newDist < dist.get(v)) {
                     dist.put(v, newDist);
                     prev.put(v, u);
-                    // Tilføj ny entry – vi tillader dubletter (standard Java-trick)
                     queue.offer(new Object[]{newDist, v});
                 }
             }
         }
 
-        return new DijkstraResult(dist, prev);
+        return new DijkstraResult(dist, prev, visited, steps);
     }
 
-    // Kruskal MST (uændret – virkede fint)
+    public static void writeDijkstraStepsToFile(DijkstraResult result, String title, String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            writer.println("=== " + title + " ===");
+            writer.println("Dijkstra algoritme - Trin for trin");
+            writer.println("Startnode: " + START_NODE);
+            writer.println();
+
+            List<String> allNodes = new ArrayList<>(result.dist.keySet());
+            Collections.sort(allNodes);
+
+            for (Map<String, Object> step : result.steps) {
+                int stepNum = (int) step.get("step");
+                String current = (String) step.get("current");
+                Map<String, Integer> dist = (Map<String, Integer>) step.get("dist");
+                Map<String, String> prev = (Map<String, String>) step.get("prev");
+                Set<String> visited = (Set<String>) step.get("visited");
+
+                writer.println("--- Trin " + stepNum + " ---");
+                if (stepNum == 0) {
+                    writer.println("Startkonfiguration:");
+                } else {
+                    writer.println("Markerer node " + current + " som 'Known'");
+                }
+
+                writer.println("+------+-------+-------+-------+");
+                writer.println("| Node | Known |   dv  |   pv  |");
+                writer.println("+------+-------+-------+-------+");
+
+                for (String node : allNodes) {
+                    String known = visited.contains(node) ? "Ja" : "Nej";
+                    String dv;
+                    if (dist.get(node) == Integer.MAX_VALUE) {
+                        dv = "∞";
+                    } else {
+                        dv = String.format("%3d", dist.get(node));
+                    }
+                    String pv = prev.get(node) == null ? " -" : String.format("%3s", prev.get(node));
+
+                    writer.printf("|  %-3s |  %-4s |  %-4s |  %-4s |\n", node, known, dv, pv);
+                }
+                writer.println("+------+-------+-------+-------+");
+                writer.println();
+            }
+
+            writer.println("=== SLUTRESULTAT ===");
+            writer.println("+------+-------+-------+-------+");
+            writer.println("| Node | Known |   dv  |   pv  |");
+            writer.println("+------+-------+-------+-------+");
+
+            for (String node : allNodes) {
+                String known = result.visited.contains(node) ? "Ja" : "Nej";
+                String dv;
+                if (result.dist.get(node) == Integer.MAX_VALUE) {
+                    dv = "∞";
+                } else {
+                    dv = String.format("%3d", result.dist.get(node));
+                }
+                String pv = result.prev.get(node) == null ? " -" : String.format("%3s", result.prev.get(node));
+
+                writer.printf("|  %-3s |  %-4s |  %-4s |  %-4s |\n", node, known, dv, pv);
+            }
+            writer.println("+------+-------+-------+-------+");
+
+            writer.println("\nKorteste veje fra " + START_NODE + ":");
+            for (String node : allNodes) {
+                if (node.equals(START_NODE)) continue;
+                if (result.dist.get(node) < Integer.MAX_VALUE) {
+                    List<String> path = new ArrayList<>();
+                    String current = node;
+                    while (current != null) {
+                        path.add(current);
+                        current = result.prev.get(current);
+                    }
+                    Collections.reverse(path);
+                    writer.printf("%s -> %s: %s (vægt: %d)\n",
+                            START_NODE, node, String.join(" -> ", path), result.dist.get(node));
+                }
+            }
+
+            System.out.println("Dijkstra trin skrevet til fil: " + filename);
+
+        } catch (IOException e) {
+            System.err.println("Fejl ved skrivning til fil: " + e.getMessage());
+        }
+    }
+
     public static List<Edge> kruskalMST(Graph undirected) {
         List<Edge> allEdges = new ArrayList<>();
         for (String u : undirected.nodes()) {
@@ -142,7 +250,6 @@ public class Dijkstra {
         }
 
         System.out.println("\nTotal MST weight: " + totalWeight);
-        mst.sort(Comparator.comparingInt(e -> e.weight));
         return mst;
     }
 
@@ -167,7 +274,7 @@ public class Dijkstra {
         Collections.sort(nodes);
 
         for (String node : nodes) {
-            String known = "Ja"; // Alle bliver besøgt i denne graf
+            String known = result.visited.contains(node) ? "Ja" : "Nej";
             String dv = result.dist.get(node) == Integer.MAX_VALUE ? "∞" : String.valueOf(result.dist.get(node));
             String pv = result.prev.get(node) == null ? "-" : result.prev.get(node);
             System.out.printf("|  %-3s |  %-4s | %-2s | %-2s |\n", node, known, dv, pv);
@@ -177,7 +284,7 @@ public class Dijkstra {
 
     public static void printMST(List<Edge> mst) {
         System.out.println("\n=== MST (URETTET GRAF) ===\n");
-        System.out.println("MST edges:");
+        System.out.println("MST edges i den rækkefølge de tilføjes:");
         for (Edge e : mst) {
             System.out.printf("%s - %s  (weight %d)\n", e.from, e.to, e.weight);
         }
@@ -192,10 +299,13 @@ public class Dijkstra {
             undirected.addUndirectedEdge(e.from, e.to, e.weight);
         }
 
-        DijkstraResult dirResult = dijkstra(directed, START_NODE);
+        // Kør Dijkstra på rettet graf og skriv trin til fil
+        DijkstraResult dirResult = dijkstra(directed, START_NODE, true);
+        writeDijkstraStepsToFile(dirResult, "DIJKSTRA PÅ RETTET GRAF (Med pile)", "dijkstra.txt");
         printDijkstraTable(dirResult, "DIJKSTRA PÅ RETTET GRAF (Med pile)");
 
-        DijkstraResult undirResult = dijkstra(undirected, START_NODE);
+        // Kør Dijkstra på urettet graf (uden at gemme trin)
+        DijkstraResult undirResult = dijkstra(undirected, START_NODE, false);
         printDijkstraTable(undirResult, "DIJKSTRA PÅ URETTET GRAF (Uden pile)");
 
         List<Edge> mst = kruskalMST(undirected);
@@ -213,7 +323,11 @@ Undirected graf:
    - Dijkstra kan køre, men kanter virker begge veje.
    - MST giver kun mening på undirected graf.
 
-Nu kører programmet uden fejl og giver korrekt output!
+Startkonfiguration fra tabel:
+   - Startnode: F
+   - Kør Dijkstra fra node F
+
+Trin-for-trin output er skrevet til 'dijkstra.txt'
 ------------------------------------------------------------
         """);
     }
