@@ -257,52 +257,468 @@ class BinarySearchTree {
         return sum;
     }
 
+    // Public wrapper method to find path from root to a specific value
+    public String findPath(int value) {
+        StringBuilder path = new StringBuilder();
+        boolean found = findPathRec(root, value, path);
+
+        if (found) {
+            return path.toString().trim();
+        } else {
+            return "Værdi " + value + " findes ikke i træet";
+        }
+    }
+
+    // Private recursive method to find path to a value
+    private boolean findPathRec(Node root, int value, StringBuilder path) {
+        // Base case: empty tree
+        if (root == null) {
+            return false;
+        }
+
+        // Add current node to path
+        path.append(root.value).append(" ");
+
+        // If we found the value, return true
+        if (root.value == value) {
+            return true;
+        }
+
+        // Recursively search in left or right subtree based on BST property
+        if (value < root.value) {
+            if (findPathRec(root.left, value, path)) {
+                return true;
+            }
+        } else {
+            if (findPathRec(root.right, value, path)) {
+                return true;
+            }
+        }
+
+        // If value not found in this path, remove current node from path
+        // Remove the last added value and space
+        int lastSpace = path.lastIndexOf(" ");
+        if (lastSpace > 0) {
+            path.setLength(lastSpace);
+        }
+
+        return false;
+    }
+
+    // Method to check if tree is balanced (height difference <= 1 for all nodes)
+    boolean isBalanced() {
+        return isBalancedRec(root) != -1;
+    }
+
+    int isBalancedRec(Node root) {
+        if (root == null) return 0;
+
+        int leftHeight = isBalancedRec(root.left);
+        if (leftHeight == -1) return -1;
+
+        int rightHeight = isBalancedRec(root.right);
+        if (rightHeight == -1) return -1;
+
+        if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    // Method to find minimum value in the tree
+    int findMin() {
+        if (root == null) throw new IllegalStateException("Tree is empty");
+        return findMinRec(root);
+    }
+
+    int findMinRec(Node root) {
+        if (root.left == null) return root.value;
+        return findMinRec(root.left);
+    }
+
+    // Method to find maximum value in the tree
+    int findMax() {
+        if (root == null) throw new IllegalStateException("Tree is empty");
+        return findMaxRec(root);
+    }
+
+    int findMaxRec(Node root) {
+        if (root.right == null) return root.value;
+        return findMaxRec(root.right);
+    }
+
+    // Method to count leaf nodes (nodes with no children)
+    int countLeaves() {
+        return countLeavesRec(root);
+    }
+
+    int countLeavesRec(Node root) {
+        if (root == null) return 0;
+        if (root.left == null && root.right == null) return 1;
+        return countLeavesRec(root.left) + countLeavesRec(root.right);
+    }
+
+    // Method to count internal nodes (nodes with at least one child)
+    int countInternalNodes() {
+        return countInternalNodesRec(root);
+    }
+
+    int countInternalNodesRec(Node root) {
+        if (root == null || (root.left == null && root.right == null)) return 0;
+        return 1 + countInternalNodesRec(root.left) + countInternalNodesRec(root.right);
+    }
+
+    // Method to find the kth smallest element (in-order traversal based)
+    Integer findKthSmallest(int k) {
+        java.util.List<Integer> result = new java.util.ArrayList<>();
+        findKthSmallestRec(root, k, result);
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    void findKthSmallestRec(Node root, int k, java.util.List<Integer> result) {
+        if (root == null || !result.isEmpty()) return;
+
+        findKthSmallestRec(root.left, k, result);
+
+        if (result.size() < k - 1) {
+            result.add(0); // placeholder
+        } else if (result.size() == k - 1) {
+            result.clear();
+            result.add(root.value);
+        }
+
+        findKthSmallestRec(root.right, k, result);
+    }
+
+    // Method to check if a value exists at a specific depth
+    boolean existsAtDepth(int value, int targetDepth) {
+        return existsAtDepthRec(root, value, targetDepth, 0);
+    }
+
+    boolean existsAtDepthRec(Node root, int value, int targetDepth, int currentDepth) {
+        if (root == null) return false;
+        if (root.value == value && currentDepth == targetDepth) return true;
+        if (currentDepth >= targetDepth) return false;
+
+        return existsAtDepthRec(root.left, value, targetDepth, currentDepth + 1) ||
+                existsAtDepthRec(root.right, value, targetDepth, currentDepth + 1);
+    }
+
+    // Method to find depth/level of a specific node (root is at depth 0)
+    int findDepth(int value) {
+        int depth = findDepthRec(root, value, 0);
+        return depth == -1 ? -1 : depth;
+    }
+
+    int findDepthRec(Node root, int value, int currentDepth) {
+        if (root == null) return -1;
+        if (root.value == value) return currentDepth;
+
+        if (value < root.value) {
+            return findDepthRec(root.left, value, currentDepth + 1);
+        } else {
+            return findDepthRec(root.right, value, currentDepth + 1);
+        }
+    }
+
+    // Method to check if tree is a valid BST
+    boolean isBST() {
+        return isBSTRec(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    boolean isBSTRec(Node root, int min, int max) {
+        if (root == null) return true;
+        if (root.value <= min || root.value >= max) return false;
+        return isBSTRec(root.left, min, root.value) &&
+                isBSTRec(root.right, root.value, max);
+    }
+
+    // Method to find lowest common ancestor (LCA) of two nodes
+    Integer findLCA(int value1, int value2) {
+        Node lca = findLCARec(root, value1, value2);
+        return lca == null ? null : lca.value;
+    }
+
+    Node findLCARec(Node root, int value1, int value2) {
+        if (root == null) return null;
+
+        // If both values are smaller, LCA is in left subtree
+        if (value1 < root.value && value2 < root.value) {
+            return findLCARec(root.left, value1, value2);
+        }
+
+        // If both values are larger, LCA is in right subtree
+        if (value1 > root.value && value2 > root.value) {
+            return findLCARec(root.right, value1, value2);
+        }
+
+        // If values are on different sides, this is the LCA
+        return root;
+    }
+
+    // Method to count nodes in a given range [low, high]
+    int countInRange(int low, int high) {
+        return countInRangeRec(root, low, high);
+    }
+
+    int countInRangeRec(Node root, int low, int high) {
+        if (root == null) return 0;
+
+        int count = 0;
+        if (root.value >= low && root.value <= high) count = 1;
+
+        if (root.value > low) {
+            count += countInRangeRec(root.left, low, high);
+        }
+        if (root.value < high) {
+            count += countInRangeRec(root.right, low, high);
+        }
+
+        return count;
+    }
+
+    // Method to mirror/invert the tree (swap left and right children)
+    void mirror() {
+        mirrorRec(root);
+    }
+
+    void mirrorRec(Node root) {
+        if (root == null) return;
+
+        // Swap left and right children
+        Node temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+
+        // Recursively mirror subtrees
+        mirrorRec(root.left);
+        mirrorRec(root.right);
+    }
+
+    // Method to find successor of a given value (next larger value)
+    Integer findSuccessor(int value) {
+        Node node = searchRec(root, value);
+        if (node == null) return null;
+
+        // Case 1: Node has right subtree - successor is leftmost in right subtree
+        if (node.right != null) {
+            return findMinRec(node.right);
+        }
+
+        // Case 2: No right subtree - find ancestor where node is in left subtree
+        Integer successor = null;
+        Node current = root;
+        while (current != null) {
+            if (value < current.value) {
+                successor = current.value;
+                current = current.left;
+            } else if (value > current.value) {
+                current = current.right;
+            } else {
+                break;
+            }
+        }
+        return successor;
+    }
+
+    // Method to find predecessor of a given value (next smaller value)
+    Integer findPredecessor(int value) {
+        Node node = searchRec(root, value);
+        if (node == null) return null;
+
+        // Case 1: Node has left subtree - predecessor is rightmost in left subtree
+        if (node.left != null) {
+            return findMaxRec(node.left);
+        }
+
+        // Case 2: No left subtree - find ancestor where node is in right subtree
+        Integer predecessor = null;
+        Node current = root;
+        while (current != null) {
+            if (value > current.value) {
+                predecessor = current.value;
+                current = current.right;
+            } else if (value < current.value) {
+                current = current.left;
+            } else {
+                break;
+            }
+        }
+        return predecessor;
+    }
+
+    // Method to check if two trees are identical
+    boolean isIdentical(BinarySearchTree other) {
+        return isIdenticalRec(this.root, other.root);
+    }
+
+    boolean isIdenticalRec(Node root1, Node root2) {
+        if (root1 == null && root2 == null) return true;
+        if (root1 == null || root2 == null) return false;
+
+        return (root1.value == root2.value) &&
+                isIdenticalRec(root1.left, root2.left) &&
+                isIdenticalRec(root1.right, root2.right);
+    }
+
+    // Method to find distance between two nodes
+    int findDistance(int value1, int value2) {
+        Integer lca = findLCA(value1, value2);
+        if (lca == null) return -1;
+
+        int dist1 = findDepthRec(root, value1, 0);
+        int dist2 = findDepthRec(root, value2, 0);
+        int distLCA = findDepthRec(root, lca, 0);
+
+        if (dist1 == -1 || dist2 == -1) return -1;
+
+        return (dist1 - distLCA) + (dist2 - distLCA);
+    }
+
+    // Method to get width of tree at a given level
+    int getWidth(int level) {
+        return getWidthRec(root, level, 0);
+    }
+
+    int getWidthRec(Node root, int targetLevel, int currentLevel) {
+        if (root == null) return 0;
+        if (currentLevel == targetLevel) return 1;
+
+        return getWidthRec(root.left, targetLevel, currentLevel + 1) +
+                getWidthRec(root.right, targetLevel, currentLevel + 1);
+    }
+
+    // Method to find maximum width of the tree
+    int getMaxWidth() {
+        int maxWidth = 0;
+        int h = height();
+        for (int i = 0; i < h; i++) {
+            int width = getWidth(i);
+            maxWidth = Math.max(maxWidth, width);
+        }
+        return maxWidth;
+    }
+
+    // Method to print all paths from root to leaves
+    void printAllPaths() {
+        java.util.List<Integer> path = new java.util.ArrayList<>();
+        printAllPathsRec(root, path);
+    }
+
+    void printAllPathsRec(Node root, java.util.List<Integer> path) {
+        if (root == null) return;
+
+        path.add(root.value);
+
+        // If leaf node, print the path
+        if (root.left == null && root.right == null) {
+            for (int i = 0; i < path.size(); i++) {
+                System.out.print(path.get(i));
+                if (i < path.size() - 1) System.out.print(" -> ");
+            }
+            System.out.println();
+        } else {
+            printAllPathsRec(root.left, path);
+            printAllPathsRec(root.right, path);
+        }
+
+        path.remove(path.size() - 1); // Backtrack
+    }
+
     // Main method to demonstrate all operations
     public static void main(String[] args) {
         BinarySearchTree tree = new BinarySearchTree();
 
         // Add nodes
-        tree.add(50);
-        tree.add(30);
+        tree.add(45);
+        tree.add(15);
+        tree.add(79);
+        tree.add(10);
         tree.add(20);
-        tree.add(40);
-        tree.add(70);
-        tree.add(60);
-        tree.add(80);
+        tree.add(55);
+        tree.add(90);
+        tree.add(12);
+        tree.add(50);
 
         // Traversals
         System.out.print("In-order traversal: ");
-        tree.inOrder(); // Expected: 20 30 40 50 60 70 80
+        tree.inOrder(); // Expected: 10 12 15 20 45 50 55 79 90
 
         System.out.print("Pre-order traversal: ");
-        tree.preOrder(); // Expected: 50 30 20 40 70 60 80
+        tree.preOrder(); // Expected: 45 15 10 12 20 79 55 50 90
 
         System.out.print("Post-order traversal: ");
-        tree.postOrder(); // Expected: 20 40 30 60 80 70 50
+        tree.postOrder(); // Expected: 12 10 20 15 50 55 90 79 45
 
         System.out.print("Level-order traversal: ");
-        tree.levelOrder(); // Expected: 50 30 70 20 40 60 80
+        tree.levelOrder(); // Expected: 45 15 79 10 20 55 90 12 50
 
         // Search
-        System.out.println("Search for 40: " + tree.search(40)); // true
-        System.out.println("Search for 90: " + tree.search(90)); // false
+        System.out.println("Search for 40: " + tree.search(40)); // false
+        System.out.println("Search for 90: " + tree.search(90)); // true
 
         // Delete
         tree.delete(20);
         System.out.print("In-order after deleting 20: ");
-        tree.inOrder(); // Expected: 30 40 50 60 70 80
+        tree.inOrder(); // Expected: 10 12 15 45 50 55 79 90
 
         // Tree properties
-        System.out.println("Height of tree: " + tree.height()); // 3
-        System.out.println("Number of nodes: " + tree.countNodes()); // 6
+        System.out.println("Height of tree: " + tree.height()); // 4
+        System.out.println("Number of nodes: " + tree.countNodes()); // 8 (after deleting 20)
         System.out.println("Internal path length: " + tree.internalPathLength()); // Sum of depths
         System.out.println("Sum of node values: " + tree.sumOfNodeValues());
         System.out.println("Sum of levels (level * nodes at level): " + tree.sumOfLevels());
 
+        // Restore tree for path finding demonstration
+        tree.add(20);
+
+        // Path finding examples (works with any value)
+        System.out.println("\n--- Path Finding Examples ---");
+        System.out.println("Path to 10: " + tree.findPath(10));   // 45 15 10
+        System.out.println("Path to 50: " + tree.findPath(50));   // 45 79 55 50
+        System.out.println("Path to 45: " + tree.findPath(45));   // 45
+        System.out.println("Path to 90: " + tree.findPath(90));   // 45 79 90
+        System.out.println("Path to 12: " + tree.findPath(12));   // 45 15 10 12
+        System.out.println("Path to 100: " + tree.findPath(100)); // Error message
+        System.out.println("Path to 1: " + tree.findPath(1));     // Error message
+
         // Create perfect tree
+        System.out.println("\n--- Perfect Tree ---");
         BinarySearchTree perfectTree = createPerfectTree(3);
         System.out.print("Perfect tree (height 3) in-order: ");
         perfectTree.inOrder(); // 1 2 3 4 5 6 7
         System.out.println("Perfect tree height: " + perfectTree.height()); // 3
+        System.out.println("Path to 1 in perfect tree: " + perfectTree.findPath(1)); // 4 2 1
+        System.out.println("Path to 7 in perfect tree: " + perfectTree.findPath(7)); // 4 6 7
+
+        // Additional characteristics demonstrations
+        System.out.println("\n--- Additional Tree Characteristics ---");
+        System.out.println("Is tree balanced? " + tree.isBalanced()); // false (height difference > 1)
+        System.out.println("Minimum value: " + tree.findMin()); // 10
+        System.out.println("Maximum value: " + tree.findMax()); // 90
+        System.out.println("Number of leaf nodes: " + tree.countLeaves()); // 3 (12, 20, 50)
+        System.out.println("Number of internal nodes: " + tree.countInternalNodes()); // 6
+        System.out.println("3rd smallest element: " + tree.findKthSmallest(3)); // 15
+        System.out.println("Depth of node 50: " + tree.findDepth(50)); // 3
+        System.out.println("Is valid BST? " + tree.isBST()); // true
+        System.out.println("LCA of 10 and 20: " + tree.findLCA(10, 20)); // 15
+        System.out.println("LCA of 12 and 50: " + tree.findLCA(12, 50)); // 45
+        System.out.println("Nodes in range [15, 55]: " + tree.countInRange(15, 55)); // 5 (15, 20, 45, 50, 55)
+        System.out.println("Does 50 exist at depth 3? " + tree.existsAtDepth(50, 3)); // true
+
+        System.out.println("\n--- More Advanced Operations ---");
+        System.out.println("Successor of 15: " + tree.findSuccessor(15)); // 20
+        System.out.println("Predecessor of 55: " + tree.findPredecessor(55)); // 50
+        System.out.println("Distance between 12 and 50: " + tree.findDistance(12, 50)); // 5
+        System.out.println("Width at level 2: " + tree.getWidth(2)); // 4
+        System.out.println("Maximum width: " + tree.getMaxWidth()); // 4
+        System.out.println("\nAll paths from root to leaves:");
+        tree.printAllPaths();
+
+        // Test identical trees
+        BinarySearchTree tree2 = new BinarySearchTree();
+        tree2.add(45);
+        tree2.add(15);
+        tree2.add(79);
+        System.out.println("\nAre tree and tree2 identical? " + tree.isIdentical(tree2)); // false
     }
 }
