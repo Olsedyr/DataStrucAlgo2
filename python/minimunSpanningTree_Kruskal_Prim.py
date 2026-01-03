@@ -7,26 +7,24 @@ import heapq
 # ---------------------------------------------
 G = nx.Graph()
 edges = [
-    ('0', '1', 1),
-    ('0', '2', 6),
-    ('0', '4', 1),
-    ('1', '2', 8),
-    ('0', '5', 3),
-    ('2', '5', 3),
-    ('2', '3', 14),
-    ('3', '7', 1),
-    ('3', '6', 1),
-    ('4', '8', 7),
-    ('5', '8', 3),
-    ('5', '9', 5),
-    ('5', '10', 8),
-    ('5', '6', 20),
-    ('6', '7', 4),
-    ('6', '11', 8),
-    ('7', '11', 3),
-    ('8', '9', 4),
-    ('9', '10', 2),
-    ('10', '11', 5),
+    ('A', 'B', 22),
+    ('A', 'D', 12),
+    ('A', 'C', 9),
+    ('B', 'C', 35),
+    ('B', 'H', 34),
+    ('B', 'F', 36),
+    ('C', 'D', 4),
+    ('C', 'E', 65),
+    ('C', 'F', 42),
+    ('D', 'E', 33),
+    ('D', 'I', 30),
+    ('E', 'F', 16),
+    ('E', 'G', 23),
+    ('F', 'G', 39),
+    ('F', 'H', 24),
+    ('G', 'H', 25),
+    ('G', 'I', 21),
+    ('H', 'I', 19),
 
 ]
 # Fjern dubletter (håndteres automatisk i nx.Graph, men vi gør det alligevel)
@@ -71,8 +69,8 @@ def prim_manual_with_steps(graph, start):
 # ---------------------------------------------
 # Beregn MST’er
 # ---------------------------------------------
-mst_prim_A, steps_A, node_order_A = prim_manual_with_steps(G, '0')
-mst_prim_F, steps_F, node_order_F = prim_manual_with_steps(G, '1')
+mst_prim_A, steps_A, node_order_A = prim_manual_with_steps(G, 'A') #StartNOde
+mst_prim_F, steps_F, node_order_F = prim_manual_with_steps(G, 'F')
 mst_kruskal = nx.minimum_spanning_tree(G, algorithm='kruskal')
 
 # ---------------------------------------------
