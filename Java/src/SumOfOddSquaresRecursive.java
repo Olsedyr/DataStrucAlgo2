@@ -15,7 +15,7 @@ public class SumOfOddSquaresRecursive {
     }
 
     public static void main(String[] args) {
-        int N = 9; // Example value
+        int N = 8; // Example value
         int result = sumOddSquares(N);
         System.out.println("The sum of the squares of odd numbers from 1 to " + N + " is: " + result);
     }

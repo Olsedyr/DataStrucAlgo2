@@ -10,6 +10,6 @@ public class NumbersDivisibleBy3OR8 {
     }
 
     public static void main(String[] args) {
-        System.out.println(sumDeleligMedTreOgOtte(26));
+        System.out.println(sumDeleligMedTreOgOtte(12));
     }
 }

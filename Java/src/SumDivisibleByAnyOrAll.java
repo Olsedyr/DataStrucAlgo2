@@ -35,7 +35,7 @@ public class SumDivisibleByAnyOrAll {
     }
 
     public static void main(String[] args) {
-        int N = 26;
+        int N = 14;
         int[] divisors = {3, 8};
 
         System.out.println("Summen af tal op til " + N + " delelige med mindst én divisor:");

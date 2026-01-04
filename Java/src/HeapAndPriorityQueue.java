@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Heap {
+public class HeapAndPriorityQueue {
 
     // ==================== KONFIGURATION ====================
     static class Config {
@@ -487,7 +487,7 @@ public class Heap {
             log("=".repeat(60));
 
             // Original array
-            int[] originalArray = {7, 19, 11, 22, 28, 13, 26, 34, 26, 42, 27, 21, 14, 81, 18, 66, 38, 69, 67};
+            int[] originalArray = {17,21,23,44,32,65,38,56,46,69,33,77,67,56,39,61,60,62,50,71};
 
 
             log("\n⚠️  Vigtigt: Arrayet vises med 1-baseret indeksering");

@@ -9,65 +9,66 @@ HEAP ANALYSE PROGRAM - 1-BASERET INDEKSERING
    I hukommelsen er arrayet stadig 0-baseret
 
 📊 ORIGINALT ARRAY:
-Indeks:    0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19 
-Værdi:     -   7  19  11  22  28  13  26  34  26  42  27  21  14  81  18  66  38  69  67 
+Indeks:    0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 
+Værdi:     -  17  21  23  44  32  65  38  56  46  69  33  77  67  56  39  61  60  62  50  71 
 
 📈 STATISTIK:
-   Minimum: 7
-   Maximum: 81
+   Minimum: 17
+   Maximum: 77
 
 📊 SORTERET ARRAY (stigende):
-Indeks:    0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19 
-Værdi:     -   7  11  13  14  18  19  21  22  26  26  27  28  34  38  42  66  67  69  81 
+Indeks:    0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 
+Værdi:     -  17  21  23  32  33  38  39  44  46  50  56  56  60  61  62  65  67  69  71  77 
 
 👨‍👧‍👦 PARENT-CHILD RELATIONER:
-P[1]=7 → L[2]=19, R[3]=11
-P[2]=19 → L[4]=22, R[5]=28
-P[3]=11 → L[6]=13, R[7]=26
-P[4]=22 → L[8]=34, R[9]=26
-P[5]=28 → L[10]=42, R[11]=27
-P[6]=13 → L[12]=21, R[13]=14
-P[7]=26 → L[14]=81, R[15]=18
-P[8]=34 → L[16]=66, R[17]=38
-P[9]=26 → L[18]=69, R[19]=67
-P[10]=42 → L[20]=-, R[21]=-
-P[11]=27 → L[22]=-, R[23]=-
-P[12]=21 → L[24]=-, R[25]=-
-P[13]=14 → L[26]=-, R[27]=-
-P[14]=81 → L[28]=-, R[29]=-
-P[15]=18 → L[30]=-, R[31]=-
-P[16]=66 → L[32]=-, R[33]=-
-P[17]=38 → L[34]=-, R[35]=-
-P[18]=69 → L[36]=-, R[37]=-
-P[19]=67 → L[38]=-, R[39]=-
+P[1]=17 → L[2]=21, R[3]=23
+P[2]=21 → L[4]=44, R[5]=32
+P[3]=23 → L[6]=65, R[7]=38
+P[4]=44 → L[8]=56, R[9]=46
+P[5]=32 → L[10]=69, R[11]=33
+P[6]=65 → L[12]=77, R[13]=67
+P[7]=38 → L[14]=56, R[15]=39
+P[8]=56 → L[16]=61, R[17]=60
+P[9]=46 → L[18]=62, R[19]=50
+P[10]=69 → L[20]=71, R[21]=-
+P[11]=33 → L[22]=-, R[23]=-
+P[12]=77 → L[24]=-, R[25]=-
+P[13]=67 → L[26]=-, R[27]=-
+P[14]=56 → L[28]=-, R[29]=-
+P[15]=39 → L[30]=-, R[31]=-
+P[16]=61 → L[32]=-, R[33]=-
+P[17]=60 → L[34]=-, R[35]=-
+P[18]=62 → L[36]=-, R[37]=-
+P[19]=50 → L[38]=-, R[39]=-
+P[20]=71 → L[40]=-, R[41]=-
 
 🔍 HEAP EGENSKABS CHECK:
 
 MIN-HEAP:
-❌ ER IKKE EN GYLDIG MIN-HEAP
-   Første violation: P[5]=28 > R[11]=27
-   Resten (1):
-     P[7]=26 > R[15]=18
+✅ ER EN GYLDIG MIN-HEAP
 
 MAX-HEAP:
 ❌ ER IKKE EN GYLDIG MAX-HEAP
-   Første violation: P[1]=7 < L[2]=19
-   Resten (15):
-     P[1]=7 < R[3]=11
-     P[2]=19 < L[4]=22
-     P[2]=19 < R[5]=28
-     P[3]=11 < L[6]=13
-     P[3]=11 < R[7]=26
-     P[4]=22 < L[8]=34
-     P[4]=22 < R[9]=26
-     P[5]=28 < L[10]=42
-     P[6]=13 < L[12]=21
-     P[6]=13 < R[13]=14
-     P[7]=26 < L[14]=81
-     P[8]=34 < L[16]=66
-     P[8]=34 < R[17]=38
-     P[9]=26 < L[18]=69
-     P[9]=26 < R[19]=67
+   Første violation: P[1]=17 < L[2]=21
+   Resten (18):
+     P[1]=17 < R[3]=23
+     P[2]=21 < L[4]=44
+     P[2]=21 < R[5]=32
+     P[3]=23 < L[6]=65
+     P[3]=23 < R[7]=38
+     P[4]=44 < L[8]=56
+     P[4]=44 < R[9]=46
+     P[5]=32 < L[10]=69
+     P[5]=32 < R[11]=33
+     P[6]=65 < L[12]=77
+     P[6]=65 < R[13]=67
+     P[7]=38 < L[14]=56
+     P[7]=38 < R[15]=39
+     P[8]=56 < L[16]=61
+     P[8]=56 < R[17]=60
+     P[9]=46 < L[18]=62
+     P[9]=46 < R[19]=50
+     P[10]=69 < L[20]=71
 
 📚 SIMPEL FORKLARING PÅ HEAPIFY:
 ============================================================
@@ -102,80 +103,82 @@ HEAPIFY - HVORDAN MAN LAVER ET ARRAY TIL EN MIN-HEAP ELLER MAX-HEAP:
 ============================================================
 BYGGER MIN-HEAP FRA ARRAY
 ============================================================
-Start array: [7, 19, 11, 22, 28, 13, 26, 34, 26, 42, 27, 21, 14, 81, 18, 66, 38, 69, 67]
-Størrelse: 19
+Start array: [17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+Størrelse: 20
 
 TRIN-FOR-TRIN PROCESS:
 
-▶️  Heapify på index 9 (værdi: 26)
-   Forælder: arr[9] = 26
-   Venstre barn: arr[18] = 69
-   Højre barn: arr[19] = 67
+▶️  Heapify på index 10 (værdi: 69)
+   Forælder: arr[10] = 69
+   Venstre barn: arr[20] = 71
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 26, 34, 26, 42, 27, 21, 14, 81, 18, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 8 (værdi: 34)
-   Forælder: arr[8] = 34
-   Venstre barn: arr[16] = 66
-   Højre barn: arr[17] = 38
+▶️  Heapify på index 9 (værdi: 46)
+   Forælder: arr[9] = 46
+   Venstre barn: arr[18] = 62
+   Højre barn: arr[19] = 50
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 26, 34, 26, 42, 27, 21, 14, 81, 18, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 7 (værdi: 26)
-   Forælder: arr[7] = 26
-   Venstre barn: arr[14] = 81
-   Højre barn: arr[15] = 18
-   BYT: 26 ↔ 18 (index 7 ↔ 15)
-   Forælder: arr[15] = 26
+▶️  Heapify på index 8 (værdi: 56)
+   Forælder: arr[8] = 56
+   Venstre barn: arr[16] = 61
+   Højre barn: arr[17] = 60
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 18, 34, 26, 42, 27, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 6 (værdi: 13)
-   Forælder: arr[6] = 13
-   Venstre barn: arr[12] = 21
-   Højre barn: arr[13] = 14
+▶️  Heapify på index 7 (værdi: 38)
+   Forælder: arr[7] = 38
+   Venstre barn: arr[14] = 56
+   Højre barn: arr[15] = 39
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 18, 34, 26, 42, 27, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 5 (værdi: 28)
-   Forælder: arr[5] = 28
-   Venstre barn: arr[10] = 42
-   Højre barn: arr[11] = 27
-   BYT: 28 ↔ 27 (index 5 ↔ 11)
-   Forælder: arr[11] = 28
+▶️  Heapify på index 6 (værdi: 65)
+   Forælder: arr[6] = 65
+   Venstre barn: arr[12] = 77
+   Højre barn: arr[13] = 67
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 27, 13, 18, 34, 26, 42, 28, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 4 (værdi: 22)
-   Forælder: arr[4] = 22
-   Venstre barn: arr[8] = 34
-   Højre barn: arr[9] = 26
+▶️  Heapify på index 5 (værdi: 32)
+   Forælder: arr[5] = 32
+   Venstre barn: arr[10] = 69
+   Højre barn: arr[11] = 33
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 27, 13, 18, 34, 26, 42, 28, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 3 (værdi: 11)
-   Forælder: arr[3] = 11
-   Venstre barn: arr[6] = 13
-   Højre barn: arr[7] = 18
+▶️  Heapify på index 4 (værdi: 44)
+   Forælder: arr[4] = 44
+   Venstre barn: arr[8] = 56
+   Højre barn: arr[9] = 46
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 27, 13, 18, 34, 26, 42, 28, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 2 (værdi: 19)
-   Forælder: arr[2] = 19
-   Venstre barn: arr[4] = 22
-   Højre barn: arr[5] = 27
+▶️  Heapify på index 3 (værdi: 23)
+   Forælder: arr[3] = 23
+   Venstre barn: arr[6] = 65
+   Højre barn: arr[7] = 38
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 27, 13, 18, 34, 26, 42, 28, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
-▶️  Heapify på index 1 (værdi: 7)
-   Forælder: arr[1] = 7
-   Venstre barn: arr[2] = 19
-   Højre barn: arr[3] = 11
+▶️  Heapify på index 2 (værdi: 21)
+   Forælder: arr[2] = 21
+   Venstre barn: arr[4] = 44
+   Højre barn: arr[5] = 32
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 27, 13, 18, 34, 26, 42, 28, 21, 14, 81, 26, 66, 38, 69, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+
+▶️  Heapify på index 1 (værdi: 17)
+   Forælder: arr[1] = 17
+   Venstre barn: arr[2] = 21
+   Højre barn: arr[3] = 23
+   OK: Heap-egenskab opfyldt
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 
 ✅ MIN-HEAP FÆRDIG:
-Resultat: [-, 7, 19, 11, 22, 27, 13, 18, 34, 26, 42, 28, 21, 14, 81, 26, 66, 38, 69, 67]
+Resultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
 Gyldig min-heap? true
 
 🌳 MIN-HEAP SOM TRÆ:
@@ -194,7 +197,7 @@ Gyldig min-heap? true
   
   
   
-7 
+17 
 
   
   
@@ -202,172 +205,183 @@ Gyldig min-heap? true
   
   
   
-  
-19 
-  
-  
-  
-  
-  
-  
-  
-11 
-
-  
-  
-  
-22 
-  
-  
-  
-27 
-  
-  
-  
-13 
-  
-  
-  
-18 
-
-  
-34 
-  
-26 
-  
-42 
-  
-28 
   
 21 
   
-14 
   
-81 
   
-26 
+  
+  
+  
+  
+23 
 
-66 
+  
+  
+  
+44 
+  
+  
+  
+32 
+  
+  
+  
+65 
+  
+  
+  
 38 
+
+  
+56 
+  
+46 
+  
 69 
+  
+33 
+  
+77 
+  
 67 
+  
+56 
+  
+39 
+
+61 
+60 
+62 
+50 
+71 
 
 
 ============================================================
 BYGGER MAX-HEAP FRA ARRAY
 ============================================================
-Start array: [7, 19, 11, 22, 28, 13, 26, 34, 26, 42, 27, 21, 14, 81, 18, 66, 38, 69, 67]
-Størrelse: 19
+Start array: [17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+Størrelse: 20
 
 TRIN-FOR-TRIN PROCESS:
 
-▶️  Heapify på index 9 (værdi: 26)
-   Forælder: arr[9] = 26
-   Venstre barn: arr[18] = 69
-   Højre barn: arr[19] = 67
-   BYT: 26 ↔ 69 (index 9 ↔ 18)
-   Forælder: arr[18] = 26
+▶️  Heapify på index 10 (værdi: 69)
+   Forælder: arr[10] = 69
+   Venstre barn: arr[20] = 71
+   BYT: 69 ↔ 71 (index 10 ↔ 20)
+   Forælder: arr[20] = 69
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 26, 34, 69, 42, 27, 21, 14, 81, 18, 66, 38, 26, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 71, 33, 77, 67, 56, 39, 61, 60, 62, 50, 69]
 
-▶️  Heapify på index 8 (værdi: 34)
-   Forælder: arr[8] = 34
-   Venstre barn: arr[16] = 66
-   Højre barn: arr[17] = 38
-   BYT: 34 ↔ 66 (index 8 ↔ 16)
-   Forælder: arr[16] = 34
+▶️  Heapify på index 9 (værdi: 46)
+   Forælder: arr[9] = 46
+   Venstre barn: arr[18] = 62
+   Højre barn: arr[19] = 50
+   BYT: 46 ↔ 62 (index 9 ↔ 18)
+   Forælder: arr[18] = 46
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 26, 66, 69, 42, 27, 21, 14, 81, 18, 34, 38, 26, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 62, 71, 33, 77, 67, 56, 39, 61, 60, 46, 50, 69]
 
-▶️  Heapify på index 7 (værdi: 26)
-   Forælder: arr[7] = 26
-   Venstre barn: arr[14] = 81
-   Højre barn: arr[15] = 18
-   BYT: 26 ↔ 81 (index 7 ↔ 14)
-   Forælder: arr[14] = 26
+▶️  Heapify på index 8 (værdi: 56)
+   Forælder: arr[8] = 56
+   Venstre barn: arr[16] = 61
+   Højre barn: arr[17] = 60
+   BYT: 56 ↔ 61 (index 8 ↔ 16)
+   Forælder: arr[16] = 56
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 13, 81, 66, 69, 42, 27, 21, 14, 26, 18, 34, 38, 26, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 61, 62, 71, 33, 77, 67, 56, 39, 56, 60, 46, 50, 69]
 
-▶️  Heapify på index 6 (værdi: 13)
-   Forælder: arr[6] = 13
-   Venstre barn: arr[12] = 21
-   Højre barn: arr[13] = 14
-   BYT: 13 ↔ 21 (index 6 ↔ 12)
-   Forælder: arr[12] = 13
+▶️  Heapify på index 7 (værdi: 38)
+   Forælder: arr[7] = 38
+   Venstre barn: arr[14] = 56
+   Højre barn: arr[15] = 39
+   BYT: 38 ↔ 56 (index 7 ↔ 14)
+   Forælder: arr[14] = 38
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 28, 21, 81, 66, 69, 42, 27, 13, 14, 26, 18, 34, 38, 26, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 56, 61, 62, 71, 33, 77, 67, 38, 39, 56, 60, 46, 50, 69]
 
-▶️  Heapify på index 5 (værdi: 28)
-   Forælder: arr[5] = 28
-   Venstre barn: arr[10] = 42
-   Højre barn: arr[11] = 27
-   BYT: 28 ↔ 42 (index 5 ↔ 10)
-   Forælder: arr[10] = 28
+▶️  Heapify på index 6 (værdi: 65)
+   Forælder: arr[6] = 65
+   Venstre barn: arr[12] = 77
+   Højre barn: arr[13] = 67
+   BYT: 65 ↔ 77 (index 6 ↔ 12)
+   Forælder: arr[12] = 65
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 22, 42, 21, 81, 66, 69, 28, 27, 13, 14, 26, 18, 34, 38, 26, 67]
+   Mellemresultat: [-, 17, 21, 23, 44, 32, 77, 56, 61, 62, 71, 33, 65, 67, 38, 39, 56, 60, 46, 50, 69]
 
-▶️  Heapify på index 4 (værdi: 22)
-   Forælder: arr[4] = 22
-   Venstre barn: arr[8] = 66
-   Højre barn: arr[9] = 69
-   BYT: 22 ↔ 69 (index 4 ↔ 9)
-   Forælder: arr[9] = 22
-   Venstre barn: arr[18] = 26
-   Højre barn: arr[19] = 67
-   BYT: 22 ↔ 67 (index 9 ↔ 19)
-   Forælder: arr[19] = 22
+▶️  Heapify på index 5 (værdi: 32)
+   Forælder: arr[5] = 32
+   Venstre barn: arr[10] = 71
+   Højre barn: arr[11] = 33
+   BYT: 32 ↔ 71 (index 5 ↔ 10)
+   Forælder: arr[10] = 32
+   Venstre barn: arr[20] = 69
+   BYT: 32 ↔ 69 (index 10 ↔ 20)
+   Forælder: arr[20] = 32
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 11, 69, 42, 21, 81, 66, 67, 28, 27, 13, 14, 26, 18, 34, 38, 26, 22]
+   Mellemresultat: [-, 17, 21, 23, 44, 71, 77, 56, 61, 62, 69, 33, 65, 67, 38, 39, 56, 60, 46, 50, 32]
 
-▶️  Heapify på index 3 (værdi: 11)
-   Forælder: arr[3] = 11
-   Venstre barn: arr[6] = 21
-   Højre barn: arr[7] = 81
-   BYT: 11 ↔ 81 (index 3 ↔ 7)
-   Forælder: arr[7] = 11
-   Venstre barn: arr[14] = 26
-   Højre barn: arr[15] = 18
-   BYT: 11 ↔ 26 (index 7 ↔ 14)
-   Forælder: arr[14] = 11
+▶️  Heapify på index 4 (værdi: 44)
+   Forælder: arr[4] = 44
+   Venstre barn: arr[8] = 61
+   Højre barn: arr[9] = 62
+   BYT: 44 ↔ 62 (index 4 ↔ 9)
+   Forælder: arr[9] = 44
+   Venstre barn: arr[18] = 46
+   Højre barn: arr[19] = 50
+   BYT: 44 ↔ 50 (index 9 ↔ 19)
+   Forælder: arr[19] = 44
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 19, 81, 69, 42, 21, 26, 66, 67, 28, 27, 13, 14, 11, 18, 34, 38, 26, 22]
+   Mellemresultat: [-, 17, 21, 23, 62, 71, 77, 56, 61, 50, 69, 33, 65, 67, 38, 39, 56, 60, 46, 44, 32]
 
-▶️  Heapify på index 2 (værdi: 19)
-   Forælder: arr[2] = 19
-   Venstre barn: arr[4] = 69
-   Højre barn: arr[5] = 42
-   BYT: 19 ↔ 69 (index 2 ↔ 4)
-   Forælder: arr[4] = 19
-   Venstre barn: arr[8] = 66
-   Højre barn: arr[9] = 67
-   BYT: 19 ↔ 67 (index 4 ↔ 9)
-   Forælder: arr[9] = 19
-   Venstre barn: arr[18] = 26
-   Højre barn: arr[19] = 22
-   BYT: 19 ↔ 26 (index 9 ↔ 18)
-   Forælder: arr[18] = 19
+▶️  Heapify på index 3 (værdi: 23)
+   Forælder: arr[3] = 23
+   Venstre barn: arr[6] = 77
+   Højre barn: arr[7] = 56
+   BYT: 23 ↔ 77 (index 3 ↔ 6)
+   Forælder: arr[6] = 23
+   Venstre barn: arr[12] = 65
+   Højre barn: arr[13] = 67
+   BYT: 23 ↔ 67 (index 6 ↔ 13)
+   Forælder: arr[13] = 23
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 7, 69, 81, 67, 42, 21, 26, 66, 26, 28, 27, 13, 14, 11, 18, 34, 38, 19, 22]
+   Mellemresultat: [-, 17, 21, 77, 62, 71, 67, 56, 61, 50, 69, 33, 65, 23, 38, 39, 56, 60, 46, 44, 32]
 
-▶️  Heapify på index 1 (værdi: 7)
-   Forælder: arr[1] = 7
-   Venstre barn: arr[2] = 69
-   Højre barn: arr[3] = 81
-   BYT: 7 ↔ 81 (index 1 ↔ 3)
-   Forælder: arr[3] = 7
-   Venstre barn: arr[6] = 21
-   Højre barn: arr[7] = 26
-   BYT: 7 ↔ 26 (index 3 ↔ 7)
-   Forælder: arr[7] = 7
-   Venstre barn: arr[14] = 11
-   Højre barn: arr[15] = 18
-   BYT: 7 ↔ 18 (index 7 ↔ 15)
-   Forælder: arr[15] = 7
+▶️  Heapify på index 2 (værdi: 21)
+   Forælder: arr[2] = 21
+   Venstre barn: arr[4] = 62
+   Højre barn: arr[5] = 71
+   BYT: 21 ↔ 71 (index 2 ↔ 5)
+   Forælder: arr[5] = 21
+   Venstre barn: arr[10] = 69
+   Højre barn: arr[11] = 33
+   BYT: 21 ↔ 69 (index 5 ↔ 10)
+   Forælder: arr[10] = 21
+   Venstre barn: arr[20] = 32
+   BYT: 21 ↔ 32 (index 10 ↔ 20)
+   Forælder: arr[20] = 21
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 81, 69, 26, 67, 42, 21, 18, 66, 26, 28, 27, 13, 14, 11, 7, 34, 38, 19, 22]
+   Mellemresultat: [-, 17, 71, 77, 62, 69, 67, 56, 61, 50, 32, 33, 65, 23, 38, 39, 56, 60, 46, 44, 21]
+
+▶️  Heapify på index 1 (værdi: 17)
+   Forælder: arr[1] = 17
+   Venstre barn: arr[2] = 71
+   Højre barn: arr[3] = 77
+   BYT: 17 ↔ 77 (index 1 ↔ 3)
+   Forælder: arr[3] = 17
+   Venstre barn: arr[6] = 67
+   Højre barn: arr[7] = 56
+   BYT: 17 ↔ 67 (index 3 ↔ 6)
+   Forælder: arr[6] = 17
+   Venstre barn: arr[12] = 65
+   Højre barn: arr[13] = 23
+   BYT: 17 ↔ 65 (index 6 ↔ 12)
+   Forælder: arr[12] = 17
+   OK: Heap-egenskab opfyldt
+   Mellemresultat: [-, 77, 71, 67, 62, 69, 65, 56, 61, 50, 32, 33, 17, 23, 38, 39, 56, 60, 46, 44, 21]
 
 ✅ MAX-HEAP FÆRDIG:
-Resultat: [-, 81, 69, 26, 67, 42, 21, 18, 66, 26, 28, 27, 13, 14, 11, 7, 34, 38, 19, 22]
+Resultat: [-, 77, 71, 67, 62, 69, 65, 56, 61, 50, 32, 33, 17, 23, 38, 39, 56, 60, 46, 44, 21]
 Gyldig max-heap? true
 
 🌳 MAX-HEAP SOM TRÆ:
@@ -386,12 +400,29 @@ Gyldig max-heap? true
   
   
   
-81 
+77 
 
   
   
   
   
+  
+  
+  
+71 
+  
+  
+  
+  
+  
+  
+  
+67 
+
+  
+  
+  
+62 
   
   
   
@@ -399,50 +430,34 @@ Gyldig max-heap? true
   
   
   
+65 
   
   
   
-  
-26 
+56 
 
   
+61 
   
+50 
   
-67 
+32 
   
+33 
   
+17 
   
-42 
+23 
   
-  
-  
-21 
-  
-  
-  
-18 
-
-  
-66 
-  
-26 
-  
-28 
-  
-27 
-  
-13 
-  
-14 
-  
-11 
-  
-7 
-
-34 
 38 
-19 
-22 
+  
+39 
+
+56 
+60 
+46 
+44 
+21 
 
 
 ============================================================
