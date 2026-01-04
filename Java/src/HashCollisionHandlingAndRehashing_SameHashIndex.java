@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class HashCollisionHandlingAndRehashing {
+public class HashCollisionHandlingAndRehashing_SameHashIndex {
 
     // ==================== KONFIGURATIONSKLASSE ====================
     static class HashConfig {

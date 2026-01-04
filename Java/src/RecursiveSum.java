@@ -28,7 +28,7 @@ public class RecursiveSum    {
     }
 
     public static void main(String[] args) {
-        int pos = 5;
+        int pos = 9;
         int neg = -5;
 
         System.out.println("Sum positive op til " + pos + ": " + sumPositiveUpTo(pos));

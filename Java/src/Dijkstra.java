@@ -53,21 +53,14 @@ class DijkstraResult {
 
 public class Dijkstra {
 
-    private static final String START_NODE = "F";
+    private static final String START_NODE = "Fasdasd"; //Start node
 
     // DIN GRAF - INDKORPORERET KORREKT
     private static final List<Edge> EDGES = Arrays.asList(
-            new Edge("F", "E", 4),
-            new Edge("E", "D", 1),
-            new Edge("D", "B", 9),
-            new Edge("B", "C", 7),
-            new Edge("B", "A", 1),
-            new Edge("C", "H", 5),
-            new Edge("H", "I", 7),
-            new Edge("I", "J", 5),
-            new Edge("I", "D", 2),
-            new Edge("J", "G", 10),
-            new Edge("A", "C", 1)
+            new Edge("Fasdasd", "Esdfg", 4),
+            new Edge("Esdfg", "Ddsg", 1),
+            new Edge("Dasdasd", "Ddsg", 9)
+
     );
 
     public static DijkstraResult dijkstra(Graph graph, String source, boolean writeSteps) {

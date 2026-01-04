@@ -53,6 +53,7 @@ class BinarySearchTree {
         if (root == null || root.value == value) {
             return root;
         }
+
         if (value < root.value) {
             return searchRec(root.left, value);
         }
@@ -108,6 +109,17 @@ class BinarySearchTree {
         System.out.println();
     }
 
+    //Is of minimal Height?
+    String minimalHeight() {
+        int n = countNodes();
+        if (n == 0) return "true (height should be 0)"; // empty tree has height 0
+
+        int minimalHeight = (int) Math.ceil(Math.log(n + 1) / Math.log(2)) - 1;
+        int actualHeight = height();
+
+        return (actualHeight == minimalHeight) + " (height should be " + minimalHeight + ")";
+    }
+
     // Recursive in-order traversal
     void inOrderRec(Node root) {
         if (root != null) {
@@ -161,7 +173,6 @@ class BinarySearchTree {
             if (tempNode.left != null) {
                 queue.add(tempNode.left);
             }
-
             if (tempNode.right != null) {
                 queue.add(tempNode.right);
             }
@@ -240,14 +251,11 @@ class BinarySearchTree {
         while (!queue.isEmpty()) {
             int levelSize = queue.size();
             sum += level * levelSize;
-
             for (int i = 0; i < levelSize; i++) {
                 Node tempNode = queue.poll();
-
                 if (tempNode.left != null) {
                     queue.add(tempNode.left);
                 }
-
                 if (tempNode.right != null) {
                     queue.add(tempNode.right);
                 }
@@ -261,7 +269,6 @@ class BinarySearchTree {
     public String findPath(int value) {
         StringBuilder path = new StringBuilder();
         boolean found = findPathRec(root, value, path);
-
         if (found) {
             return path.toString().trim();
         } else {
@@ -301,7 +308,6 @@ class BinarySearchTree {
         if (lastSpace > 0) {
             path.setLength(lastSpace);
         }
-
         return false;
     }
 
@@ -312,15 +318,11 @@ class BinarySearchTree {
 
     int isBalancedRec(Node root) {
         if (root == null) return 0;
-
         int leftHeight = isBalancedRec(root.left);
         if (leftHeight == -1) return -1;
-
         int rightHeight = isBalancedRec(root.right);
         if (rightHeight == -1) return -1;
-
         if (Math.abs(leftHeight - rightHeight) > 1) return -1;
-
         return Math.max(leftHeight, rightHeight) + 1;
     }
 
@@ -368,25 +370,27 @@ class BinarySearchTree {
     }
 
     // Method to find the kth smallest element (in-order traversal based)
+    // Rettet metode til at finde k'te mindste element
     Integer findKthSmallest(int k) {
-        java.util.List<Integer> result = new java.util.ArrayList<>();
-        findKthSmallestRec(root, k, result);
-        return result.isEmpty() ? null : result.get(0);
+        if (k <= 0 || k > countNodes()) return null;
+        int[] count = new int[]{0}; // Brug array for at kunne ændre i rekursion
+        Integer[] result = new Integer[]{null};
+        findKthSmallestRec(root, k, count, result);
+        return result[0];
     }
 
-    void findKthSmallestRec(Node root, int k, java.util.List<Integer> result) {
-        if (root == null || !result.isEmpty()) return;
-
-        findKthSmallestRec(root.left, k, result);
-
-        if (result.size() < k - 1) {
-            result.add(0); // placeholder
-        } else if (result.size() == k - 1) {
-            result.clear();
-            result.add(root.value);
+    void findKthSmallestRec(Node root, int k, int[] count, Integer[] result) {
+        if (root == null || result[0] != null) return;
+        // Gå til venstre først (in-order)
+        findKthSmallestRec(root.left, k, count, result);
+        // Inkrementer tæller
+        count[0]++;
+        if (count[0] == k) {
+            result[0] = root.value;
+            return;
         }
-
-        findKthSmallestRec(root.right, k, result);
+        // Gå til højre
+        findKthSmallestRec(root.right, k, count, result);
     }
 
     // Method to check if a value exists at a specific depth
@@ -398,9 +402,7 @@ class BinarySearchTree {
         if (root == null) return false;
         if (root.value == value && currentDepth == targetDepth) return true;
         if (currentDepth >= targetDepth) return false;
-
-        return existsAtDepthRec(root.left, value, targetDepth, currentDepth + 1) ||
-                existsAtDepthRec(root.right, value, targetDepth, currentDepth + 1);
+        return existsAtDepthRec(root.left, value, targetDepth, currentDepth + 1) || existsAtDepthRec(root.right, value, targetDepth, currentDepth + 1);
     }
 
     // Method to find depth/level of a specific node (root is at depth 0)
@@ -412,7 +414,6 @@ class BinarySearchTree {
     int findDepthRec(Node root, int value, int currentDepth) {
         if (root == null) return -1;
         if (root.value == value) return currentDepth;
-
         if (value < root.value) {
             return findDepthRec(root.left, value, currentDepth + 1);
         } else {
@@ -428,30 +429,34 @@ class BinarySearchTree {
     boolean isBSTRec(Node root, int min, int max) {
         if (root == null) return true;
         if (root.value <= min || root.value >= max) return false;
-        return isBSTRec(root.left, min, root.value) &&
-                isBSTRec(root.right, root.value, max);
+        return isBSTRec(root.left, min, root.value) && isBSTRec(root.right, root.value, max);
     }
 
     // Method to find lowest common ancestor (LCA) of two nodes
     Integer findLCA(int value1, int value2) {
+        // Tjek om begge værdier findes
+        if (!search(value1) || !search(value2)) {
+            return null;
+        }
         Node lca = findLCARec(root, value1, value2);
         return lca == null ? null : lca.value;
     }
 
+    // Hjælpemetode til LCA
     Node findLCARec(Node root, int value1, int value2) {
         if (root == null) return null;
 
-        // If both values are smaller, LCA is in left subtree
+        // Hvis begge værdier er mindre end root, LCA er i venstre subtree
         if (value1 < root.value && value2 < root.value) {
             return findLCARec(root.left, value1, value2);
         }
 
-        // If both values are larger, LCA is in right subtree
+        // Hvis begge værdier er større end root, LCA er i højre subtree
         if (value1 > root.value && value2 > root.value) {
             return findLCARec(root.right, value1, value2);
         }
 
-        // If values are on different sides, this is the LCA
+        // Ellers er root LCA
         return root;
     }
 
@@ -462,17 +467,14 @@ class BinarySearchTree {
 
     int countInRangeRec(Node root, int low, int high) {
         if (root == null) return 0;
-
         int count = 0;
         if (root.value >= low && root.value <= high) count = 1;
-
         if (root.value > low) {
             count += countInRangeRec(root.left, low, high);
         }
         if (root.value < high) {
             count += countInRangeRec(root.right, low, high);
         }
-
         return count;
     }
 
@@ -483,12 +485,10 @@ class BinarySearchTree {
 
     void mirrorRec(Node root) {
         if (root == null) return;
-
         // Swap left and right children
         Node temp = root.left;
         root.left = root.right;
         root.right = temp;
-
         // Recursively mirror subtrees
         mirrorRec(root.left);
         mirrorRec(root.right);
@@ -554,23 +554,17 @@ class BinarySearchTree {
     boolean isIdenticalRec(Node root1, Node root2) {
         if (root1 == null && root2 == null) return true;
         if (root1 == null || root2 == null) return false;
-
-        return (root1.value == root2.value) &&
-                isIdenticalRec(root1.left, root2.left) &&
-                isIdenticalRec(root1.right, root2.right);
+        return (root1.value == root2.value) && isIdenticalRec(root1.left, root2.left) && isIdenticalRec(root1.right, root2.right);
     }
 
     // Method to find distance between two nodes
     int findDistance(int value1, int value2) {
         Integer lca = findLCA(value1, value2);
         if (lca == null) return -1;
-
         int dist1 = findDepthRec(root, value1, 0);
         int dist2 = findDepthRec(root, value2, 0);
         int distLCA = findDepthRec(root, lca, 0);
-
         if (dist1 == -1 || dist2 == -1) return -1;
-
         return (dist1 - distLCA) + (dist2 - distLCA);
     }
 
@@ -582,9 +576,7 @@ class BinarySearchTree {
     int getWidthRec(Node root, int targetLevel, int currentLevel) {
         if (root == null) return 0;
         if (currentLevel == targetLevel) return 1;
-
-        return getWidthRec(root.left, targetLevel, currentLevel + 1) +
-                getWidthRec(root.right, targetLevel, currentLevel + 1);
+        return getWidthRec(root.left, targetLevel, currentLevel + 1) + getWidthRec(root.right, targetLevel, currentLevel + 1);
     }
 
     // Method to find maximum width of the tree
@@ -606,7 +598,6 @@ class BinarySearchTree {
 
     void printAllPathsRec(Node root, java.util.List<Integer> path) {
         if (root == null) return;
-
         path.add(root.value);
 
         // If leaf node, print the path
@@ -620,7 +611,6 @@ class BinarySearchTree {
             printAllPathsRec(root.left, path);
             printAllPathsRec(root.right, path);
         }
-
         path.remove(path.size() - 1); // Backtrack
     }
 
@@ -629,15 +619,24 @@ class BinarySearchTree {
         BinarySearchTree tree = new BinarySearchTree();
 
         // Add nodes
-        tree.add(45);
-        tree.add(15);
-        tree.add(79);
-        tree.add(10);
-        tree.add(20);
-        tree.add(55);
-        tree.add(90);
-        tree.add(12);
         tree.add(50);
+        tree.add(48);
+        tree.add(70);
+        tree.add(30);
+        tree.add(65);
+        tree.add(90);
+        tree.add(20);
+        tree.add(32);
+        tree.add(67);
+        tree.add(98);
+        tree.add(15);
+        tree.add(25);
+        tree.add(31);
+        tree.add(35);
+        tree.add(66);
+        tree.add(69);
+        tree.add(94);
+        tree.add(99);
 
         // Traversals
         System.out.print("In-order traversal: ");
@@ -657,14 +656,14 @@ class BinarySearchTree {
         System.out.println("Search for 90: " + tree.search(90)); // true
 
         // Delete
-        tree.delete(20);
-        System.out.print("In-order after deleting 20: ");
-        tree.inOrder(); // Expected: 10 12 15 45 50 55 79 90
+        // tree.delete(20);
+        //System.out.print("In-order after deleting 20: ");
+        //tree.inOrder(); // Expected: 10 12 15 45 50 55 79 90
 
         // Tree properties
         System.out.println("Height of tree: " + tree.height()); // 4
         System.out.println("Number of nodes: " + tree.countNodes()); // 8 (after deleting 20)
-        System.out.println("Internal path length: " + tree.internalPathLength()); // Sum of depths
+        System.out.println("Internal path length (Number of nodes in row * the row number, do for all rows and add): " + tree.internalPathLength()); // Sum of depths
         System.out.println("Sum of node values: " + tree.sumOfNodeValues());
         System.out.println("Sum of levels (level * nodes at level): " + tree.sumOfLevels());
 
@@ -673,13 +672,13 @@ class BinarySearchTree {
 
         // Path finding examples (works with any value)
         System.out.println("\n--- Path Finding Examples ---");
-        System.out.println("Path to 10: " + tree.findPath(10));   // 45 15 10
-        System.out.println("Path to 50: " + tree.findPath(50));   // 45 79 55 50
-        System.out.println("Path to 45: " + tree.findPath(45));   // 45
-        System.out.println("Path to 90: " + tree.findPath(90));   // 45 79 90
-        System.out.println("Path to 12: " + tree.findPath(12));   // 45 15 10 12
+        System.out.println("Path to 10: " + tree.findPath(10)); // 45 15 10
+        System.out.println("Path to 50: " + tree.findPath(50)); // 45 79 55 50
+        System.out.println("Path to 45: " + tree.findPath(45)); // 45
+        System.out.println("Path to 90: " + tree.findPath(90)); // 45 79 90
+        System.out.println("Path to 12: " + tree.findPath(12)); // 45 15 10 12
         System.out.println("Path to 100: " + tree.findPath(100)); // Error message
-        System.out.println("Path to 1: " + tree.findPath(1));     // Error message
+        System.out.println("Path to 1: " + tree.findPath(1)); // Error message
 
         // Create perfect tree
         System.out.println("\n--- Perfect Tree ---");
@@ -711,6 +710,8 @@ class BinarySearchTree {
         System.out.println("Distance between 12 and 50: " + tree.findDistance(12, 50)); // 5
         System.out.println("Width at level 2: " + tree.getWidth(2)); // 4
         System.out.println("Maximum width: " + tree.getMaxWidth()); // 4
+        System.out.println("Is tree of minimal height? " + tree.minimalHeight());
+
         System.out.println("\nAll paths from root to leaves:");
         tree.printAllPaths();
 
