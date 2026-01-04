@@ -1,0 +1,51 @@
+=== TOPOLOGISK SORTERING (DFS Metode) ===
+Dybd først gennemgang med backtracking
+
+--- Trin 0 ---
+Nuværende node: A
+Besøgte noder: []
+Rekursionsstack: []
+Resultatstack: []
+
+--- Trin 1 ---
+Nuværende node: B
+Besøgte noder: [A]
+Rekursionsstack: [A]
+Resultatstack: []
+
+--- Trin 2 ---
+Nuværende node: C
+Besøgte noder: [A, B]
+Rekursionsstack: [A, B]
+Resultatstack: []
+
+--- Trin 3 ---
+Nuværende node: D
+Besøgte noder: [A, B, C]
+Rekursionsstack: [A, B, C]
+Resultatstack: []
+
+--- Trin 4 ---
+Nuværende node: E
+Besøgte noder: [A, B, C, D]
+Rekursionsstack: [A, B, C, D]
+Resultatstack: []
+
+--- Trin 5 ---
+Nuværende node: F
+Besøgte noder: [A, B, C, D, E]
+Rekursionsstack: [A, B, C, D, E]
+Resultatstack: []
+
+--- Trin 6 ---
+Nuværende node: G
+Besøgte noder: [A, B, C, D, E, F]
+Rekursionsstack: [A, B, C, D, E, F]
+Resultatstack: []
+
+--- Trin 7 ---
+Nuværende node: H
+Besøgte noder: [A, B, C, D, E, F, G]
+Rekursionsstack: [A, B, C, D, E, F, G]
+Resultatstack: []
+

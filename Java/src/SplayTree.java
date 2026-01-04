@@ -1,5 +1,4 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class SplayNode {
     int value;
@@ -19,45 +18,67 @@ public class SplayTree {
     }
 
     public void insert(int value) {
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("INSERT: " + value);
+        System.out.println("═══════════════════════════════════");
+
         if (root == null) {
             root = new SplayNode(value);
+            printTreeGraphical("Efter indsættelse af " + value);
             return;
         }
+
         SplayNode node = insertRec(root, value);
         splay(node);
+        printTreeGraphical("Efter indsættelse af " + value);
     }
 
-    private SplayNode insertRec(SplayNode root, int value) {
-        if (root == null) {
+    private SplayNode insertRec(SplayNode current, int value) {
+        if (current == null) {
             return new SplayNode(value);
         }
-        if (value < root.value) {
-            SplayNode leftChild = insertRec(root.left, value);
-            leftChild.parent = root;
-            root.left = leftChild;
-        } else if (value > root.value) {
-            SplayNode rightChild = insertRec(root.right, value);
-            rightChild.parent = root;
-            root.right = rightChild;
+
+        if (value < current.value) {
+            if (current.left == null) {
+                current.left = new SplayNode(value);
+                current.left.parent = current;
+                return current.left;
+            } else {
+                return insertRec(current.left, value);
+            }
+        } else if (value > current.value) {
+            if (current.right == null) {
+                current.right = new SplayNode(value);
+                current.right.parent = current;
+                return current.right;
+            } else {
+                return insertRec(current.right, value);
+            }
         }
-        return root;
+        // Duplicate - return existing node
+        return current;
     }
 
     public void splay(int value) {
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("=== SPLAY OPERATION: " + value + " ===");
+        System.out.println("═══════════════════════════════════\n");
+
         SplayNode node = findNode(root, value);
         if (node == null) {
             System.out.println("Værdi " + value + " findes ikke i træet.");
             return;
         }
-        System.out.println("\n=== Splay på værdi: " + value + " ===");
-        splay(node);
-        System.out.println("Færdig – " + value + " er nu roden.\n");
-    }
 
-    private void splay(SplayNode node) {
+        System.out.println("Finder node " + value + "...");
+        printTreeGraphical("Før splay operation");
+
+        int step = 1;
         while (node.parent != null) {
             SplayNode parent = node.parent;
             SplayNode grandparent = parent.parent;
+
+            System.out.println("\n─── Trin " + step + " ───");
 
             if (grandparent == null) {
                 // Zig
@@ -90,8 +111,43 @@ public class SplayTree {
                 rotateLeft(grandparent);
             }
 
-            // Vis træet efter hver rotation (valgfrit – fjern hvis for meget output)
-            printLevelOrder();
+            printTreeGraphical("Efter rotation " + step);
+            step++;
+        }
+
+        System.out.println("\n✅ SPLAY FÆRDIG - " + value + " er nu roden");
+    }
+
+    // Private hjælpemetode til at splay en node (bruges i insert)
+    private void splay(SplayNode node) {
+        while (node.parent != null) {
+            SplayNode parent = node.parent;
+            SplayNode grandparent = parent.parent;
+
+            if (grandparent == null) {
+                // Zig
+                if (node == parent.left) {
+                    rotateRight(parent);
+                } else {
+                    rotateLeft(parent);
+                }
+            } else if (node == parent.left && parent == grandparent.left) {
+                // Zig-zig
+                rotateRight(grandparent);
+                rotateRight(parent);
+            } else if (node == parent.right && parent == grandparent.right) {
+                // Zig-zig
+                rotateLeft(grandparent);
+                rotateLeft(parent);
+            } else if (node == parent.right && parent == grandparent.left) {
+                // Zig-zag
+                rotateLeft(parent);
+                rotateRight(grandparent);
+            } else {
+                // Zig-zag
+                rotateRight(parent);
+                rotateLeft(grandparent);
+            }
         }
     }
 
@@ -119,58 +175,281 @@ public class SplayTree {
         x.parent = y;
     }
 
-    private SplayNode findNode(SplayNode root, int value) {
-        if (root == null || root.value == value) return root;
-        if (value < root.value) return findNode(root.left, value);
-        return findNode(root.right, value);
+    private SplayNode findNode(SplayNode current, int value) {
+        if (current == null || current.value == value) return current;
+        if (value < current.value) return findNode(current.left, value);
+        return findNode(current.right, value);
     }
 
-    // RETTET printLevelOrder – stopper uendelig løkke!
-    public void printLevelOrder() {
+    // ====== VISUALISERING ======
+    public void printTreeGraphical(String title) {
         if (root == null) {
-            System.out.println("Træet er tomt.\n");
+            System.out.println("╔═══════════════════════════════════╗");
+            System.out.println("║        " + title + "         ║");
+            System.out.println("╚═══════════════════════════════════╝");
+            System.out.println("(empty tree)\n");
             return;
         }
 
-        Queue<SplayNode> queue = new LinkedList<>();
-        queue.add(root);
-        System.out.println("Træ (level-order):");
+        System.out.println("\n╔═══════════════════════════════════╗");
+        System.out.println("║        " + title + "         ║");
+        System.out.println("╚═══════════════════════════════════╝");
 
-        while (!queue.isEmpty()) {
-            int levelSize = queue.size();
-            for (int i = 0; i < levelSize; i++) {
-                SplayNode node = queue.poll();
-                if (node != null) {
-                    System.out.print(node.value + " ");
-                    // Kun tilføj børn hvis noden eksisterer
-                    queue.add(node.left);
-                    queue.add(node.right);
+        List<List<String>> lines = new ArrayList<>();
+        List<SplayNode> level = new ArrayList<>();
+        List<SplayNode> next = new ArrayList<>();
+
+        level.add(root);
+        int nn = 1;
+        int widest = 0;
+
+        while (nn != 0) {
+            List<String> line = new ArrayList<>();
+            nn = 0;
+            for (SplayNode n : level) {
+                if (n == null) {
+                    line.add(null);
+                    next.add(null);
+                    next.add(null);
                 } else {
-                    System.out.print("null ");
-                    // Tilføj IKKE børn af null – det var problemet!
+                    String aa = n.value + (n == root ? " (ROOT)" : "");
+                    line.add(aa);
+                    if (aa.length() > widest) widest = aa.length();
+
+                    next.add(n.left);
+                    next.add(n.right);
+
+                    if (n.left != null) nn++;
+                    if (n.right != null) nn++;
                 }
             }
-            System.out.println(); // Ny linje efter hvert niveau
+
+            if (widest % 2 == 1) widest++;
+            lines.add(line);
+
+            List<SplayNode> tmp = level;
+            level = next;
+            next = tmp;
+            next.clear();
         }
-        System.out.println(); // Ekstra linje for overskuelighed
+
+        int perpiece = lines.get(lines.size() - 1).size() * (widest + 4);
+        for (int i = 0; i < lines.size(); i++) {
+            List<String> line = lines.get(i);
+            int hpw = (int) Math.floor(perpiece / 2f) - 1;
+
+            if (i > 0) {
+                for (int j = 0; j < line.size(); j++) {
+                    // split node
+                    char c = ' ';
+                    if (j % 2 == 1) {
+                        if (line.get(j - 1) != null) {
+                            c = (line.get(j) != null) ? '┴' : '┘';
+                        } else {
+                            if (j < line.size() && line.get(j) != null) c = '└';
+                        }
+                    }
+                    System.out.print(c);
+
+                    // lines and spaces
+                    if (line.get(j) == null) {
+                        for (int k = 0; k < perpiece - 1; k++) {
+                            System.out.print(" ");
+                        }
+                    } else {
+                        for (int k = 0; k < hpw; k++) {
+                            System.out.print(j % 2 == 0 ? " " : "─");
+                        }
+                        System.out.print(j % 2 == 0 ? "┌" : "┐");
+                        for (int k = 0; k < hpw; k++) {
+                            System.out.print(j % 2 == 0 ? "─" : " ");
+                        }
+                    }
+                }
+                System.out.println();
+            }
+
+            // print line of numbers
+            for (int j = 0; j < line.size(); j++) {
+                String f = line.get(j);
+                if (f == null) f = "";
+                int gap1 = (int) Math.ceil(perpiece / 2f - f.length() / 2f);
+                int gap2 = (int) Math.floor(perpiece / 2f - f.length() / 2f);
+
+                for (int k = 0; k < gap1; k++) {
+                    System.out.print(" ");
+                }
+                System.out.print(f);
+                for (int k = 0; k < gap2; k++) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+
+            perpiece /= 2;
+        }
+
+        // Vis parent information
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("Node Information:");
+        printNodeInfo(root, "");
+        System.out.println("═══════════════════════════════════\n");
     }
 
+    private void printNodeInfo(SplayNode node, String indent) {
+        if (node == null) return;
+
+        String parentInfo = (node.parent == null) ? "Ingen (ROOT)" : String.valueOf(node.parent.value);
+        String leftInfo = (node.left == null) ? "null" : String.valueOf(node.left.value);
+        String rightInfo = (node.right == null) ? "null" : String.valueOf(node.right.value);
+
+        System.out.println(indent + "Node " + node.value + ":");
+        System.out.println(indent + "  Parent = " + parentInfo);
+        System.out.println(indent + "  Left = " + leftInfo);
+        System.out.println(indent + "  Right = " + rightInfo);
+
+        if (node.left != null || node.right != null) {
+            printNodeInfo(node.left, indent + "  ");
+            printNodeInfo(node.right, indent + "  ");
+        }
+    }
+
+    // ====== TRAVERSAL METODER ======
+    public void printInOrder() {
+        System.out.print("In-Order Traversal: ");
+        inOrderRec(root);
+        System.out.println("\n");
+    }
+
+    private void inOrderRec(SplayNode node) {
+        if (node != null) {
+            inOrderRec(node.left);
+            System.out.print(node.value + " ");
+            inOrderRec(node.right);
+        }
+    }
+
+    public void printPreOrder() {
+        System.out.print("Pre-Order Traversal: ");
+        preOrderRec(root);
+        System.out.println("\n");
+    }
+
+    private void preOrderRec(SplayNode node) {
+        if (node != null) {
+            System.out.print(node.value + " ");
+            preOrderRec(node.left);
+            preOrderRec(node.right);
+        }
+    }
+
+    // ====== TREE VALIDATION ======
+    public void validateTree() {
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("TREE VALIDATION");
+        System.out.println("═══════════════════════════════════");
+
+        if (root == null) {
+            System.out.println("✅ Træet er tomt (korrekt)");
+            return;
+        }
+
+        // Check BST property
+        boolean isBST = isValidBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.println("✅ BST property: " + (isBST ? "OK" : "FAILED"));
+
+        // Check parent pointers
+        boolean parentOK = checkParentPointers(root, null);
+        System.out.println("✅ Parent pointers: " + (parentOK ? "OK" : "FAILED"));
+
+        // Check no cycles
+        boolean noCycles = !hasCycle(root);
+        System.out.println("✅ No cycles: " + (noCycles ? "OK" : "FAILED"));
+
+        System.out.println("Tree height: " + getHeight(root));
+        System.out.println("Node count: " + countNodes(root));
+        System.out.println("═══════════════════════════════════\n");
+    }
+
+    private boolean isValidBST(SplayNode node, int min, int max) {
+        if (node == null) return true;
+        if (node.value <= min || node.value >= max) return false;
+        return isValidBST(node.left, min, node.value) &&
+                isValidBST(node.right, node.value, max);
+    }
+
+    private boolean checkParentPointers(SplayNode node, SplayNode parent) {
+        if (node == null) return true;
+        if (node.parent != parent) return false;
+        return checkParentPointers(node.left, node) &&
+                checkParentPointers(node.right, node);
+    }
+
+    private boolean hasCycle(SplayNode root) {
+        Set<SplayNode> visited = new HashSet<>();
+        return hasCycleUtil(root, visited);
+    }
+
+    private boolean hasCycleUtil(SplayNode node, Set<SplayNode> visited) {
+        if (node == null) return false;
+        if (visited.contains(node)) return true;
+        visited.add(node);
+        return hasCycleUtil(node.left, visited) || hasCycleUtil(node.right, visited);
+    }
+
+    private int getHeight(SplayNode node) {
+        if (node == null) return 0;
+        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    }
+
+    private int countNodes(SplayNode node) {
+        if (node == null) return 0;
+        return 1 + countNodes(node.left) + countNodes(node.right);
+    }
+
+    // ====== MAIN ======
     public static void main(String[] args) {
         SplayTree tree = new SplayTree();
 
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║       SPLAY TREE DEMONSTRATION           ║");
+        System.out.println("╚══════════════════════════════════════════╝");
+
         int[] values = {10, 20, 30, 5, 4, 7, 25};
-        System.out.println("Indsætter: " + java.util.Arrays.toString(values));
+        System.out.println("\nIndsætter værdier: " + Arrays.toString(values));
+        System.out.println("Forventet in-order efter alle indsættelser: 4 5 7 10 20 25 30");
+
         for (int v : values) {
             tree.insert(v);
+            tree.validateTree(); // Valider efter hver indsættelse
         }
 
-        System.out.println("Træ efter indsættelser:");
-        tree.printLevelOrder();
+        System.out.println("\n══════════════════════════════════════════");
+        System.out.println("FÆRDIG MED INDSÆTTELSER");
+        System.out.println("══════════════════════════════════════════\n");
 
+        tree.printInOrder();
+        tree.printPreOrder();
+
+        // Test splay operation på 4
         tree.splay(4);
-        tree.printLevelOrder();
+        tree.validateTree();
 
+        // Test splay på 30
         tree.splay(30);
-        tree.printLevelOrder();
+        tree.validateTree();
+
+        // Test splay på ikke-eksisterende værdi
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("TEST: SPLAY NON-EXISTENT VALUE");
+        System.out.println("═══════════════════════════════════");
+        tree.splay(100);
+
+        // Final tree state
+        System.out.println("\n══════════════════════════════════════════");
+        System.out.println("FINAL TREE STATE");
+        System.out.println("══════════════════════════════════════════");
+        tree.printTreeGraphical("FINAL SPLAY TREE");
+        tree.validateTree();
     }
 }

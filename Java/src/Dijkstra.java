@@ -14,9 +14,13 @@ class Edge {
 
 class Graph {
     Map<String, Map<String, Integer>> adjList = new HashMap<>();
+    Map<String, List<String>> adjListDirected = new HashMap<>(); // For topological sort
 
     void addDirectedEdge(String from, String to, int weight) {
         adjList.computeIfAbsent(from, k -> new HashMap<>()).put(to, weight);
+        adjListDirected.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
+        // Ensure all nodes are in the adjacency list
+        adjListDirected.putIfAbsent(to, new ArrayList<>());
     }
 
     void addUndirectedEdge(String from, String to, int weight) {
@@ -35,13 +39,40 @@ class Graph {
     Map<String, Integer> neighbors(String node) {
         return adjList.getOrDefault(node, new HashMap<>());
     }
+
+    // For topological sort
+    List<String> getNeighborsDirected(String node) {
+        return adjListDirected.getOrDefault(node, new ArrayList<>());
+    }
+
+    Set<String> getAllNodesDirected() {
+        return adjListDirected.keySet();
+    }
+
+    Map<String, Integer> calculateInDegrees() {
+        Map<String, Integer> inDegree = new HashMap<>();
+
+        // Initialize all nodes with 0
+        for (String node : getAllNodesDirected()) {
+            inDegree.put(node, 0);
+        }
+
+        // Calculate in-degrees
+        for (String node : getAllNodesDirected()) {
+            for (String neighbor : getNeighborsDirected(node)) {
+                inDegree.put(neighbor, inDegree.getOrDefault(neighbor, 0) + 1);
+            }
+        }
+
+        return inDegree;
+    }
 }
 
 class DijkstraResult {
     Map<String, Integer> dist;
     Map<String, String> prev;
     Set<String> visited;
-    List<Map<String, Object>> steps; // Tilføjet for at gemme hvert trin
+    List<Map<String, Object>> steps;
 
     DijkstraResult(Map<String, Integer> dist, Map<String, String> prev, Set<String> visited, List<Map<String, Object>> steps) {
         this.dist = dist;
@@ -53,30 +84,170 @@ class DijkstraResult {
 
 public class Dijkstra {
 
-    private static final String START_NODE = "Fasdasd"; //Start node
+    private static final String START_NODE = "B"; // Ændret til A for bedre demonstration
 
-    // DIN GRAF - INDKORPORERET KORREKT
+    // OPDATERET GRAF - DAG (Directed Acyclic Graph) for topological sort
     private static final List<Edge> EDGES = Arrays.asList(
-            new Edge("Fasdasd", "Esdfg", 4),
-            new Edge("Esdfg", "Ddsg", 1),
-            new Edge("Dasdasd", "Ddsg", 9)
-
+            new Edge("A", "B", 1),
+            new Edge("B", "C", 2),
+            new Edge("C", "D", 3),
+            new Edge("D", "E", 4),
+            new Edge("E", "F", 5),
+            new Edge("F", "G", 6),
+            new Edge("G", "H", 7)
     );
 
+    // Topologisk sortering - Kahn's algoritme
+    public static List<String> topologicalSortKahn(Graph graph) {
+        Map<String, Integer> inDegree = graph.calculateInDegrees();
+        Queue<String> queue = new LinkedList<>();
+        List<String> result = new ArrayList<>();
+        Map<Integer, List<String>> steps = new TreeMap<>();
+        int step = 0;
+
+        // Find nodes with in-degree 0
+        for (String node : inDegree.keySet()) {
+            if (inDegree.get(node) == 0) {
+                queue.add(node);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            // Gem trin
+            steps.put(step, new ArrayList<>(result));
+            step++;
+
+            String current = queue.poll();
+            result.add(current);
+
+            // Reduce in-degree of neighbors
+            for (String neighbor : graph.getNeighborsDirected(current)) {
+                inDegree.put(neighbor, inDegree.get(neighbor) - 1);
+                if (inDegree.get(neighbor) == 0) {
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        // Gem det sidste trin
+        steps.put(step, new ArrayList<>(result));
+
+        // Check for cycle
+        if (result.size() != graph.getAllNodesDirected().size()) {
+            System.out.println("Warning: Graph contains a cycle! Topological sort not possible.");
+            return new ArrayList<>();
+        }
+
+        writeTopologicalStepsToFile(steps, "topological_sort.txt");
+        return result;
+    }
+
+    // Topologisk sortering - DFS metode
+    public static List<String> topologicalSortDFS(Graph graph) {
+        Set<String> visited = new HashSet<>();
+        Set<String> recursionStack = new HashSet<>();
+        Stack<String> stack = new Stack<>();
+        List<Map<String, Object>> dfsSteps = new ArrayList<>();
+        int step = 0;
+
+        for (String node : graph.getAllNodesDirected()) {
+            if (!visited.contains(node)) {
+                if (!dfsTopological(node, graph, visited, recursionStack, stack, dfsSteps, step)) {
+                    System.out.println("Cycle detected! Graph is not a DAG.");
+                    return new ArrayList<>();
+                }
+            }
+        }
+
+        List<String> result = new ArrayList<>();
+        while (!stack.isEmpty()) {
+            result.add(stack.pop());
+        }
+
+        writeDFSTopologicalStepsToFile(dfsSteps, "topological_dfs_steps.txt");
+        return result;
+    }
+
+    private static boolean dfsTopological(String node, Graph graph, Set<String> visited,
+                                          Set<String> recursionStack, Stack<String> stack,
+                                          List<Map<String, Object>> steps, int step) {
+
+        Map<String, Object> stepInfo = new HashMap<>();
+        stepInfo.put("step", step);
+        stepInfo.put("node", node);
+        stepInfo.put("visited", new HashSet<>(visited));
+        stepInfo.put("recursionStack", new HashSet<>(recursionStack));
+        stepInfo.put("stack", new ArrayList<>(stack));
+        steps.add(stepInfo);
+
+        visited.add(node);
+        recursionStack.add(node);
+
+        for (String neighbor : graph.getNeighborsDirected(node)) {
+            if (!visited.contains(neighbor)) {
+                if (!dfsTopological(neighbor, graph, visited, recursionStack, stack, steps, step + 1)) {
+                    return false;
+                }
+            } else if (recursionStack.contains(neighbor)) {
+                return false; // Cycle detected
+            }
+        }
+
+        recursionStack.remove(node);
+        stack.push(node);
+        return true;
+    }
+
+    public static void writeTopologicalStepsToFile(Map<Integer, List<String>> steps, String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            writer.println("=== TOPOLOGISK SORTERING (Kahn's Algoritme) ===");
+            writer.println("Fjerner løbende noder med in-degree 0");
+            writer.println();
+
+            for (Map.Entry<Integer, List<String>> entry : steps.entrySet()) {
+                writer.println("Trin " + entry.getKey() + ": " + entry.getValue());
+            }
+
+            System.out.println("Topologisk sortering trin skrevet til fil: " + filename);
+        } catch (IOException e) {
+            System.err.println("Fejl ved skrivning til fil: " + e.getMessage());
+        }
+    }
+
+    public static void writeDFSTopologicalStepsToFile(List<Map<String, Object>> steps, String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            writer.println("=== TOPOLOGISK SORTERING (DFS Metode) ===");
+            writer.println("Dybd først gennemgang med backtracking");
+            writer.println();
+
+            for (Map<String, Object> step : steps) {
+                writer.println("--- Trin " + step.get("step") + " ---");
+                writer.println("Nuværende node: " + step.get("node"));
+                writer.println("Besøgte noder: " + step.get("visited"));
+                writer.println("Rekursionsstack: " + step.get("recursionStack"));
+                writer.println("Resultatstack: " + step.get("stack"));
+                writer.println();
+            }
+
+            System.out.println("DFS Topologisk sortering trin skrevet til fil: " + filename);
+        } catch (IOException e) {
+            System.err.println("Fejl ved skrivning til fil: " + e.getMessage());
+        }
+    }
+
+    // Resten af dine eksisterende metoder forbliver uændret...
     public static DijkstraResult dijkstra(Graph graph, String source, boolean writeSteps) {
         Map<String, Integer> dist = new HashMap<>();
         Map<String, String> prev = new HashMap<>();
         Set<String> visited = new HashSet<>();
         List<Map<String, Object>> steps = new ArrayList<>();
 
-        // Initialiser alle noder
         for (String node : graph.nodes()) {
             dist.put(node, Integer.MAX_VALUE);
             prev.put(node, null);
         }
         dist.put(source, 0);
 
-        // Gem starttilstand (Step 0)
         if (writeSteps) {
             Map<String, Object> step0 = new HashMap<>();
             step0.put("step", 0);
@@ -100,7 +271,6 @@ public class Dijkstra {
             if (visited.contains(u)) continue;
             visited.add(u);
 
-            // Gem tilstand før vi behandler naboer (dette er trinnet hvor u bliver "known")
             if (writeSteps) {
                 Map<String, Object> step = new HashMap<>();
                 step.put("step", stepCounter++);
@@ -292,35 +462,53 @@ public class Dijkstra {
             undirected.addUndirectedEdge(e.from, e.to, e.weight);
         }
 
-        // Kør Dijkstra på rettet graf og skriv trin til fil
+        // Kør Dijkstra på rettet graf
         DijkstraResult dirResult = dijkstra(directed, START_NODE, true);
-        writeDijkstraStepsToFile(dirResult, "DIJKSTRA PÅ RETTET GRAF (Med pile)", "dijkstra.txt");
-        printDijkstraTable(dirResult, "DIJKSTRA PÅ RETTET GRAF (Med pile)");
+        writeDijkstraStepsToFile(dirResult, "DIJKSTRA PÅ RETTET GRAF", "dijkstra.txt");
+        printDijkstraTable(dirResult, "DIJKSTRA PÅ RETTET GRAF");
 
-        // Kør Dijkstra på urettet graf (uden at gemme trin)
+        // Kør Dijkstra på urettet graf
         DijkstraResult undirResult = dijkstra(undirected, START_NODE, false);
-        printDijkstraTable(undirResult, "DIJKSTRA PÅ URETTET GRAF (Uden pile)");
+        printDijkstraTable(undirResult, "DIJKSTRA PÅ URETTET GRAF");
 
+        // Kør Kruskal MST
         List<Edge> mst = kruskalMST(undirected);
         printMST(mst);
 
+        // Kør Topologisk sortering (Kahn's algoritme)
+        System.out.println("\n=== TOPOLOGISK SORTERING (KAHN) ===");
+        List<String> topologicalOrderKahn = topologicalSortKahn(directed);
+        System.out.println("Topologisk rækkefølge (Kahn): " + topologicalOrderKahn);
+
+        // Kør Topologisk sortering (DFS metode)
+        System.out.println("\n=== TOPOLOGISK SORTERING (DFS) ===");
+        List<String> topologicalOrderDFS = topologicalSortDFS(directed);
+        System.out.println("Topologisk rækkefølge (DFS): " + topologicalOrderDFS);
+
         System.out.println("""
 ------------------------------------------------------------
-📌 FORKLARING
-Directed graf:
-   - Bruges til navigation, trafikrouting, algoritmer med retning.
-   - Dijkstra tager højde for retning (f.eks. envejsgader).
+📌 FORKLARING AF ALGORITMER
 
-Undirected graf:
-   - Bruges til netværk, kabling, sociale forbindelser.
-   - Dijkstra kan køre, men kanter virker begge veje.
-   - MST giver kun mening på undirected graf.
+1. Dijkstra's algoritme:
+   - Finder korteste vej fra en startnode til alle andre
+   - Kræver ikke-negative vægte
+   - Bruger prioritetskø
 
-Startkonfiguration fra tabel:
-   - Startnode: F
-   - Kør Dijkstra fra node F
+2. Kruskal's algoritme:
+   - Finder Minimum Spanning Tree (MST)
+   - Kun for urettede grafer
+   - Bruger Union-Find data struktur
 
-Trin-for-trin output er skrevet til 'dijkstra.txt'
+3. Topologisk sortering:
+   - Kun for Directed Acyclic Graphs (DAGs)
+   - Kahn's algoritme: Fjerner noder med in-degree 0
+   - DFS metode: Dybd først gennemgang
+   - Anvendelse: Projektplanlægning, kursusafhængigheder
+
+Filer genereret:
+   - dijkstra.txt: Dijkstra trin-for-trin
+   - topological_sort.txt: Kahn's algoritme trin
+   - topological_dfs_steps.txt: DFS metode trin
 ------------------------------------------------------------
         """);
     }
