@@ -321,8 +321,8 @@ public class HashCollisionHandlingAndRehashing_DifferentIndex {
         System.out.println("=".repeat(50));
 
         // Indsæt samme elementer i alle tabeller
-        int[] keys = {1, 23, 3, 15, 5, 19, 33, 2, 3};
-        String[] values = {"A", "W", "C", "O", "E", "S", "X", "B", "D"};
+        int[] keys = {2, 3, 6, 8, 10};
+        String[] values = {"V", "R", "P", "E", "E", "F"};
 
         System.out.print("Indsætter: ");
         for (int i = 0; i < keys.length; i++) {
@@ -331,6 +331,8 @@ public class HashCollisionHandlingAndRehashing_DifferentIndex {
         }
 
         table.printTable(title);
+
+
 
         // Test søgning
         System.out.println("\nTest søgning:");

@@ -1,7 +1,6 @@
 import java.util.*;
 
 public class HashTable_insert_delete {
-
     public enum Method {
         LINEAR, QUADRATIC, DOUBLE, CHAINING
     }
@@ -12,16 +11,18 @@ public class HashTable_insert_delete {
         private Integer[] table; // For linear, quadratic, double hashing
         private List<Integer>[] chains; // For chaining
         private int hashIndex; // Fixed start index (if any), else use hash function
-        private int secondaryHash; // For double hashing; if 0, compute default
+        private Integer secondaryHash; // For double hashing; use Integer instead of int
         private List<Character> insertionOrder;
+        private boolean debugMode;
 
         @SuppressWarnings("unchecked")
-        public HashTable(int size, Method method, Integer hashIndex, Integer secondaryHash) {
+        public HashTable(int size, Method method, Integer hashIndex, Integer secondaryHash, boolean debugMode) {
             this.tableSize = size;
             this.method = method;
             this.hashIndex = (hashIndex == null) ? -1 : hashIndex;
-            this.secondaryHash = (secondaryHash == null) ? 0 : secondaryHash;
+            this.secondaryHash = secondaryHash; // Keep as Integer
             this.insertionOrder = new ArrayList<>();
+            this.debugMode = debugMode;
 
             if (method == Method.CHAINING) {
                 chains = new List[tableSize];
@@ -31,6 +32,19 @@ public class HashTable_insert_delete {
             } else {
                 table = new Integer[tableSize];
                 Arrays.fill(table, null);
+            }
+
+            if (debugMode) {
+                System.out.println("=== OPRETTET HASH-TABEL ===");
+                System.out.println("Størrelse: " + size);
+                System.out.println("Metode: " + method);
+                if (hashIndex != -1) {
+                    System.out.println("Fast hash-index: " + hashIndex);
+                }
+                if (method == Method.DOUBLE && secondaryHash != null) {
+                    System.out.println("Sekundær hash: " + secondaryHash);
+                }
+                System.out.println();
             }
         }
 
@@ -51,7 +65,9 @@ public class HashTable_insert_delete {
 
         // Secondary hash for double hashing
         private int getSecondaryHash(int key) {
-            if (secondaryHash != 0) return secondaryHash;
+            if (secondaryHash != null && secondaryHash != 0) {
+                return secondaryHash;
+            }
             return 1 + (key % (tableSize - 1));
         }
 
@@ -61,10 +77,14 @@ public class HashTable_insert_delete {
             insertionOrder.add(c);
             if (method == Method.CHAINING) {
                 chains[index].add(key);
-                System.out.println("Manually inserted '" + c + "' at index " + index + " in chaining.");
+                if (debugMode) {
+                    System.out.println("Manuelt indsat '" + c + "' (key=" + key + ") ved indeks " + index + " i chaining.");
+                }
             } else {
                 table[index] = key;
-                System.out.println("Manually inserted '" + c + "' at index " + index + ".");
+                if (debugMode) {
+                    System.out.println("Manuelt indsat '" + c + "' (key=" + key + ") ved indeks " + index + ".");
+                }
             }
         }
 
@@ -74,6 +94,15 @@ public class HashTable_insert_delete {
             insertionOrder.add(c);
             int startIdx = (hashIndex >= 0) ? hashIndex : hashFunction(key);
             int idx = -1;
+
+            if (debugMode) {
+                System.out.println("\n--- Indsætter '" + c + "' ---");
+                if (hashIndex >= 0) {
+                    System.out.println("Startindeks (fast): " + startIdx);
+                } else {
+                    System.out.println("Hash(" + key + ") = " + key + " mod " + tableSize + " = " + startIdx);
+                }
+            }
 
             switch (method) {
                 case LINEAR:
@@ -89,53 +118,135 @@ public class HashTable_insert_delete {
                     idx = insertChaining(key, startIdx);
                     break;
             }
-            System.out.println("Inserted '" + c + "' (key=" + key + ") at index " + idx + " using " + method + " method.");
+
+            if (debugMode && idx != -1) {
+                System.out.println("Resultat: '" + c + "' placeret ved indeks " + idx);
+            }
+        }
+
+        // Insert with custom hash index (for specific problems)
+        public void insertWithHash(char c, int customHashIndex) {
+            int originalHashIndex = this.hashIndex;
+            this.hashIndex = customHashIndex;
+            insert(c);
+            this.hashIndex = originalHashIndex;
         }
 
         private int insertLinear(int key, int startIdx) {
             int idx = startIdx;
-            while (table[idx] != null) {
-                idx = (idx + 1) % tableSize;
+            int probeCount = 0;
+
+            if (debugMode) {
+                System.out.println("Lineær probing:");
             }
+
+            while (table[idx] != null) {
+                if (debugMode) {
+                    System.out.println("  Indeks " + idx + ": optaget af '" + keyToChar(table[idx]) + "'");
+                }
+                idx = (idx + 1) % tableSize;
+                probeCount++;
+
+                if (probeCount >= tableSize) {
+                    if (debugMode) System.out.println("  Fejl: Tabel fuld!");
+                    return -1;
+                }
+            }
+
+            if (debugMode) {
+                if (probeCount > 0) {
+                    System.out.println("  Indeks " + idx + ": ledigt (efter " + (probeCount + 1) + " forsøg)");
+                } else {
+                    System.out.println("  Indeks " + idx + ": ledigt (ingen kollision)");
+                }
+            }
+
             table[idx] = key;
             return idx;
         }
 
         private int insertQuadratic(int key, int startIdx) {
             int i = 0;
+
+            if (debugMode) {
+                System.out.println("Kvadratisk probing:");
+            }
+
             while (i <= tableSize) {
                 int idx = (startIdx + i * i) % tableSize;
+
                 if (table[idx] == null) {
+                    if (debugMode) {
+                        if (i > 0) {
+                            System.out.println("  i=" + i + ": (" + startIdx + " + " + i + "²) mod " + tableSize + " = " + idx + " → ledigt (efter " + (i + 1) + " forsøg)");
+                        } else {
+                            System.out.println("  i=" + i + ": " + startIdx + " mod " + tableSize + " = " + idx + " → ledigt (ingen kollision)");
+                        }
+                    }
                     table[idx] = key;
                     return idx;
+                } else {
+                    if (debugMode) {
+                        System.out.println("  i=" + i + ": (" + startIdx + " + " + i + "²) mod " + tableSize + " = " + idx + " → optaget af '" + keyToChar(table[idx]) + "'");
+                    }
                 }
                 i++;
             }
-            return -1; // Table full
+
+            if (debugMode) System.out.println("  Fejl: Tabel fuld!");
+            return -1;
         }
 
         private int insertDoubleHashing(int key, int startIdx) {
             int h2 = getSecondaryHash(key);
             int i = 0;
+
+            if (debugMode) {
+                System.out.println("Dobbelt hashing:");
+                System.out.println("  h₁ = " + startIdx);
+                System.out.println("  h₂(" + key + ") = " + h2);
+            }
+
             while (i <= tableSize) {
                 int idx = (startIdx + i * h2) % tableSize;
+
                 if (table[idx] == null) {
+                    if (debugMode) {
+                        if (i > 0) {
+                            System.out.println("  i=" + i + ": (" + startIdx + " + " + i + "×" + h2 + ") mod " + tableSize + " = " + idx + " → ledigt (efter " + (i + 1) + " forsøg)");
+                        } else {
+                            System.out.println("  i=" + i + ": " + startIdx + " mod " + tableSize + " = " + idx + " → ledigt (ingen kollision)");
+                        }
+                    }
                     table[idx] = key;
                     return idx;
+                } else {
+                    if (debugMode) {
+                        System.out.println("  i=" + i + ": (" + startIdx + " + " + i + "×" + h2 + ") mod " + tableSize + " = " + idx + " → optaget af '" + keyToChar(table[idx]) + "'");
+                    }
                 }
                 i++;
             }
-            return -1; // Table full
+
+            if (debugMode) System.out.println("  Fejl: Tabel fuld!");
+            return -1;
         }
 
         private int insertChaining(int key, int startIdx) {
+            if (debugMode) {
+                System.out.println("Chaining:");
+                System.out.println("  Tilføjer '" + keyToChar(key) + "' til kæden ved indeks " + startIdx);
+            }
             chains[startIdx].add(key);
             return startIdx;
         }
 
         // Display current hash table
         public void display() {
-            System.out.println("\nCurrent Hash Table:");
+            System.out.println("\n=== HASH TABEL ===");
+            System.out.println("Indeks : Værdi");
+            System.out.println("---------------");
+
             if (method == Method.CHAINING) {
                 for (int i = 0; i < tableSize; i++) {
                     if (chains[i].isEmpty()) {
@@ -144,9 +255,11 @@ public class HashTable_insert_delete {
                         StringBuilder sb = new StringBuilder();
                         for (int k : chains[i]) {
                             sb.append(keyToChar(k));
-                            sb.append(",");
+                            sb.append(" → ");
                         }
-                        sb.deleteCharAt(sb.length()-1); // Remove last comma
+                        if (sb.length() > 0) {
+                            sb.delete(sb.length() - 3, sb.length()); // Remove last arrow
+                        }
                         System.out.printf("%2d : %s%n", i, sb.toString());
                     }
                 }
@@ -159,298 +272,172 @@ public class HashTable_insert_delete {
                     }
                 }
             }
+            System.out.println("---------------");
         }
 
-        // Get current table keys (for error checking)
-        public Map<Character, Integer> getPositions() {
-            Map<Character, Integer> map = new LinkedHashMap<>();
+        // Vis mellemstatus (efter manuelle indsættelser)
+        public void displayMellemstatus() {
+            System.out.println("\n=== MELLEMSTATUS (efter manuelle indsættelser) ===");
+            System.out.println("Indeks : Værdi");
+            System.out.println("---------------");
+
             if (method == Method.CHAINING) {
                 for (int i = 0; i < tableSize; i++) {
-                    for (int k : chains[i]) {
-                        map.put(keyToChar(k), i);
+                    if (chains[i].isEmpty()) {
+                        System.out.printf("%2d : #%n", i);
+                    } else {
+                        StringBuilder sb = new StringBuilder();
+                        for (int k : chains[i]) {
+                            sb.append(keyToChar(k));
+                            sb.append(" → ");
+                        }
+                        if (sb.length() > 0) {
+                            sb.delete(sb.length() - 3, sb.length());
+                        }
+                        System.out.printf("%2d : %s%n", i, sb.toString());
                     }
                 }
             } else {
                 for (int i = 0; i < tableSize; i++) {
-                    if (table[i] != null) {
-                        map.put(keyToChar(table[i]), i);
+                    if (table[i] == null) {
+                        System.out.printf("%2d : #%n", i);
+                    } else {
+                        System.out.printf("%2d : %c%n", i, keyToChar(table[i]));
                     }
                 }
             }
-            return map;
-        }
-
-        public List<Character> getInsertionOrder() {
-            return insertionOrder;
-        }
-
-        // Find error for linear probing
-        public void findErrorLinear(int hashIndex) {
-            System.out.println("\n--- ANALYZING TABLE with LINEAR PROBING ---");
-            Map<Character, Integer> pos = getPositions();
-            List<Character> order = getInsertionOrder();
-
-            System.out.println("Current positions:");
-            for (char c : order) {
-                if (pos.containsKey(c)) {
-                    System.out.printf("  '%c' at index %d%n", c, pos.get(c));
-                }
-            }
-
-            int tableSize = this.tableSize;
-
-            for (char suspect : order) {
-                System.out.println("\nTrying suspect: '" + suspect + "'");
-                Set<Integer> occupied = new HashSet<>();
-                boolean allCorrect = true;
-
-                int nextIdx = hashIndex;
-                for (char c : order) {
-                    if (c == suspect) continue;
-
-                    while (occupied.contains(nextIdx)) {
-                        nextIdx = (nextIdx + 1) % tableSize;
-                    }
-                    if (!pos.containsKey(c) || pos.get(c) != nextIdx) {
-                        System.out.printf("  '%c' at %d, expected %d - mismatch%n", c, pos.getOrDefault(c, -1), nextIdx);
-                        allCorrect = false;
-                        break;
-                    }
-                    occupied.add(nextIdx);
-                    nextIdx = (nextIdx + 1) % tableSize;
-                }
-                if (allCorrect) {
-                    int suspectIdx = pos.get(suspect);
-                    int correctIdx = hashIndex;
-                    while (occupied.contains(correctIdx)) {
-                        correctIdx = (correctIdx + 1) % tableSize;
-                    }
-                    System.out.println("ERROR FOUND:");
-                    System.out.printf("  Element: '%c'%n", suspect);
-                    System.out.printf("  Currently at: %d%n", suspectIdx);
-                    System.out.printf("  Should be at: %d%n", correctIdx);
-                    return;
-                }
-            }
-            System.out.println("No single error found.");
-        }
-
-        // Find error for quadratic probing
-        public void findErrorQuadratic(int hashIndex) {
-            System.out.println("\n--- ANALYZING TABLE with QUADRATIC PROBING ---");
-            Map<Character, Integer> pos = getPositions();
-            List<Character> order = getInsertionOrder();
-
-            System.out.println("Current positions:");
-            for (char c : order) {
-                if (pos.containsKey(c)) {
-                    System.out.printf("  '%c' at index %d%n", c, pos.get(c));
-                }
-            }
-
-            int tableSize = this.tableSize;
-
-            for (char suspect : order) {
-                System.out.println("\nTrying suspect: '" + suspect + "'");
-                Set<Integer> occupied = new HashSet<>();
-                boolean allCorrect = true;
-
-                for (char c : order) {
-                    if (c == suspect) continue;
-                    int currentIdx = pos.get(c);
-
-                    int i = 0;
-                    int expectedIdx = -1;
-                    while (i <= tableSize) {
-                        int probeIdx = (hashIndex + i * i) % tableSize;
-                        if (!occupied.contains(probeIdx)) {
-                            expectedIdx = probeIdx;
-                            occupied.add(probeIdx);
-                            break;
-                        }
-                        i++;
-                    }
-
-                    if (expectedIdx != currentIdx) {
-                        System.out.printf("  '%c' at %d, expected %d - mismatch%n", c, currentIdx, expectedIdx);
-                        allCorrect = false;
-                        break;
-                    }
-                }
-
-                if (allCorrect) {
-                    int suspectIdx = pos.get(suspect);
-                    int i = 0;
-                    int suspectCorrect = -1;
-                    while (i <= tableSize) {
-                        int probeIdx = (hashIndex + i * i) % tableSize;
-                        if (!occupied.contains(probeIdx)) {
-                            suspectCorrect = probeIdx;
-                            break;
-                        }
-                        i++;
-                    }
-                    System.out.println("ERROR FOUND:");
-                    System.out.printf("  Element: '%c'%n", suspect);
-                    System.out.printf("  Currently at: %d%n", suspectIdx);
-                    System.out.printf("  Should be at: %d%n", suspectCorrect);
-                    System.out.printf("  Calculation: (%d + %d^2) mod %d = %d%n", hashIndex, i, tableSize, suspectCorrect);
-                    return;
-                }
-            }
-            System.out.println("No single error found.");
-        }
-
-        // Find error for double hashing
-        public void findErrorDoubleHashing(int hashIndex) {
-            System.out.println("\n--- ANALYZING TABLE with DOUBLE HASHING ---");
-            Map<Character, Integer> pos = getPositions();
-            List<Character> order = getInsertionOrder();
-
-            System.out.println("Current positions:");
-            for (char c : order) {
-                if (pos.containsKey(c)) {
-                    System.out.printf("  '%c' at index %d%n", c, pos.get(c));
-                }
-            }
-
-            int tableSize = this.tableSize;
-
-            for (char suspect : order) {
-                System.out.println("\nTrying suspect: '" + suspect + "'");
-                Set<Integer> occupied = new HashSet<>();
-                boolean allCorrect = true;
-
-                for (char c : order) {
-                    if (c == suspect) continue;
-                    int currentIdx = pos.get(c);
-                    int key = charToKey(c);
-
-                    int h2 = getSecondaryHash(key);
-
-                    int i = 0;
-                    int expectedIdx = -1;
-                    while (i <= tableSize) {
-                        int probeIdx = (hashIndex + i * h2) % tableSize;
-                        if (!occupied.contains(probeIdx)) {
-                            expectedIdx = probeIdx;
-                            occupied.add(probeIdx);
-                            break;
-                        }
-                        i++;
-                    }
-
-                    if (expectedIdx != currentIdx) {
-                        System.out.printf("  '%c' at %d, expected %d - mismatch%n", c, currentIdx, expectedIdx);
-                        allCorrect = false;
-                        break;
-                    }
-                }
-
-                if (allCorrect) {
-                    int suspectIdx = pos.get(suspect);
-                    int key = charToKey(suspect);
-                    int h2 = getSecondaryHash(key);
-                    int i = 0;
-                    int suspectCorrect = -1;
-                    while (i <= tableSize) {
-                        int probeIdx = (hashIndex + i * h2) % tableSize;
-                        if (!occupied.contains(probeIdx)) {
-                            suspectCorrect = probeIdx;
-                            break;
-                        }
-                        i++;
-                    }
-                    System.out.println("ERROR FOUND:");
-                    System.out.printf("  Element: '%c'%n", suspect);
-                    System.out.printf("  Currently at: %d%n", suspectIdx);
-                    System.out.printf("  Should be at: %d%n", suspectCorrect);
-                    System.out.printf("  h2(%d) = %d%n", key, h2);
-                    System.out.printf("  Calculation: (%d + %d * %d) mod %d = %d%n", hashIndex, i, h2, tableSize, suspectCorrect);
-                    return;
-                }
-            }
-            System.out.println("No single error found.");
-        }
-
-        // Find error for chaining (checks if all elements that hash to hashIndex are in the chain at hashIndex)
-        public void findErrorChaining(int hashIndex) {
-            System.out.println("\n--- ANALYZING TABLE with CHAINING ---");
-            List<Integer> chainAtIndex = chains[hashIndex];
-            List<Character> order = getInsertionOrder();
-
-            Set<Character> atHash = new HashSet<>();
-            Set<Character> elsewhere = new HashSet<>();
-
-            for (int i = 0; i < tableSize; i++) {
-                if (i == hashIndex) {
-                    for (int k : chains[i]) {
-                        atHash.add(keyToChar(k));
-                    }
-                } else {
-                    for (int k : chains[i]) {
-                        elsewhere.add(keyToChar(k));
-                    }
-                }
-            }
-
-            System.out.println("Elements at index " + hashIndex + ": " + atHash);
-            System.out.println("Elements elsewhere: " + elsewhere);
-
-            // Check if elements that hash to hashIndex are only in chain at hashIndex
-            // We assume insertionOrder are all keys that hash to hashIndex (as per your setup)
-            Set<Character> expectedSet = new HashSet<>(order);
-
-            boolean errorFound = false;
-            for (Character c : elsewhere) {
-                if (expectedSet.contains(c)) {
-                    System.out.println("ERROR FOUND: '" + c + "' is at wrong index");
-                    errorFound = true;
-                }
-            }
-            if (!errorFound) {
-                System.out.println("All elements correctly placed!");
-            }
+            System.out.println("---------------");
         }
     }
 
-    // ====== MAIN ======
+    // ====== KONFIGURATION AF OPGAVER ======
     public static void main(String[] args) {
-        int tableSize = 17;
-        Method method = Method.QUADRATIC; // Change to LINEAR, DOUBLE, CHAINING as needed
-        int hashIndex = 5; // Set to fixed hash index (if needed), else -1 for normal hash function
-        Integer secondaryHash = null; // For double hashing: null to use default, else specify int
+        // ====== OPGAVE 1: KORREKT KONFIGURATION FOR DIN OPGAVE ======
+        System.out.println("========== OPGAVE 1: KVADRATISK PROBING (KORREKT) ==========");
 
-        System.out.println("=== Example 1: Manual insertion ===");
-        HashTable ht = new HashTable(tableSize, method, hashIndex, secondaryHash);
+        // Konfiguration for opgave 1
+        int tableSize1 = 11;
+        Method method1 = Method.QUADRATIC;
+        Integer secondaryHash1 = null;
+        boolean debugMode1 = true;
 
-        // Manual insertion at indices (from your example)
-        ht.manualInsert(3, 'G');
-        ht.manualInsert(4, 'F');
-        ht.manualInsert(5, 'C');
-        ht.manualInsert(6, 'L');
-        ht.manualInsert(8, 'P');
-        ht.manualInsert(9, 'U');
-        ht.manualInsert(13, 'Y');
-        ht.manualInsert(14, 'M');
+        // Opret hash-tabel (uden fast hash-index, da vi bruger individuelle)
+        HashTable ht1 = new HashTable(tableSize1, method1, -1, secondaryHash1, debugMode1);
 
+        // Manuelle indsættelser (initial tabel)
+        int[][] manualInserts1 = {
+                {2, 'V'},
+                {3, 'R'},
+                {6, 'P'},
+                {8, 'E'},
+                {10, 'F'}
+        };
+
+        // Udfør manuelle indsættelser
+        System.out.println("\n--- MANUELLE INDSÆTTELSER ---");
+        for (int[] insert : manualInserts1) {
+            ht1.manualInsert(insert[0], (char) insert[1]);
+        }
+        ht1.displayMellemstatus();
+
+        // Automatiske indsættelser med SPECIFIKKE HASH-VÆRDIER fra opgaven
+        System.out.println("\n--- AUTOMATISKE INDSÆTTELSER MED SPECIFIKKE HASH-VÆRDIER ---");
+        System.out.println("Indsætter: Q (hash=7), C (hash=8), H (hash=2)");
+
+        // Q hasher til 7
+        ht1.insertWithHash('Q', 7);
+        // C hasher til 8
+        ht1.insertWithHash('C', 8);
+        // H hasher til 2
+        ht1.insertWithHash('H', 2);
+
+        // Vis slutresultat
+        System.out.println("\n--- SLUTRESULTAT (KORREKT IFØLGE OPGAVEN) ---");
+        ht1.display();
+
+        // ====== OPGAVE 2: LINEÆR PROBING ======
+        System.out.println("\n\n========== OPGAVE 2: LINEÆR PROBING ==========");
+
+        int tableSize2 = 10;
+        Method method2 = Method.LINEAR;
+        int hashIndex2 = -1;
+        Integer secondaryHash2 = null;
+        boolean debugMode2 = true;
+
+        int[][] manualInserts2 = {
+                {0, 'A'},
+                {1, 'B'},
+                {4, 'E'}
+        };
+
+        char[] autoInserts2 = {'C', 'D', 'F', 'G'};
+
+        runOpgave("Opgave 2: Lineær Probing", tableSize2, method2, hashIndex2, secondaryHash2, manualInserts2, autoInserts2, debugMode2);
+
+        // ====== OPGAVE 3: DOBBELT HASHING ======
+        System.out.println("\n\n========== OPGAVE 3: DOBBELT HASHING ==========");
+
+        int tableSize3 = 7;
+        Method method3 = Method.DOUBLE;
+        int hashIndex3 = -1;
+        Integer secondaryHash3 = null; // Bruger default: 1 + (key % (tableSize-1))
+        boolean debugMode3 = true;
+
+        int[][] manualInserts3 = {
+                {1, 'A'},
+                {3, 'C'},
+                {5, 'E'}
+        };
+
+        char[] autoInserts3 = {'B', 'D', 'F'};
+
+        runOpgave("Opgave 3: Dobbelt Hashing", tableSize3, method3, hashIndex3, secondaryHash3, manualInserts3, autoInserts3, debugMode3);
+
+        // ====== OPGAVE 4: CHAINING ======
+        System.out.println("\n\n========== OPGAVE 4: CHAINING ==========");
+
+        int tableSize4 = 5;
+        Method method4 = Method.CHAINING;
+        int hashIndex4 = -1;
+        Integer secondaryHash4 = null;
+        boolean debugMode4 = true;
+
+        int[][] manualInserts4 = {
+                {0, 'A'},
+                {1, 'B'},
+                {1, 'C'}  // B og C har samme hash
+        };
+
+        char[] autoInserts4 = {'D', 'E', 'F'};
+
+        runOpgave("Opgave 4: Chaining", tableSize4, method4, hashIndex4, secondaryHash4, manualInserts4, autoInserts4, debugMode4);
+    }
+
+    // ====== HJÆLPEFUNKTION TIL AT KØRE EN OPGAVE ======
+    public static void runOpgave(String opgaveNavn, int tableSize, Method method, int hashIndex,
+                                 Integer secondaryHash, int[][] manualInserts, char[] autoInserts, boolean debugMode) {
+        System.out.println("\n" + opgaveNavn);
+        System.out.println("=".repeat(opgaveNavn.length()));
+
+        // Opret hash-tabel
+        HashTable ht = new HashTable(tableSize, method, hashIndex, secondaryHash, debugMode);
+
+        // Udfør manuelle indsættelser
+        System.out.println("\n--- MANUELLE INDSÆTTELSER ---");
+        for (int[] insert : manualInserts) {
+            ht.manualInsert(insert[0], (char) insert[1]);
+        }
+        ht.displayMellemstatus();
+
+        // Udfør automatiske indsættelser
+        System.out.println("\n--- AUTOMATISKE INDSÆTTELSER ---");
+        System.out.println("Indsætter: " + Arrays.toString(autoInserts));
+        for (char c : autoInserts) {
+            ht.insert(c);
+        }
+
+        // Vis slutresultat
+        System.out.println("\n--- SLUTRESULTAT ---");
         ht.display();
-
-        switch (method) {
-            case LINEAR -> ht.findErrorLinear(hashIndex);
-            case QUADRATIC -> ht.findErrorQuadratic(hashIndex);
-            case DOUBLE -> ht.findErrorDoubleHashing(hashIndex);
-            case CHAINING -> ht.findErrorChaining(hashIndex);
-        }
-
-        System.out.println("\n=== Example 2: Auto insertion ===");
-        HashTable ht2 = new HashTable(tableSize, method, hashIndex, secondaryHash);
-
-        char[] elements = {'G', 'F', 'C', 'L', 'P', 'U', 'Y', 'M'};
-        for (char c : elements) {
-            ht2.insert(c);
-        }
-
-        ht2.display();
     }
 }
