@@ -618,27 +618,28 @@ class BinarySearchTree {
     public static void main(String[] args) {
         BinarySearchTree tree = new BinarySearchTree();
 
-        // Add nodes
-        tree.add(50);
-        tree.add(48);
-        tree.add(70);
-        tree.add(30);
-        tree.add(65);
-        tree.add(90);
-        tree.add(20);
-        tree.add(32);
-        tree.add(67);
-        tree.add(98);
-        tree.add(15);
-        tree.add(25);
-        tree.add(31);
-        tree.add(35);
-        tree.add(66);
-        tree.add(69);
-        tree.add(94);
-        tree.add(99);
+        //Original tree
 
-        // Traversals
+
+        // Add nodes
+        tree.add(100);
+        tree.add(90);
+        tree.add(110);
+        tree.add(80);
+        tree.add(95);
+        tree.add(105);
+        tree.add(120);
+        tree.add(70);
+        tree.add(85);
+        tree.add(92);
+        tree.add(97);
+        tree.add(103);
+        tree.add(108);
+        tree.add(111);
+        tree.add(130);
+
+
+        // Traversals Original
         System.out.print("In-order traversal: ");
         tree.inOrder(); // Expected: 10 12 15 20 45 50 55 79 90
 
@@ -655,10 +656,6 @@ class BinarySearchTree {
         System.out.println("Search for 40: " + tree.search(40)); // false
         System.out.println("Search for 90: " + tree.search(90)); // true
 
-        // Delete
-        // tree.delete(20);
-        //System.out.print("In-order after deleting 20: ");
-        //tree.inOrder(); // Expected: 10 12 15 45 50 55 79 90
 
         // Tree properties
         System.out.println("Height of tree: " + tree.height()); // 4
@@ -667,8 +664,6 @@ class BinarySearchTree {
         System.out.println("Sum of node values: " + tree.sumOfNodeValues());
         System.out.println("Sum of levels (level * nodes at level): " + tree.sumOfLevels());
 
-        // Restore tree for path finding demonstration
-        tree.add(20);
 
         // Path finding examples (works with any value)
         System.out.println("\n--- Path Finding Examples ---");
@@ -720,6 +715,95 @@ class BinarySearchTree {
         tree2.add(45);
         tree2.add(15);
         tree2.add(79);
+        System.out.println("\nAre tree and tree2 identical? " + tree.isIdentical(tree2)); // false
+
+
+        //Operations on tree:
+        System.out.println("\n--- Operations on the tree and new characterristics ---");
+
+        tree.delete(105);
+        tree.add(83);
+        tree.delete(130);
+        tree.add(60);
+        tree.delete(95);
+
+
+        // Traversals Original
+        System.out.print("In-order traversal: ");
+        tree.inOrder(); // Expected: 10 12 15 20 45 50 55 79 90
+
+        System.out.print("Pre-order traversal: ");
+        tree.preOrder(); // Expected: 45 15 10 12 20 79 55 50 90
+
+        System.out.print("Post-order traversal: ");
+        tree.postOrder(); // Expected: 12 10 20 15 50 55 90 79 45
+
+        System.out.print("Level-order traversal: ");
+        tree.levelOrder(); // Expected: 45 15 79 10 20 55 90 12 50
+
+        // Search
+        System.out.println("Search for 40: " + tree.search(40)); // false
+        System.out.println("Search for 90: " + tree.search(90)); // true
+
+
+        // Tree properties
+        System.out.println("Height of tree: " + tree.height()); // 4
+        System.out.println("Number of nodes: " + tree.countNodes()); // 8 (after deleting 20)
+        System.out.println("Internal path length (Number of nodes in row * the row number, do for all rows and add): " + tree.internalPathLength()); // Sum of depths
+        System.out.println("Sum of node values: " + tree.sumOfNodeValues());
+        System.out.println("Sum of levels (level * nodes at level): " + tree.sumOfLevels());
+
+
+        // Path finding examples (works with any value)
+        System.out.println("\n--- Path Finding Examples ---");
+        System.out.println("Path to 10: " + tree.findPath(10)); // 45 15 10
+        System.out.println("Path to 50: " + tree.findPath(50)); // 45 79 55 50
+        System.out.println("Path to 45: " + tree.findPath(45)); // 45
+        System.out.println("Path to 90: " + tree.findPath(90)); // 45 79 90
+        System.out.println("Path to 12: " + tree.findPath(12)); // 45 15 10 12
+        System.out.println("Path to 100: " + tree.findPath(100)); // Error message
+        System.out.println("Path to 1: " + tree.findPath(1)); // Error message
+
+        // Create perfect tree
+        System.out.println("\n--- Perfect Tree ---");
+        BinarySearchTree perfectTree2 = createPerfectTree(3);
+        System.out.print("Perfect tree (height 3) in-order: ");
+        perfectTree.inOrder(); // 1 2 3 4 5 6 7
+        System.out.println("Perfect tree height: " + perfectTree.height()); // 3
+        System.out.println("Path to 1 in perfect tree: " + perfectTree.findPath(1)); // 4 2 1
+        System.out.println("Path to 7 in perfect tree: " + perfectTree.findPath(7)); // 4 6 7
+
+        // Additional characteristics demonstrations
+        System.out.println("\n--- Additional Tree Characteristics ---");
+        System.out.println("Is tree balanced? " + tree.isBalanced()); // false (height difference > 1)
+        System.out.println("Minimum value: " + tree.findMin()); // 10
+        System.out.println("Maximum value: " + tree.findMax()); // 90
+        System.out.println("Number of leaf nodes: " + tree.countLeaves()); // 3 (12, 20, 50)
+        System.out.println("Number of internal nodes: " + tree.countInternalNodes()); // 6
+        System.out.println("3rd smallest element: " + tree.findKthSmallest(3)); // 15
+        System.out.println("Depth of node 50: " + tree.findDepth(50)); // 3
+        System.out.println("Is valid BST? " + tree.isBST()); // true
+        System.out.println("LCA of 10 and 20: " + tree.findLCA(10, 20)); // 15
+        System.out.println("LCA of 12 and 50: " + tree.findLCA(12, 50)); // 45
+        System.out.println("Nodes in range [15, 55]: " + tree.countInRange(15, 55)); // 5 (15, 20, 45, 50, 55)
+        System.out.println("Does 50 exist at depth 3? " + tree.existsAtDepth(50, 3)); // true
+
+        System.out.println("\n--- More Advanced Operations ---");
+        System.out.println("Successor of 15: " + tree.findSuccessor(15)); // 20
+        System.out.println("Predecessor of 55: " + tree.findPredecessor(55)); // 50
+        System.out.println("Distance between 12 and 50: " + tree.findDistance(12, 50)); // 5
+        System.out.println("Width at level 2: " + tree.getWidth(2)); // 4
+        System.out.println("Maximum width: " + tree.getMaxWidth()); // 4
+        System.out.println("Is tree of minimal height? " + tree.minimalHeight());
+
+        System.out.println("\nAll paths from root to leaves:");
+        tree.printAllPaths();
+
+        // Test identical trees
+        BinarySearchTree tree3 = new BinarySearchTree();
+        tree3.add(45);
+        tree3.add(15);
+        tree3.add(79);
         System.out.println("\nAre tree and tree2 identical? " + tree.isIdentical(tree2)); // false
     }
 }

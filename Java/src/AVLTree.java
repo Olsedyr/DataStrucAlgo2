@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 // AVL Node class
 class AVLNode {
     int value;
@@ -12,10 +15,10 @@ class AVLNode {
 }
 
 // Complete AVL Tree - Exam Ready
-class AVLTree {
+class AVLTreeExamReady {
     AVLNode root;
 
-    AVLTree() {
+    AVLTreeExamReady() {
         root = null;
     }
 
@@ -45,60 +48,39 @@ class AVLTree {
     }
 
     // RIGHT ROTATION (for Left-Left case)
-    // Used when left subtree is too heavy
-    //       z                              y
-    //      / \                            / \
-    //     y   T4    Right Rotate (z)     x   z
-    //    / \        --------------->    / \ / \
-    //   x  T3                          T1 T2 T3 T4
-    //  / \
-    // T1 T2
     AVLNode rightRotate(AVLNode z) {
         AVLNode y = z.left;
         AVLNode T3 = y.right;
 
-        // Perform rotation
         y.right = z;
         z.left = T3;
 
-        // Update heights
         updateHeight(z);
         updateHeight(y);
 
-        return y; // New root
+        return y;
     }
 
     // LEFT ROTATION (for Right-Right case)
-    // Used when right subtree is too heavy
-    //     z                              y
-    //    / \                            / \
-    //   T1  y      Left Rotate (z)    z   x
-    //      / \     --------------->   / \ / \
-    //     T2  x                      T1 T2 T3 T4
-    //        / \
-    //       T3 T4
     AVLNode leftRotate(AVLNode z) {
         AVLNode y = z.right;
         AVLNode T2 = y.left;
 
-        // Perform rotation
         y.left = z;
         z.right = T2;
 
-        // Update heights
         updateHeight(z);
         updateHeight(y);
 
-        return y; // New root
+        return y;
     }
 
     // INSERT with auto-balancing
-    // This is the MAIN method you need to understand!
     void insert(int value) {
         root = insertRec(root, value);
     }
 
-    // Version that shows violations before fixing
+    // INSERT with detection for exam demo
     void insertWithDetection(int value) {
         System.out.println("Inserting " + value + "...");
         root = insertRecWithDetection(root, value, 0);
@@ -106,7 +88,6 @@ class AVLTree {
     }
 
     AVLNode insertRecWithDetection(AVLNode node, int value, int depth) {
-        // STEP 1: Normal BST insertion
         if (node == null) {
             System.out.println("  ".repeat(depth) + "→ Created node " + value);
             return new AVLNode(value);
@@ -119,109 +100,69 @@ class AVLTree {
             System.out.println("  ".repeat(depth) + "At node " + node.value + ", go RIGHT");
             node.right = insertRecWithDetection(node.right, value, depth + 1);
         } else {
-            return node; // Duplicate not allowed
+            System.out.println("  ".repeat(depth) + "Duplicate " + value + " ignored");
+            return node;
         }
 
-        // STEP 2: Update height of current node
         updateHeight(node);
 
-        // STEP 3: Get balance factor
         int balance = getBalance(node);
 
         System.out.println("  ".repeat(depth) + "↑ Node " + node.value + ": height=" + node.height + ", balance=" + balance);
 
-        // Check for violations BEFORE fixing
         if (Math.abs(balance) > 1) {
             System.out.println("  ".repeat(depth) + "⚠ VIOLATION! Node " + node.value + " has balance=" + balance);
         }
 
-        // STEP 4: If unbalanced, there are 4 cases:
-
-        // Case 1: Left-Left (LL)
-        if (balance > 1 && value < node.left.value) {
-            System.out.println("  ".repeat(depth) + "→ Fixing with RIGHT rotation at node " + node.value);
+        // Fix imbalances
+        if (balance > 1 && getBalance(node.left) >= 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing LL with RIGHT rotation at " + node.value);
             return rightRotate(node);
         }
-
-        // Case 2: Right-Right (RR)
-        if (balance < -1 && value > node.right.value) {
-            System.out.println("  ".repeat(depth) + "→ Fixing with LEFT rotation at node " + node.value);
-            return leftRotate(node);
-        }
-
-        // Case 3: Left-Right (LR)
-        if (balance > 1 && value > node.left.value) {
-            System.out.println("  ".repeat(depth) + "→ Fixing with LEFT-RIGHT double rotation");
-            System.out.println("  ".repeat(depth) + "  Step 1: LEFT rotate on node " + node.left.value);
+        if (balance > 1 && getBalance(node.left) < 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing LR with LEFT-RIGHT rotation");
             node.left = leftRotate(node.left);
-            System.out.println("  ".repeat(depth) + "  Step 2: RIGHT rotate on node " + node.value);
             return rightRotate(node);
         }
-
-        // Case 4: Right-Left (RL)
-        if (balance < -1 && value < node.right.value) {
-            System.out.println("  ".repeat(depth) + "→ Fixing with RIGHT-LEFT double rotation");
-            System.out.println("  ".repeat(depth) + "  Step 1: RIGHT rotate on node " + node.right.value);
+        if (balance < -1 && getBalance(node.right) <= 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing RR with LEFT rotation at " + node.value);
+            return leftRotate(node);
+        }
+        if (balance < -1 && getBalance(node.right) > 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing RL with RIGHT-LEFT rotation");
             node.right = rightRotate(node.right);
-            System.out.println("  ".repeat(depth) + "  Step 2: LEFT rotate on node " + node.value);
             return leftRotate(node);
         }
 
-        // Return unchanged node if balanced
         return node;
     }
 
     AVLNode insertRec(AVLNode node, int value) {
-        // STEP 1: Normal BST insertion
-        if (node == null) {
-            return new AVLNode(value);
-        }
+        if (node == null) return new AVLNode(value);
 
         if (value < node.value) {
             node.left = insertRec(node.left, value);
         } else if (value > node.value) {
             node.right = insertRec(node.right, value);
         } else {
-            return node; // Duplicate not allowed
+            return node;
         }
 
-        // STEP 2: Update height of current node
         updateHeight(node);
 
-        // STEP 3: Get balance factor
         int balance = getBalance(node);
 
-        // STEP 4: If unbalanced, there are 4 cases:
-
-        // Case 1: Left-Left (LL)
-        // Tree is left-heavy and insertion was in left subtree of left child
-        if (balance > 1 && value < node.left.value) {
-            return rightRotate(node);
-        }
-
-        // Case 2: Right-Right (RR)
-        // Tree is right-heavy and insertion was in right subtree of right child
-        if (balance < -1 && value > node.right.value) {
-            return leftRotate(node);
-        }
-
-        // Case 3: Left-Right (LR)
-        // Tree is left-heavy but insertion was in right subtree of left child
-        // Solution: Left rotate on left child, then right rotate on node
+        if (balance > 1 && value < node.left.value) return rightRotate(node);
+        if (balance < -1 && value > node.right.value) return leftRotate(node);
         if (balance > 1 && value > node.left.value) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
-
-        // Case 4: Right-Left (RL)
-        // Tree is right-heavy but insertion was in left subtree of right child
-        // Solution: Right rotate on right child, then left rotate on node
         if (balance < -1 && value < node.right.value) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
         }
 
-        // Return unchanged node if balanced
         return node;
     }
 
@@ -230,8 +171,78 @@ class AVLTree {
         root = deleteRec(root, value);
     }
 
+    // DELETE with detection for exam demo
+    void deleteWithDetection(int value) {
+        System.out.println("Deleting " + value + "...");
+        root = deleteRecWithDetection(root, value, 0);
+        System.out.println();
+    }
+
+    AVLNode deleteRecWithDetection(AVLNode node, int value, int depth) {
+        if (node == null) {
+            System.out.println("  ".repeat(depth) + "Value " + value + " not found");
+            return node;
+        }
+
+        System.out.println("  ".repeat(depth) + "At node " + node.value);
+
+        if (value < node.value) {
+            System.out.println("  ".repeat(depth) + "Go LEFT");
+            node.left = deleteRecWithDetection(node.left, value, depth + 1);
+        } else if (value > node.value) {
+            System.out.println("  ".repeat(depth) + "Go RIGHT");
+            node.right = deleteRecWithDetection(node.right, value, depth + 1);
+        } else {
+            System.out.println("  ".repeat(depth) + "Found node to delete");
+            if (node.left == null || node.right == null) {
+                AVLNode temp = (node.left != null) ? node.left : node.right;
+                if (temp == null) {
+                    return null;
+                } else {
+                    return temp;
+                }
+            } else {
+                AVLNode temp = minValueNode(node.right);
+                System.out.println("  ".repeat(depth) + "Replace with min from right: " + temp.value);
+                node.value = temp.value;
+                node.right = deleteRecWithDetection(node.right, temp.value, depth + 1);
+            }
+        }
+
+        updateHeight(node);
+
+        int balance = getBalance(node);
+
+        System.out.println("  ".repeat(depth) + "↑ Node " + node.value + ": height=" + node.height + ", balance=" + balance);
+
+        if (Math.abs(balance) > 1) {
+            System.out.println("  ".repeat(depth) + "⚠ VIOLATION! Node " + node.value + " has balance=" + balance);
+        }
+
+        // Fix imbalances
+        if (balance > 1 && getBalance(node.left) >= 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing LL with RIGHT rotation at " + node.value);
+            return rightRotate(node);
+        }
+        if (balance > 1 && getBalance(node.left) < 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing LR with LEFT-RIGHT rotation");
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+        if (balance < -1 && getBalance(node.right) <= 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing RR with LEFT rotation at " + node.value);
+            return leftRotate(node);
+        }
+        if (balance < -1 && getBalance(node.right) > 0) {
+            System.out.println("  ".repeat(depth) + "→ Fixing RL with RIGHT-LEFT rotation");
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
     AVLNode deleteRec(AVLNode node, int value) {
-        // STEP 1: Standard BST delete
         if (node == null) return node;
 
         if (value < node.value) {
@@ -239,49 +250,24 @@ class AVLTree {
         } else if (value > node.value) {
             node.right = deleteRec(node.right, value);
         } else {
-            // Node found - delete it
             if (node.left == null || node.right == null) {
-                AVLNode temp = (node.left != null) ? node.left : node.right;
-                if (temp == null) {
-                    node = null;
-                } else {
-                    node = temp;
-                }
-            } else {
-                // Node with two children
-                AVLNode temp = minValueNode(node.right);
-                node.value = temp.value;
-                node.right = deleteRec(node.right, temp.value);
+                return (node.left != null) ? node.left : node.right;
             }
+            AVLNode temp = minValueNode(node.right);
+            node.value = temp.value;
+            node.right = deleteRec(node.right, temp.value);
         }
 
-        if (node == null) return node;
-
-        // STEP 2: Update height
         updateHeight(node);
 
-        // STEP 3: Get balance factor
         int balance = getBalance(node);
 
-        // STEP 4: Balance the tree (4 cases, similar to insert)
-
-        // Left-Left Case
-        if (balance > 1 && getBalance(node.left) >= 0) {
-            return rightRotate(node);
-        }
-
-        // Left-Right Case
+        if (balance > 1 && getBalance(node.left) >= 0) return rightRotate(node);
         if (balance > 1 && getBalance(node.left) < 0) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
-
-        // Right-Right Case
-        if (balance < -1 && getBalance(node.right) <= 0) {
-            return leftRotate(node);
-        }
-
-        // Right-Left Case
+        if (balance < -1 && getBalance(node.right) <= 0) return leftRotate(node);
         if (balance < -1 && getBalance(node.right) > 0) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
@@ -291,19 +277,20 @@ class AVLTree {
     }
 
     AVLNode minValueNode(AVLNode node) {
-        AVLNode current = node;
-        while (current.left != null) {
-            current = current.left;
-        }
-        return current;
+        while (node.left != null) node = node.left;
+        return node;
     }
 
-    // ========================================
-    // UTILITY METHODS
-    // ========================================
-
+    // SEARCH
     boolean search(int value) {
-        return searchRec(root, value) != null;
+        AVLNode result = searchRec(root, value);
+        if (result != null) {
+            System.out.println("Found " + value);
+            return true;
+        } else {
+            System.out.println(value + " not found");
+            return false;
+        }
     }
 
     AVLNode searchRec(AVLNode node, int value) {
@@ -312,6 +299,7 @@ class AVLTree {
         return searchRec(node.right, value);
     }
 
+    // UTILITY METHODS (same as original)
     void inOrder() {
         inOrderRec(root);
         System.out.println();
@@ -343,24 +331,137 @@ class AVLTree {
             System.out.println("(empty tree)");
             return;
         }
-        printTreeHelper(root, "", true);
+        printTreeVisual(root, "", true);
     }
 
+    // Improved tree visualization with more intuitive formatting
+    void printTreeVisual(AVLNode node, String prefix, boolean isLeft) {
+        if (node != null) {
+            System.out.println(prefix + (isLeft ? "├── " : "└── ") +
+                    node.value + " (H:" + node.height + ", B:" + getBalance(node) + ")");
+            printTreeVisual(node.left, prefix + (isLeft ? "│   " : "    "), true);
+            printTreeVisual(node.right, prefix + (isLeft ? "│   " : "    "), false);
+        }
+    }
+
+    // NEW: Graphical tree representation using ASCII art
+    void printTreeGraphical() {
+        if (root == null) {
+            System.out.println("(empty tree)");
+            return;
+        }
+
+        System.out.println("\n╔═══════════════════════════════════╗");
+        System.out.println("║      AVL TREE VISUALIZATION      ║");
+        System.out.println("╚═══════════════════════════════════╝");
+
+        List<List<String>> lines = new ArrayList<>();
+        List<AVLNode> level = new ArrayList<>();
+        List<AVLNode> next = new ArrayList<>();
+
+        level.add(root);
+        int nn = 1;
+        int widest = 0;
+
+        while (nn != 0) {
+            List<String> line = new ArrayList<>();
+            nn = 0;
+            for (AVLNode n : level) {
+                if (n == null) {
+                    line.add(null);
+                    next.add(null);
+                    next.add(null);
+                } else {
+                    String aa = n.value + "(H:" + n.height + ")";
+                    line.add(aa);
+                    if (aa.length() > widest) widest = aa.length();
+
+                    next.add(n.left);
+                    next.add(n.right);
+
+                    if (n.left != null) nn++;
+                    if (n.right != null) nn++;
+                }
+            }
+
+            if (widest % 2 == 1) widest++;
+            lines.add(line);
+
+            List<AVLNode> tmp = level;
+            level = next;
+            next = tmp;
+            next.clear();
+        }
+
+        int perpiece = lines.get(lines.size() - 1).size() * (widest + 4);
+        for (int i = 0; i < lines.size(); i++) {
+            List<String> line = lines.get(i);
+            int hpw = (int) Math.floor(perpiece / 2f) - 1;
+
+            if (i > 0) {
+                for (int j = 0; j < line.size(); j++) {
+                    // split node
+                    char c = ' ';
+                    if (j % 2 == 1) {
+                        if (line.get(j - 1) != null) {
+                            c = (line.get(j) != null) ? '┴' : '┘';
+                        } else {
+                            if (j < line.size() && line.get(j) != null) c = '└';
+                        }
+                    }
+                    System.out.print(c);
+
+                    // lines and spaces
+                    if (line.get(j) == null) {
+                        for (int k = 0; k < perpiece - 1; k++) {
+                            System.out.print(" ");
+                        }
+                    } else {
+                        for (int k = 0; k < hpw; k++) {
+                            System.out.print(j % 2 == 0 ? " " : "─");
+                        }
+                        System.out.print(j % 2 == 0 ? "┌" : "┐");
+                        for (int k = 0; k < hpw; k++) {
+                            System.out.print(j % 2 == 0 ? "─" : " ");
+                        }
+                    }
+                }
+                System.out.println();
+            }
+
+            // print line of numbers
+            for (int j = 0; j < line.size(); j++) {
+                String f = line.get(j);
+                if (f == null) f = "";
+                int gap1 = (int) Math.ceil(perpiece / 2f - f.length() / 2f);
+                int gap2 = (int) Math.floor(perpiece / 2f - f.length() / 2f);
+
+                for (int k = 0; k < gap1; k++) {
+                    System.out.print(" ");
+                }
+                System.out.print(f);
+                for (int k = 0; k < gap2; k++) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+
+            perpiece /= 2;
+        }
+
+        // Display balance summary
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("Balance Factors Summary:");
+        showAllBalanceFactors();
+        System.out.println("═══════════════════════════════════\n");
+    }
+
+    // Helper for printing tree
     void printTreeHelper(AVLNode node, String prefix, boolean isTail) {
         if (node == null) return;
         System.out.println(prefix + (isTail ? "└── " : "├── ") + node.value);
-        if (node.left != null || node.right != null) {
-            if (node.left != null) {
-                printTreeHelper(node.left, prefix + (isTail ? "    " : "│   "), node.right == null);
-            } else {
-                System.out.println(prefix + (isTail ? "    " : "│   ") + "├── (null)");
-            }
-            if (node.right != null) {
-                printTreeHelper(node.right, prefix + (isTail ? "    " : "│   "), true);
-            } else {
-                System.out.println(prefix + (isTail ? "    " : "│   ") + "└── (null)");
-            }
-        }
+        printTreeHelper(node.left, prefix + (isTail ? "    " : "│   "), node.right == null);
+        printTreeHelper(node.right, prefix + (isTail ? "    " : "│   "), true);
     }
 
     int getHeight() {
@@ -402,256 +503,39 @@ class AVLTree {
         }
     }
 
-    // ========================================
-    // EXAM DEMONSTRATION
-    // ========================================
-
+    // MAIN for exam demo - Ændr values og operations her!
     public static void main(String[] args) {
-        System.out.println("╔═══════════════════════════════════════════════════════════╗");
-        System.out.println("║           AVL TREE - EXAM CHARACTERISTICS                 ║");
-        System.out.println("╚═══════════════════════════════════════════════════════════╝\n");
+        AVLTreeExamReady avl = new AVLTreeExamReady();
 
-        // CHANGE THESE VALUES FOR YOUR EXAM QUESTION
+        // Ændr dette array for dit eksamensspørgsmål
         int[] values = {11, 2, 13, 1, 9, 57, 3, 25, 90, 17};
 
-        System.out.println("═══════════════════════════════════════════════════════════");
-        System.out.println("PART 1: AVL TREE CHARACTERISTICS (Write these in your answer)");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        System.out.println("【Definition】");
-        System.out.println("An AVL tree is a self-balancing Binary Search Tree where:");
-        System.out.println("  • For every node, the height difference between left and");
-        System.out.println("    right subtrees is at most 1");
-        System.out.println("  • Balance Factor = height(left) - height(right)");
-        System.out.println("  • Valid balance factors: -1, 0, or +1\n");
-
-        System.out.println("【Key Properties】");
-        System.out.println("  • Height: O(log n) - guaranteed!");
-        System.out.println("  • Search: O(log n)");
-        System.out.println("  • Insert: O(log n)");
-        System.out.println("  • Delete: O(log n)");
-        System.out.println("  • Always maintains BST property: left < root < right\n");
-
-        System.out.println("【Four Rotation Cases】");
-        System.out.println("  1. Left-Left (LL):   balance > 1, insertion in left-left");
-        System.out.println("     → Fix: Single RIGHT rotation");
-        System.out.println();
-        System.out.println("  2. Right-Right (RR): balance < -1, insertion in right-right");
-        System.out.println("     → Fix: Single LEFT rotation");
-        System.out.println();
-        System.out.println("  3. Left-Right (LR):  balance > 1, insertion in left-right");
-        System.out.println("     → Fix: LEFT rotation on left child, then RIGHT on node");
-        System.out.println();
-        System.out.println("  4. Right-Left (RL):  balance < -1, insertion in right-left");
-        System.out.println("     → Fix: RIGHT rotation on right child, then LEFT on node\n");
-
-        System.out.println("【Advantages over regular BST】");
-        System.out.println("  • Prevents worst-case O(n) height (like a linked list)");
-        System.out.println("  • Guarantees O(log n) operations");
-        System.out.println("  • Automatically maintains balance during insert/delete\n");
-
-        System.out.println("【Disadvantages】");
-        System.out.println("  • More complex implementation (needs rotations)");
-        System.out.println("  • Extra storage for height in each node");
-        System.out.println("  • Slightly slower insert/delete due to rebalancing\n");
-
-        System.out.println("═══════════════════════════════════════════════════════════");
-        System.out.println("PART 2: DETAILED INSERTION - SEE VIOLATIONS!");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        System.out.println("Values to insert: " + java.util.Arrays.toString(values));
-        System.out.println("\nNow inserting with DETAILED output showing violations:\n");
-
-        AVLTree avlDetailed = new AVLTree();
-
+        System.out.println("Inserting initial values: " + java.util.Arrays.toString(values));
         for (int value : values) {
-            avlDetailed.insertWithDetection(value);
+            avl.insertWithDetection(value);
+            System.out.println("Current tree after insert " + value + ":");
+            avl.printTreeGraphical();  // Using the new graphical method
+            System.out.println();
         }
 
-        System.out.println("═══════════════════════════════════════════════════════════");
-        System.out.println("PART 3: STEP-BY-STEP VISUAL");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        System.out.println("Let me show you the critical moment when inserting 25:\n");
-
-        AVLTree demo = new AVLTree();
-        int[] beforeRotation = {11, 2, 13, 1, 9, 57, 3};
-
-        for (int v : beforeRotation) {
-            demo.insert(v);
-        }
-
-        System.out.println("Tree BEFORE inserting 25:");
-        demo.printTree();
-        System.out.println("\nBalance factors:");
-        demo.showAllBalanceFactors();
-
-        System.out.println("\n→ Now inserting 25...\n");
-        demo.insertWithDetection(25);
-
-        System.out.println("Tree AFTER rotation:");
-        demo.printTree();
-        System.out.println("\nBalance factors (now all valid!):");
-        demo.showAllBalanceFactors();
-
-        System.out.println("\n═══════════════════════════════════════════════════════════");
-        System.out.println("PART 4: FINAL BALANCED AVL TREE");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        System.out.println("【Final Tree Structure】");
-        avlDetailed.printTree();
-
-        System.out.println("\n【Final Balance Factors - All must be -1, 0, or 1】");
-        avlDetailed.showAllBalanceFactors();
-
-        System.out.println("\n【Final Properties】");
-        System.out.println("Height: " + avlDetailed.getHeight());
-        System.out.println("Total nodes: " + avlDetailed.countNodes());
-        System.out.println("Is balanced (AVL property satisfied): " + avlDetailed.isBalanced());
-
-        System.out.println("\n【Traversals】");
-        System.out.print("In-order (sorted): ");
-        avlDetailed.inOrder();
-        System.out.print("Pre-order: ");
-        avlDetailed.preOrder();
-
-        System.out.println("\n═══════════════════════════════════════════════════════════");
-        System.out.println("PART 4: FINAL BALANCED AVL TREE");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        AVLTree avl = new AVLTree();
-        for (int value : values) {
-            avl.insert(value);
-        }
-
-        System.out.println("【Final Tree Structure】");
-        avl.printTree();
-
-        System.out.println("\n【Final Balance Factors - All must be -1, 0, or 1】");
-        avl.showAllBalanceFactors();
-
-        System.out.println("\n【Final Properties】");
+        // Demo delete - Ændr værdien her for eksamen
+        int deleteValue = 25; // Eksempel
+        avl.deleteWithDetection(deleteValue);
+        System.out.println("Tree after delete " + deleteValue + ":");
+        avl.printTreeGraphical();  // Using the new graphical method
+        System.out.println("Is balanced: " + avl.isBalanced());
         System.out.println("Height: " + avl.getHeight());
-        System.out.println("Total nodes: " + avl.countNodes());
-        System.out.println("Is balanced (AVL property satisfied): " + avl.isBalanced());
+        System.out.println("Nodes: " + avl.countNodes());
+        System.out.println();
 
-        System.out.println("\n【Traversals】");
-        System.out.print("In-order (sorted): ");
+        // Demo search - Ændr værdien her for eksamen
+        int searchValue = 9; // Eksempel
+        avl.search(searchValue);
+
+        // Final traversals and balances
+        System.out.println("\nFinal In-order: ");
         avl.inOrder();
-        System.out.print("Pre-order: ");
+        System.out.println("Final Pre-order: ");
         avl.preOrder();
-
-        System.out.println("\n═══════════════════════════════════════════════════════════");
-        System.out.println("PART 5: KEY INSIGHT - ROTATION EXAMPLE");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        System.out.println("When inserting 25 into the sequence " + java.util.Arrays.toString(values) + ":");
-        System.out.println();
-        System.out.println("BEFORE rotation (UNBALANCED):");
-        System.out.println("    11");
-        System.out.println("   /  \\");
-        System.out.println("  2    13");
-        System.out.println("       / \\");
-        System.out.println("    (empty) 57");
-        System.out.println("            /");
-        System.out.println("          25  ← Just inserted");
-        System.out.println();
-        System.out.println("Node 13 has balance = -2 (VIOLATES AVL property!)");
-        System.out.println("This is a Right-Left case.");
-        System.out.println();
-        System.out.println("ROTATION: Right rotate on 57, then Left rotate on 13");
-        System.out.println();
-        System.out.println("AFTER rotation (BALANCED):");
-        System.out.println("    11");
-        System.out.println("   /  \\");
-        System.out.println("  2    25  ← 25 moved up!");
-        System.out.println("      / \\");
-        System.out.println("    13  57");
-        System.out.println();
-        System.out.println("Now all balance factors are -1, 0, or 1 ✓");
-
-        System.out.println("\n═══════════════════════════════════════════════════════════");
-        System.out.println("PART 6: CODE TO SHOW IN EXAM");
-        System.out.println("═══════════════════════════════════════════════════════════\n");
-
-        System.out.println("【Core Insert Method - This is what you write!】\n");
-        System.out.println("AVLNode insertRec(AVLNode node, int value) {");
-        System.out.println("    // STEP 1: Normal BST insertion");
-        System.out.println("    if (node == null) return new AVLNode(value);");
-        System.out.println("    ");
-        System.out.println("    if (value < node.value)");
-        System.out.println("        node.left = insertRec(node.left, value);");
-        System.out.println("    else if (value > node.value)");
-        System.out.println("        node.right = insertRec(node.right, value);");
-        System.out.println("    else");
-        System.out.println("        return node; // Duplicate");
-        System.out.println("    ");
-        System.out.println("    // STEP 2: Update height");
-        System.out.println("    node.height = 1 + Math.max(height(node.left), height(node.right));");
-        System.out.println("    ");
-        System.out.println("    // STEP 3: Get balance factor");
-        System.out.println("    int balance = getBalance(node);");
-        System.out.println("    ");
-        System.out.println("    // STEP 4: Fix imbalance (4 cases)");
-        System.out.println("    ");
-        System.out.println("    // Left-Left Case");
-        System.out.println("    if (balance > 1 && value < node.left.value)");
-        System.out.println("        return rightRotate(node);");
-        System.out.println("    ");
-        System.out.println("    // Right-Right Case");
-        System.out.println("    if (balance < -1 && value > node.right.value)");
-        System.out.println("        return leftRotate(node);");
-        System.out.println("    ");
-        System.out.println("    // Left-Right Case");
-        System.out.println("    if (balance > 1 && value > node.left.value) {");
-        System.out.println("        node.left = leftRotate(node.left);");
-        System.out.println("        return rightRotate(node);");
-        System.out.println("    }");
-        System.out.println("    ");
-        System.out.println("    // Right-Left Case");
-        System.out.println("    if (balance < -1 && value < node.right.value) {");
-        System.out.println("        node.right = rightRotate(node.right);");
-        System.out.println("        return leftRotate(node);");
-        System.out.println("    }");
-        System.out.println("    ");
-        System.out.println("    return node;");
-        System.out.println("}\n");
-
-        System.out.println("【Helper Methods】\n");
-        System.out.println("int getBalance(AVLNode node) {");
-        System.out.println("    if (node == null) return 0;");
-        System.out.println("    return height(node.left) - height(node.right);");
-        System.out.println("}\n");
-
-        System.out.println("AVLNode rightRotate(AVLNode z) {");
-        System.out.println("    AVLNode y = z.left;");
-        System.out.println("    AVLNode T3 = y.right;");
-        System.out.println("    y.right = z;");
-        System.out.println("    z.left = T3;");
-        System.out.println("    updateHeight(z);");
-        System.out.println("    updateHeight(y);");
-        System.out.println("    return y;");
-        System.out.println("}\n");
-
-        System.out.println("AVLNode leftRotate(AVLNode z) {");
-        System.out.println("    AVLNode y = z.right;");
-        System.out.println("    AVLNode T2 = y.left;");
-        System.out.println("    y.left = z;");
-        System.out.println("    z.right = T2;");
-        System.out.println("    updateHeight(z);");
-        System.out.println("    updateHeight(y);");
-        System.out.println("    return y;");
-        System.out.println("}\n");
-
-        System.out.println("═══════════════════════════════════════════════════════════");
-        System.out.println("EXAM TIP: Remember the 4 rotation cases!");
-        System.out.println("  LL → Right rotation");
-        System.out.println("  RR → Left rotation");
-        System.out.println("  LR → Left then Right (double rotation)");
-        System.out.println("  RL → Right then Left (double rotation)");
-        System.out.println();
-        System.out.println("KEY POINT: The tree becomes UNBALANCED during insertion,");
-        System.out.println("but rotations IMMEDIATELY fix it, so the final tree IS balanced!");
-        System.out.println("═══════════════════════════════════════════════════════════");
     }
 }
