@@ -9,38 +9,28 @@ HEAP ANALYSE PROGRAM - 1-BASERET INDEKSERING
    I hukommelsen er arrayet stadig 0-baseret
 
 📊 ORIGINALT ARRAY:
-Indeks:    0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 
-Værdi:     -  17  21  23  44  32  65  38  56  46  69  33  77  67  56  39  61  60  62  50  71 
+Indeks:    0   1   2   3   4   5   6   7   8   9  10 
+Værdi:     -   5   9  11  14  18  19  21  33  17  27 
 
 📈 STATISTIK:
-   Minimum: 17
-   Maximum: 77
+   Minimum: 5
+   Maximum: 33
 
 📊 SORTERET ARRAY (stigende):
-Indeks:    0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20 
-Værdi:     -  17  21  23  32  33  38  39  44  46  50  56  56  60  61  62  65  67  69  71  77 
+Indeks:    0   1   2   3   4   5   6   7   8   9  10 
+Værdi:     -   5   9  11  14  17  18  19  21  27  33 
 
 👨‍👧‍👦 PARENT-CHILD RELATIONER:
-P[1]=17 → L[2]=21, R[3]=23
-P[2]=21 → L[4]=44, R[5]=32
-P[3]=23 → L[6]=65, R[7]=38
-P[4]=44 → L[8]=56, R[9]=46
-P[5]=32 → L[10]=69, R[11]=33
-P[6]=65 → L[12]=77, R[13]=67
-P[7]=38 → L[14]=56, R[15]=39
-P[8]=56 → L[16]=61, R[17]=60
-P[9]=46 → L[18]=62, R[19]=50
-P[10]=69 → L[20]=71, R[21]=-
-P[11]=33 → L[22]=-, R[23]=-
-P[12]=77 → L[24]=-, R[25]=-
-P[13]=67 → L[26]=-, R[27]=-
-P[14]=56 → L[28]=-, R[29]=-
-P[15]=39 → L[30]=-, R[31]=-
-P[16]=61 → L[32]=-, R[33]=-
-P[17]=60 → L[34]=-, R[35]=-
-P[18]=62 → L[36]=-, R[37]=-
-P[19]=50 → L[38]=-, R[39]=-
-P[20]=71 → L[40]=-, R[41]=-
+P[1]=5 → L[2]=9, R[3]=11
+P[2]=9 → L[4]=14, R[5]=18
+P[3]=11 → L[6]=19, R[7]=21
+P[4]=14 → L[8]=33, R[9]=17
+P[5]=18 → L[10]=27, R[11]=-
+P[6]=19 → L[12]=-, R[13]=-
+P[7]=21 → L[14]=-, R[15]=-
+P[8]=33 → L[16]=-, R[17]=-
+P[9]=17 → L[18]=-, R[19]=-
+P[10]=27 → L[20]=-, R[21]=-
 
 🔍 HEAP EGENSKABS CHECK:
 
@@ -49,26 +39,16 @@ MIN-HEAP:
 
 MAX-HEAP:
 ❌ ER IKKE EN GYLDIG MAX-HEAP
-   Første violation: P[1]=17 < L[2]=21
-   Resten (18):
-     P[1]=17 < R[3]=23
-     P[2]=21 < L[4]=44
-     P[2]=21 < R[5]=32
-     P[3]=23 < L[6]=65
-     P[3]=23 < R[7]=38
-     P[4]=44 < L[8]=56
-     P[4]=44 < R[9]=46
-     P[5]=32 < L[10]=69
-     P[5]=32 < R[11]=33
-     P[6]=65 < L[12]=77
-     P[6]=65 < R[13]=67
-     P[7]=38 < L[14]=56
-     P[7]=38 < R[15]=39
-     P[8]=56 < L[16]=61
-     P[8]=56 < R[17]=60
-     P[9]=46 < L[18]=62
-     P[9]=46 < R[19]=50
-     P[10]=69 < L[20]=71
+   Første violation: P[1]=5 < L[2]=9
+   Resten (8):
+     P[1]=5 < R[3]=11
+     P[2]=9 < L[4]=14
+     P[2]=9 < R[5]=18
+     P[3]=11 < L[6]=19
+     P[3]=11 < R[7]=21
+     P[4]=14 < L[8]=33
+     P[4]=14 < R[9]=17
+     P[5]=18 < L[10]=27
 
 📚 SIMPEL FORKLARING PÅ HEAPIFY:
 ============================================================
@@ -94,371 +74,242 @@ HEAPIFY - HVORDAN MAN LAVER ET ARRAY TIL EN MIN-HEAP ELLER MAX-HEAP:
    • Højre barn til index i: 2*i + 1
 
 5. TIDSKOMPLEKSITET:
-   • Build-heap: O(n) - ikke O(n log n)!
-   • Heapify-up: O(log n)
-   • Heapify-down: O(log n)
+   • Build-heap: O(n)
+   • Insert: O(log n) - heapify-up
+   • Delete: O(log n) - heapify-down
+   • Peek: O(1)
 
 ============================================================
 
 ============================================================
 BYGGER MIN-HEAP FRA ARRAY
 ============================================================
-Start array: [17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-Størrelse: 20
+Start array: [5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
+Størrelse: 10
 
 TRIN-FOR-TRIN PROCESS:
 
-▶️  Heapify på index 10 (værdi: 69)
-   Forælder: arr[10] = 69
-   Venstre barn: arr[20] = 71
+▶️  Heapify på index 5 (værdi: 18)
+   Forælder: arr[5] = 18
+   Venstre barn: arr[10] = 27
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+   Mellemresultat: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
 
-▶️  Heapify på index 9 (værdi: 46)
-   Forælder: arr[9] = 46
-   Venstre barn: arr[18] = 62
-   Højre barn: arr[19] = 50
+▶️  Heapify på index 4 (værdi: 14)
+   Forælder: arr[4] = 14
+   Venstre barn: arr[8] = 33
+   Højre barn: arr[9] = 17
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+   Mellemresultat: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
 
-▶️  Heapify på index 8 (værdi: 56)
-   Forælder: arr[8] = 56
-   Venstre barn: arr[16] = 61
-   Højre barn: arr[17] = 60
+▶️  Heapify på index 3 (værdi: 11)
+   Forælder: arr[3] = 11
+   Venstre barn: arr[6] = 19
+   Højre barn: arr[7] = 21
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+   Mellemresultat: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
 
-▶️  Heapify på index 7 (værdi: 38)
-   Forælder: arr[7] = 38
-   Venstre barn: arr[14] = 56
-   Højre barn: arr[15] = 39
+▶️  Heapify på index 2 (værdi: 9)
+   Forælder: arr[2] = 9
+   Venstre barn: arr[4] = 14
+   Højre barn: arr[5] = 18
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+   Mellemresultat: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
 
-▶️  Heapify på index 6 (værdi: 65)
-   Forælder: arr[6] = 65
-   Venstre barn: arr[12] = 77
-   Højre barn: arr[13] = 67
+▶️  Heapify på index 1 (værdi: 5)
+   Forælder: arr[1] = 5
+   Venstre barn: arr[2] = 9
+   Højre barn: arr[3] = 11
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-
-▶️  Heapify på index 5 (værdi: 32)
-   Forælder: arr[5] = 32
-   Venstre barn: arr[10] = 69
-   Højre barn: arr[11] = 33
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-
-▶️  Heapify på index 4 (værdi: 44)
-   Forælder: arr[4] = 44
-   Venstre barn: arr[8] = 56
-   Højre barn: arr[9] = 46
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-
-▶️  Heapify på index 3 (værdi: 23)
-   Forælder: arr[3] = 23
-   Venstre barn: arr[6] = 65
-   Højre barn: arr[7] = 38
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-
-▶️  Heapify på index 2 (værdi: 21)
-   Forælder: arr[2] = 21
-   Venstre barn: arr[4] = 44
-   Højre barn: arr[5] = 32
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-
-▶️  Heapify på index 1 (værdi: 17)
-   Forælder: arr[1] = 17
-   Venstre barn: arr[2] = 21
-   Højre barn: arr[3] = 23
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+   Mellemresultat: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
 
 ✅ MIN-HEAP FÆRDIG:
-Resultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
+Resultat: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
 Gyldig min-heap? true
-
-🌳 MIN-HEAP SOM TRÆ:
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-17 
-
-  
-  
-  
-  
-  
-  
-  
-21 
-  
-  
-  
-  
-  
-  
-  
-23 
-
-  
-  
-  
-44 
-  
-  
-  
-32 
-  
-  
-  
-65 
-  
-  
-  
-38 
-
-  
-56 
-  
-46 
-  
-69 
-  
-33 
-  
-77 
-  
-67 
-  
-56 
-  
-39 
-
-61 
-60 
-62 
-50 
-71 
-
 
 ============================================================
 BYGGER MAX-HEAP FRA ARRAY
 ============================================================
-Start array: [17, 21, 23, 44, 32, 65, 38, 56, 46, 69, 33, 77, 67, 56, 39, 61, 60, 62, 50, 71]
-Størrelse: 20
+Start array: [5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
+Størrelse: 10
 
 TRIN-FOR-TRIN PROCESS:
 
-▶️  Heapify på index 10 (værdi: 69)
-   Forælder: arr[10] = 69
-   Venstre barn: arr[20] = 71
-   BYT: 69 ↔ 71 (index 10 ↔ 20)
-   Forælder: arr[20] = 69
+▶️  Heapify på index 5 (værdi: 18)
+   Forælder: arr[5] = 18
+   Venstre barn: arr[10] = 27
+   BYT: 18 ↔ 27 (index 5 ↔ 10)
+   Forælder: arr[10] = 18
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 46, 71, 33, 77, 67, 56, 39, 61, 60, 62, 50, 69]
+   Mellemresultat: [-, 5, 9, 11, 14, 27, 19, 21, 33, 17, 18]
 
-▶️  Heapify på index 9 (værdi: 46)
-   Forælder: arr[9] = 46
-   Venstre barn: arr[18] = 62
-   Højre barn: arr[19] = 50
-   BYT: 46 ↔ 62 (index 9 ↔ 18)
-   Forælder: arr[18] = 46
+▶️  Heapify på index 4 (værdi: 14)
+   Forælder: arr[4] = 14
+   Venstre barn: arr[8] = 33
+   Højre barn: arr[9] = 17
+   BYT: 14 ↔ 33 (index 4 ↔ 8)
+   Forælder: arr[8] = 14
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 56, 62, 71, 33, 77, 67, 56, 39, 61, 60, 46, 50, 69]
+   Mellemresultat: [-, 5, 9, 11, 33, 27, 19, 21, 14, 17, 18]
 
-▶️  Heapify på index 8 (værdi: 56)
-   Forælder: arr[8] = 56
-   Venstre barn: arr[16] = 61
-   Højre barn: arr[17] = 60
-   BYT: 56 ↔ 61 (index 8 ↔ 16)
-   Forælder: arr[16] = 56
+▶️  Heapify på index 3 (værdi: 11)
+   Forælder: arr[3] = 11
+   Venstre barn: arr[6] = 19
+   Højre barn: arr[7] = 21
+   BYT: 11 ↔ 21 (index 3 ↔ 7)
+   Forælder: arr[7] = 11
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 38, 61, 62, 71, 33, 77, 67, 56, 39, 56, 60, 46, 50, 69]
+   Mellemresultat: [-, 5, 9, 21, 33, 27, 19, 11, 14, 17, 18]
 
-▶️  Heapify på index 7 (værdi: 38)
-   Forælder: arr[7] = 38
-   Venstre barn: arr[14] = 56
-   Højre barn: arr[15] = 39
-   BYT: 38 ↔ 56 (index 7 ↔ 14)
-   Forælder: arr[14] = 38
+▶️  Heapify på index 2 (værdi: 9)
+   Forælder: arr[2] = 9
+   Venstre barn: arr[4] = 33
+   Højre barn: arr[5] = 27
+   BYT: 9 ↔ 33 (index 2 ↔ 4)
+   Forælder: arr[4] = 9
+   Venstre barn: arr[8] = 14
+   Højre barn: arr[9] = 17
+   BYT: 9 ↔ 17 (index 4 ↔ 9)
+   Forælder: arr[9] = 9
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 65, 56, 61, 62, 71, 33, 77, 67, 38, 39, 56, 60, 46, 50, 69]
+   Mellemresultat: [-, 5, 33, 21, 17, 27, 19, 11, 14, 9, 18]
 
-▶️  Heapify på index 6 (værdi: 65)
-   Forælder: arr[6] = 65
-   Venstre barn: arr[12] = 77
-   Højre barn: arr[13] = 67
-   BYT: 65 ↔ 77 (index 6 ↔ 12)
-   Forælder: arr[12] = 65
+▶️  Heapify på index 1 (værdi: 5)
+   Forælder: arr[1] = 5
+   Venstre barn: arr[2] = 33
+   Højre barn: arr[3] = 21
+   BYT: 5 ↔ 33 (index 1 ↔ 2)
+   Forælder: arr[2] = 5
+   Venstre barn: arr[4] = 17
+   Højre barn: arr[5] = 27
+   BYT: 5 ↔ 27 (index 2 ↔ 5)
+   Forælder: arr[5] = 5
+   Venstre barn: arr[10] = 18
+   BYT: 5 ↔ 18 (index 5 ↔ 10)
+   Forælder: arr[10] = 5
    OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 32, 77, 56, 61, 62, 71, 33, 65, 67, 38, 39, 56, 60, 46, 50, 69]
-
-▶️  Heapify på index 5 (værdi: 32)
-   Forælder: arr[5] = 32
-   Venstre barn: arr[10] = 71
-   Højre barn: arr[11] = 33
-   BYT: 32 ↔ 71 (index 5 ↔ 10)
-   Forælder: arr[10] = 32
-   Venstre barn: arr[20] = 69
-   BYT: 32 ↔ 69 (index 10 ↔ 20)
-   Forælder: arr[20] = 32
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 44, 71, 77, 56, 61, 62, 69, 33, 65, 67, 38, 39, 56, 60, 46, 50, 32]
-
-▶️  Heapify på index 4 (værdi: 44)
-   Forælder: arr[4] = 44
-   Venstre barn: arr[8] = 61
-   Højre barn: arr[9] = 62
-   BYT: 44 ↔ 62 (index 4 ↔ 9)
-   Forælder: arr[9] = 44
-   Venstre barn: arr[18] = 46
-   Højre barn: arr[19] = 50
-   BYT: 44 ↔ 50 (index 9 ↔ 19)
-   Forælder: arr[19] = 44
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 23, 62, 71, 77, 56, 61, 50, 69, 33, 65, 67, 38, 39, 56, 60, 46, 44, 32]
-
-▶️  Heapify på index 3 (værdi: 23)
-   Forælder: arr[3] = 23
-   Venstre barn: arr[6] = 77
-   Højre barn: arr[7] = 56
-   BYT: 23 ↔ 77 (index 3 ↔ 6)
-   Forælder: arr[6] = 23
-   Venstre barn: arr[12] = 65
-   Højre barn: arr[13] = 67
-   BYT: 23 ↔ 67 (index 6 ↔ 13)
-   Forælder: arr[13] = 23
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 21, 77, 62, 71, 67, 56, 61, 50, 69, 33, 65, 23, 38, 39, 56, 60, 46, 44, 32]
-
-▶️  Heapify på index 2 (værdi: 21)
-   Forælder: arr[2] = 21
-   Venstre barn: arr[4] = 62
-   Højre barn: arr[5] = 71
-   BYT: 21 ↔ 71 (index 2 ↔ 5)
-   Forælder: arr[5] = 21
-   Venstre barn: arr[10] = 69
-   Højre barn: arr[11] = 33
-   BYT: 21 ↔ 69 (index 5 ↔ 10)
-   Forælder: arr[10] = 21
-   Venstre barn: arr[20] = 32
-   BYT: 21 ↔ 32 (index 10 ↔ 20)
-   Forælder: arr[20] = 21
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 17, 71, 77, 62, 69, 67, 56, 61, 50, 32, 33, 65, 23, 38, 39, 56, 60, 46, 44, 21]
-
-▶️  Heapify på index 1 (værdi: 17)
-   Forælder: arr[1] = 17
-   Venstre barn: arr[2] = 71
-   Højre barn: arr[3] = 77
-   BYT: 17 ↔ 77 (index 1 ↔ 3)
-   Forælder: arr[3] = 17
-   Venstre barn: arr[6] = 67
-   Højre barn: arr[7] = 56
-   BYT: 17 ↔ 67 (index 3 ↔ 6)
-   Forælder: arr[6] = 17
-   Venstre barn: arr[12] = 65
-   Højre barn: arr[13] = 23
-   BYT: 17 ↔ 65 (index 6 ↔ 12)
-   Forælder: arr[12] = 17
-   OK: Heap-egenskab opfyldt
-   Mellemresultat: [-, 77, 71, 67, 62, 69, 65, 56, 61, 50, 32, 33, 17, 23, 38, 39, 56, 60, 46, 44, 21]
+   Mellemresultat: [-, 33, 27, 21, 17, 18, 19, 11, 14, 9, 5]
 
 ✅ MAX-HEAP FÆRDIG:
-Resultat: [-, 77, 71, 67, 62, 69, 65, 56, 61, 50, 32, 33, 17, 23, 38, 39, 56, 60, 46, 44, 21]
+Resultat: [-, 33, 27, 21, 17, 18, 19, 11, 14, 9, 5]
 Gyldig max-heap? true
 
-🌳 MAX-HEAP SOM TRÆ:
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-77 
 
-  
-  
-  
-  
-  
-  
-  
-71 
-  
-  
-  
-  
-  
-  
-  
-67 
+============================================================
+HEAP OPERATIONS DEMO PÅ BYGGEDE HEAPS
+============================================================
 
-  
-  
-  
-62 
-  
-  
-  
-69 
-  
-  
-  
-65 
-  
-  
-  
-56 
+📊 BYGGET MIN-HEAP (fra original array):
+  [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
+  Gyldig min-heap? true
 
-  
-61 
-  
-50 
-  
-32 
-  
-33 
-  
-17 
-  
-23 
-  
-38 
-  
-39 
+📊 BYGGET MAX-HEAP (fra original array):
+  [-, 33, 27, 21, 17, 18, 19, 11, 14, 9, 5]
+  Gyldig max-heap? true
 
-56 
-60 
-46 
-44 
-21 
+────────────────────────────────────────────────────────────
 
+
+============================================================
+SPECIFIK OPGAVE: Priority Queue Operations
+============================================================
+Operationer: 1. insert(7), 2. insert(15), 3. deleteMin()
+
+📊 START-MIN-HEAP (før operationer):
+  [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27]
+  Gyldig min-heap? true
+
+────────────────────────────────────────
+TRIN 1: insert(7)
+
+============================================================
+INSERT OPERATION: 7 i MIN-HEAP
+============================================================
+→ Tilføjer 7 til slutningen (index 11 i 1-baseret)
+
+Før heapify-up: [-, 5, 9, 11, 14, 18, 19, 21, 33, 17, 27, 7]
+
+--- HEAPIFY-UP PROCESS ---
+  Sammenligner: arr[11]=7 med parent arr[5]=18
+  → BYT: 7 ↔ 18 (index 11 ↔ 5)
+    Mellemresultat: [-, 5, 9, 11, 14, 7, 19, 21, 33, 17, 27, 18]
+  Sammenligner: arr[5]=7 med parent arr[2]=9
+  → BYT: 7 ↔ 9 (index 5 ↔ 2)
+    Mellemresultat: [-, 5, 7, 11, 14, 9, 19, 21, 33, 17, 27, 18]
+  Sammenligner: arr[2]=7 med parent arr[1]=5
+  ✓ Heap-egenskab opfyldt, stopper
+
+✅ INSERT FÆRDIG!
+Ny heap: [-, 5, 7, 11, 14, 9, 19, 21, 33, 17, 27, 18]
+Gyldig min-heap? true
+
+✅ Min-heap efter insert(7):
+  [-, 5, 7, 11, 14, 9, 19, 21, 33, 17, 27, 18]
+  Gyldig min-heap? true
+
+────────────────────────────────────────
+TRIN 2: insert(15)
+
+============================================================
+INSERT OPERATION: 15 i MIN-HEAP
+============================================================
+→ Tilføjer 15 til slutningen (index 12 i 1-baseret)
+
+Før heapify-up: [-, 5, 7, 11, 14, 9, 19, 21, 33, 17, 27, 18, 15]
+
+--- HEAPIFY-UP PROCESS ---
+  Sammenligner: arr[12]=15 med parent arr[6]=19
+  → BYT: 15 ↔ 19 (index 12 ↔ 6)
+    Mellemresultat: [-, 5, 7, 11, 14, 9, 15, 21, 33, 17, 27, 18, 19]
+  Sammenligner: arr[6]=15 med parent arr[3]=11
+  ✓ Heap-egenskab opfyldt, stopper
+
+✅ INSERT FÆRDIG!
+Ny heap: [-, 5, 7, 11, 14, 9, 15, 21, 33, 17, 27, 18, 19]
+Gyldig min-heap? true
+
+✅ Min-heap efter insert(15):
+  [-, 5, 7, 11, 14, 9, 15, 21, 33, 17, 27, 18, 19]
+  Gyldig min-heap? true
+
+────────────────────────────────────────
+TRIN 3: deleteMin()
+
+============================================================
+DELETE-MIN OPERATION
+============================================================
+→ Fjerner min element: 5 (index 1 i 1-baseret)
+→ Flytter sidste element 19 til toppen
+
+Før heapify-down: [-, 19, 7, 11, 14, 9, 15, 21, 33, 17, 27, 18]
+
+--- HEAPIFY-DOWN PROCESS ---
+  Node[1]=19
+    Venstre barn[2]=7
+    Højre barn[3]=11
+  → BYT: 19 ↔ 7 (index 1 ↔ 2)
+    Mellemresultat: [-, 7, 19, 11, 14, 9, 15, 21, 33, 17, 27, 18]
+  Node[2]=19
+    Venstre barn[4]=14
+    Højre barn[5]=9
+  → BYT: 19 ↔ 9 (index 2 ↔ 5)
+    Mellemresultat: [-, 7, 9, 11, 14, 19, 15, 21, 33, 17, 27, 18]
+  Node[5]=19
+    Venstre barn[10]=27
+    Højre barn[11]=18
+  → BYT: 19 ↔ 18 (index 5 ↔ 11)
+    Mellemresultat: [-, 7, 9, 11, 14, 18, 15, 21, 33, 17, 27, 19]
+  Node[11]=19
+  ✓ Heap-egenskab opfyldt
+
+✅ DELETE-MIN FÆRDIG!
+Fjernet element: 5
+Ny heap: [-, 7, 9, 11, 14, 18, 15, 21, 33, 17, 27, 19]
+Gyldig min-heap? true
+
+✅ Min-heap efter deleteMin():
+  [-, 7, 9, 11, 14, 18, 15, 21, 33, 17, 27, 19]
+  Gyldig min-heap? true
 
 ============================================================
 ANALYSE FÆRDIG

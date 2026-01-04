@@ -6,9 +6,10 @@ public class HeapAndPriorityQueue {
     // ==================== KONFIGURATION ====================
     static class Config {
         boolean useZeroBasedIndexing = false;  // Vi bruger 1-baseret indeksering
-        boolean logToFile = true;             // Skriver til fil
+        boolean logToFile = true;
         String heapType = "both";
         String logFileName = "heap_log.txt";
+        boolean verboseOperations = true;
     }
 
     static Config config = new Config();
@@ -19,14 +20,13 @@ public class HeapAndPriorityQueue {
         System.out.println(message);
         if (config.logToFile && fileWriter != null) {
             fileWriter.println(message);
-            fileWriter.flush(); // Sikrer at data skrives til fil med det samme
+            fileWriter.flush();
         }
     }
 
     // ==================== HEAP BUILDING & HEAPIFY ====================
     static class HeapBuilder {
 
-        // Simpel forklaring på heapify
         public static void explainHeapify() {
             log("\n📚 SIMPEL FORKLARING PÅ HEAPIFY:");
             log("=".repeat(60));
@@ -53,28 +53,27 @@ public class HeapAndPriorityQueue {
                    • Højre barn til index i: 2*i + 1
                 
                 5. TIDSKOMPLEKSITET:
-                   • Build-heap: O(n) - ikke O(n log n)!
-                   • Heapify-up: O(log n)
-                   • Heapify-down: O(log n)
+                   • Build-heap: O(n)
+                   • Insert: O(log n) - heapify-up
+                   • Delete: O(log n) - heapify-down
+                   • Peek: O(1)
                 """);
             log("=".repeat(60));
         }
 
-        // Byg min-heap fra array
         public static void buildMinHeap(int[] arr) {
             log("\n" + "=".repeat(60));
             log("BYGGER MIN-HEAP FRA ARRAY");
             log("=".repeat(60));
 
             int n = arr.length;
-            int[] heap = arr.clone(); // Arbejder på kopi
+            int[] heap = arr.clone();
 
             log("Start array: " + Arrays.toString(heap));
             log("Størrelse: " + n);
             log("\nTRIN-FOR-TRIN PROCESS:");
 
-            // Start fra sidste forælder og arbejd opad
-            int startIdx = n / 2; // floor(n/2) for 1-baseret (men vi arbejder 0-baseret internt)
+            int startIdx = n / 2;
 
             for (int i = startIdx - 1; i >= 0; i--) {
                 log("\n▶️  Heapify på index " + (i+1) + " (værdi: " + heap[i] + ")");
@@ -85,26 +84,20 @@ public class HeapAndPriorityQueue {
             log("\n✅ MIN-HEAP FÆRDIG:");
             log("Resultat: " + arrayToString(heap, true));
             log("Gyldig min-heap? " + isMinHeap(heap));
-
-            // Vis heap som træ
-            log("\n🌳 MIN-HEAP SOM TRÆ:");
-            printHeapAsTree(heap, "min");
         }
 
-        // Byg max-heap fra array
         public static void buildMaxHeap(int[] arr) {
             log("\n" + "=".repeat(60));
             log("BYGGER MAX-HEAP FRA ARRAY");
             log("=".repeat(60));
 
             int n = arr.length;
-            int[] heap = arr.clone(); // Arbejder på kopi
+            int[] heap = arr.clone();
 
             log("Start array: " + Arrays.toString(heap));
             log("Størrelse: " + n);
             log("\nTRIN-FOR-TRIN PROCESS:");
 
-            // Start fra sidste forælder og arbejd opad
             int startIdx = n / 2;
 
             for (int i = startIdx - 1; i >= 0; i--) {
@@ -116,17 +109,12 @@ public class HeapAndPriorityQueue {
             log("\n✅ MAX-HEAP FÆRDIG:");
             log("Resultat: " + arrayToString(heap, true));
             log("Gyldig max-heap? " + isMaxHeap(heap));
-
-            // Vis heap som træ
-            log("\n🌳 MAX-HEAP SOM TRÆ:");
-            printHeapAsTree(heap, "max");
         }
 
-        // Min-heapify funktion
         private static void minHeapify(int[] arr, int n, int i) {
             int smallest = i;
-            int left = 2 * i + 1;  // Venstre barn i 0-baseret
-            int right = 2 * i + 2; // Højre barn i 0-baseret
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
 
             log("   Forælder: arr[" + (i+1) + "] = " + arr[i]);
 
@@ -148,18 +136,16 @@ public class HeapAndPriorityQueue {
                 log("   BYT: " + arr[i] + " ↔ " + arr[smallest] +
                         " (index " + (i+1) + " ↔ " + (smallest+1) + ")");
                 swap(arr, i, smallest);
-                // Rekursivt heapify på det berørte subtræ
                 minHeapify(arr, n, smallest);
             } else {
                 log("   OK: Heap-egenskab opfyldt");
             }
         }
 
-        // Max-heapify funktion
         private static void maxHeapify(int[] arr, int n, int i) {
             int largest = i;
-            int left = 2 * i + 1;  // Venstre barn i 0-baseret
-            int right = 2 * i + 2; // Højre barn i 0-baseret
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
 
             log("   Forælder: arr[" + (i+1) + "] = " + arr[i]);
 
@@ -181,7 +167,6 @@ public class HeapAndPriorityQueue {
                 log("   BYT: " + arr[i] + " ↔ " + arr[largest] +
                         " (index " + (i+1) + " ↔ " + (largest+1) + ")");
                 swap(arr, i, largest);
-                // Rekursivt heapify på det berørte subtræ
                 maxHeapify(arr, n, largest);
             } else {
                 log("   OK: Heap-egenskab opfyldt");
@@ -234,35 +219,11 @@ public class HeapAndPriorityQueue {
             sb.append("]");
             return sb.toString();
         }
-
-        private static void printHeapAsTree(int[] heap, String type) {
-            int n = heap.length;
-            int height = (int)(Math.log(n) / Math.log(2)) + 1;
-
-            for (int i = 0; i < n; i++) {
-                int level = (int)(Math.log(i + 1) / Math.log(2));
-                int spaces = (int)Math.pow(2, height - level - 1) - 1;
-
-                // Indrykning
-                for (int s = 0; s < spaces; s++) {
-                    log("  ");
-                }
-
-                // Print værdi
-                log(heap[i] + " ");
-
-                // Ny linje efter sidste node på hvert niveau
-                if (i == (int)Math.pow(2, level + 1) - 2 || i == n - 1) {
-                    log("");
-                }
-            }
-        }
     }
 
-    // ==================== SIMPLIFIED HEAP FOR ANALYSIS ====================
+    // ==================== HEAP ANALYZER ====================
     static class HeapAnalyzer {
 
-        // Print array med 1-baseret indeksering korrekt
         public static void printArray(int[] arr, boolean zeroBased) {
             log("\n📊 ORIGINALT ARRAY:");
 
@@ -274,7 +235,6 @@ public class HeapAndPriorityQueue {
                 log("Værdi:   " + getValueString(arr, false));
             }
 
-            // Vis statistik
             int min = Integer.MAX_VALUE;
             int max = Integer.MIN_VALUE;
             for (int val : arr) {
@@ -315,7 +275,6 @@ public class HeapAndPriorityQueue {
             return sb.toString();
         }
 
-        // Vis sorteret array med 1-baseret indeksering
         public static void printSorted(int[] arr) {
             int[] sorted = arr.clone();
             Arrays.sort(sorted);
@@ -324,7 +283,6 @@ public class HeapAndPriorityQueue {
             log("Værdi:   " + getValueString(sorted, false));
         }
 
-        // Tjek heap properties med 1-baseret indeksering
         public static void checkHeapProperties(int[] arr, boolean zeroBased) {
             log("\n🔍 HEAP EGENSKABS CHECK:");
 
@@ -338,7 +296,6 @@ public class HeapAndPriorityQueue {
         private static void checkOneBased(int[] arr) {
             int n = arr.length;
 
-            // Min-heap check
             log("\nMIN-HEAP:");
             String firstMinViolation = null;
             List<String> minViolations = new ArrayList<>();
@@ -382,7 +339,6 @@ public class HeapAndPriorityQueue {
                 }
             }
 
-            // Max-heap check
             log("\nMAX-HEAP:");
             String firstMaxViolation = null;
             List<String> maxViolations = new ArrayList<>();
@@ -428,10 +384,9 @@ public class HeapAndPriorityQueue {
         }
 
         private static void checkZeroBased(int[] arr) {
-            // Simplified for brevity
+            // Simplified
         }
 
-        // Vis parent-child relationer med 1-baseret indeksering
         public static void printParentChildRelations(int[] arr, boolean zeroBased) {
             log("\n👨‍👧‍👦 PARENT-CHILD RELATIONER:");
 
@@ -468,14 +423,267 @@ public class HeapAndPriorityQueue {
         }
 
         private static void printRelationsZeroBased(int[] arr) {
-            // Simplified for brevity
+            // Simplified
+        }
+    }
+
+    // ==================== HEAP OPERATIONS (INSERT & DELETE) ====================
+    static class HeapOperations {
+
+        // Helper methods for building heaps silently
+        private static void minHeapifyForBuild(int[] arr, int n, int i) {
+            int smallest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < n && arr[left] < arr[smallest]) {
+                smallest = left;
+            }
+            if (right < n && arr[right] < arr[smallest]) {
+                smallest = right;
+            }
+
+            if (smallest != i) {
+                HeapBuilder.swap(arr, i, smallest);
+                minHeapifyForBuild(arr, n, smallest);
+            }
+        }
+
+        private static void maxHeapifyForBuild(int[] arr, int n, int i) {
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < n && arr[left] > arr[largest]) {
+                largest = left;
+            }
+            if (right < n && arr[right] > arr[largest]) {
+                largest = right;
+            }
+
+            if (largest != i) {
+                HeapBuilder.swap(arr, i, largest);
+                maxHeapifyForBuild(arr, n, largest);
+            }
+        }
+
+        // DELETE-MAX operation
+        public static int[] deleteMax(int[] arr) {
+            log("\n" + "=".repeat(60));
+            log("DELETE-MAX OPERATION");
+            log("=".repeat(60));
+
+            if (arr.length == 0) {
+                log("⚠ Heap er tom!");
+                return arr;
+            }
+
+            int[] heap = arr.clone();
+            int max = heap[0];
+
+            log("→ Fjerner max element: " + max + " (index 1 i 1-baseret)");
+            log("→ Flytter sidste element " + heap[heap.length-1] + " til toppen");
+
+            // Flyt sidste element til toppen
+            heap[0] = heap[heap.length - 1];
+            int[] newHeap = Arrays.copyOf(heap, heap.length - 1);
+
+            log("\nFør heapify-down: " + HeapBuilder.arrayToString(newHeap, true));
+
+            // Heapify-down
+            if (newHeap.length > 0) {
+                log("\n--- HEAPIFY-DOWN PROCESS ---");
+                maxHeapifyDown(newHeap, 0);
+            }
+
+            log("\n✅ DELETE-MAX FÆRDIG!");
+            log("Fjernet element: " + max);
+            log("Ny heap: " + HeapBuilder.arrayToString(newHeap, true));
+            log("Gyldig max-heap? " + HeapBuilder.isMaxHeap(newHeap));
+
+            return newHeap;
+        }
+
+        // DELETE-MIN operation
+        public static int[] deleteMin(int[] arr) {
+            log("\n" + "=".repeat(60));
+            log("DELETE-MIN OPERATION");
+            log("=".repeat(60));
+
+            if (arr.length == 0) {
+                log("⚠ Heap er tom!");
+                return arr;
+            }
+
+            int[] heap = arr.clone();
+            int min = heap[0];
+
+            log("→ Fjerner min element: " + min + " (index 1 i 1-baseret)");
+            log("→ Flytter sidste element " + heap[heap.length-1] + " til toppen");
+
+            // Flyt sidste element til toppen
+            heap[0] = heap[heap.length - 1];
+            int[] newHeap = Arrays.copyOf(heap, heap.length - 1);
+
+            log("\nFør heapify-down: " + HeapBuilder.arrayToString(newHeap, true));
+
+            // Heapify-down
+            if (newHeap.length > 0) {
+                log("\n--- HEAPIFY-DOWN PROCESS ---");
+                minHeapifyDown(newHeap, 0);
+            }
+
+            log("\n✅ DELETE-MIN FÆRDIG!");
+            log("Fjernet element: " + min);
+            log("Ny heap: " + HeapBuilder.arrayToString(newHeap, true));
+            log("Gyldig min-heap? " + HeapBuilder.isMinHeap(newHeap));
+
+            return newHeap;
+        }
+
+        // INSERT operation (for både min og max heap)
+        public static int[] insert(int[] arr, int value, boolean isMaxHeap) {
+            log("\n" + "=".repeat(60));
+            log("INSERT OPERATION: " + value + " i " + (isMaxHeap ? "MAX-HEAP" : "MIN-HEAP"));
+            log("=".repeat(60));
+
+            // Tilføj element til slutningen
+            int[] heap = Arrays.copyOf(arr, arr.length + 1);
+            heap[heap.length - 1] = value;
+
+            log("→ Tilføjer " + value + " til slutningen (index " + heap.length + " i 1-baseret)");
+            log("\nFør heapify-up: " + HeapBuilder.arrayToString(heap, true));
+
+            // Heapify-up
+            log("\n--- HEAPIFY-UP PROCESS ---");
+            if (isMaxHeap) {
+                maxHeapifyUp(heap, heap.length - 1);
+            } else {
+                minHeapifyUp(heap, heap.length - 1);
+            }
+
+            log("\n✅ INSERT FÆRDIG!");
+            log("Ny heap: " + HeapBuilder.arrayToString(heap, true));
+            log("Gyldig " + (isMaxHeap ? "max-heap" : "min-heap") + "? " +
+                    (isMaxHeap ? HeapBuilder.isMaxHeap(heap) : HeapBuilder.isMinHeap(heap)));
+
+            return heap;
+        }
+
+        private static void maxHeapifyDown(int[] arr, int i) {
+            int n = arr.length;
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            log("  Node[" + (i+1) + "]=" + arr[i]);
+
+            if (left < n) {
+                log("    Venstre barn[" + (left+1) + "]=" + arr[left]);
+                if (arr[left] > arr[largest]) {
+                    largest = left;
+                }
+            }
+
+            if (right < n) {
+                log("    Højre barn[" + (right+1) + "]=" + arr[right]);
+                if (arr[right] > arr[largest]) {
+                    largest = right;
+                }
+            }
+
+            if (largest != i) {
+                log("  → BYT: " + arr[i] + " ↔ " + arr[largest] +
+                        " (index " + (i+1) + " ↔ " + (largest+1) + ")");
+                HeapBuilder.swap(arr, i, largest);
+                log("    Mellemresultat: " + HeapBuilder.arrayToString(arr, true));
+                maxHeapifyDown(arr, largest);
+            } else {
+                log("  ✓ Heap-egenskab opfyldt");
+            }
+        }
+
+        private static void minHeapifyDown(int[] arr, int i) {
+            int n = arr.length;
+            int smallest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            log("  Node[" + (i+1) + "]=" + arr[i]);
+
+            if (left < n) {
+                log("    Venstre barn[" + (left+1) + "]=" + arr[left]);
+                if (arr[left] < arr[smallest]) {
+                    smallest = left;
+                }
+            }
+
+            if (right < n) {
+                log("    Højre barn[" + (right+1) + "]=" + arr[right]);
+                if (arr[right] < arr[smallest]) {
+                    smallest = right;
+                }
+            }
+
+            if (smallest != i) {
+                log("  → BYT: " + arr[i] + " ↔ " + arr[smallest] +
+                        " (index " + (i+1) + " ↔ " + (smallest+1) + ")");
+                HeapBuilder.swap(arr, i, smallest);
+                log("    Mellemresultat: " + HeapBuilder.arrayToString(arr, true));
+                minHeapifyDown(arr, smallest);
+            } else {
+                log("  ✓ Heap-egenskab opfyldt");
+            }
+        }
+
+        private static void maxHeapifyUp(int[] arr, int i) {
+            int current = i;
+
+            while (current > 0) {
+                int parent = (current - 1) / 2;
+
+                log("  Sammenligner: arr[" + (current+1) + "]=" + arr[current] +
+                        " med parent arr[" + (parent+1) + "]=" + arr[parent]);
+
+                if (arr[current] > arr[parent]) {
+                    log("  → BYT: " + arr[current] + " ↔ " + arr[parent] +
+                            " (index " + (current+1) + " ↔ " + (parent+1) + ")");
+                    HeapBuilder.swap(arr, current, parent);
+                    log("    Mellemresultat: " + HeapBuilder.arrayToString(arr, true));
+                    current = parent;
+                } else {
+                    log("  ✓ Heap-egenskab opfyldt, stopper");
+                    break;
+                }
+            }
+        }
+
+        private static void minHeapifyUp(int[] arr, int i) {
+            int current = i;
+
+            while (current > 0) {
+                int parent = (current - 1) / 2;
+
+                log("  Sammenligner: arr[" + (current+1) + "]=" + arr[current] +
+                        " med parent arr[" + (parent+1) + "]=" + arr[parent]);
+
+                if (arr[current] < arr[parent]) {
+                    log("  → BYT: " + arr[current] + " ↔ " + arr[parent] +
+                            " (index " + (current+1) + " ↔ " + (parent+1) + ")");
+                    HeapBuilder.swap(arr, current, parent);
+                    log("    Mellemresultat: " + HeapBuilder.arrayToString(arr, true));
+                    current = parent;
+                } else {
+                    log("  ✓ Heap-egenskab opfyldt, stopper");
+                    break;
+                }
+            }
         }
     }
 
     // ==================== MAIN ====================
     public static void main(String[] args) {
         try {
-            // Opret logfil
             if (config.logToFile) {
                 fileWriter = new PrintWriter(new FileWriter(config.logFileName));
                 log("📝 LOGFIL OPRETTET: " + config.logFileName);
@@ -487,7 +695,7 @@ public class HeapAndPriorityQueue {
             log("=".repeat(60));
 
             // Original array
-            int[] originalArray = {17,21,23,44,32,65,38,56,46,69,33,77,67,56,39,61,60,62,50,71};
+            int[] originalArray = {5,9,11,14,18,19,21,33,17,27};
 
 
             log("\n⚠️  Vigtigt: Arrayet vises med 1-baseret indeksering");
@@ -519,6 +727,85 @@ public class HeapAndPriorityQueue {
                 HeapBuilder.buildMaxHeap(originalArray);
             }
 
+            // ==================== HEAP OPERATIONS DEMO ====================
+            log("\n\n" + "=".repeat(60));
+            log("HEAP OPERATIONS DEMO PÅ BYGGEDE HEAPS");
+            log("=".repeat(60));
+
+            // Byg min-heap og max-heap først
+            int[] minHeapBuilt = originalArray.clone();
+            int[] maxHeapBuilt = originalArray.clone();
+
+            // Byg min-heap
+            int n = minHeapBuilt.length;
+            for (int i = n / 2 - 1; i >= 0; i--) {
+                HeapOperations.minHeapifyForBuild(minHeapBuilt, n, i);
+            }
+
+            // Byg max-heap
+            n = maxHeapBuilt.length;
+            for (int i = n / 2 - 1; i >= 0; i--) {
+                HeapOperations.maxHeapifyForBuild(maxHeapBuilt, n, i);
+            }
+
+            log("\n📊 BYGGET MIN-HEAP (fra original array):");
+            log("  " + HeapBuilder.arrayToString(minHeapBuilt, true));
+            log("  Gyldig min-heap? " + HeapBuilder.isMinHeap(minHeapBuilt));
+
+            log("\n📊 BYGGET MAX-HEAP (fra original array):");
+            log("  " + HeapBuilder.arrayToString(maxHeapBuilt, true));
+            log("  Gyldig max-heap? " + HeapBuilder.isMaxHeap(maxHeapBuilt));
+
+
+
+            // Test DELETE-MAX på den byggede max-heap
+            //log("\n" + "─".repeat(60));
+            //int[] afterDeleteMax = HeapOperations.deleteMax(maxHeapBuilt);
+
+            // Test INSERT på den opdaterede max-heap
+            //log("\n" + "─".repeat(60));
+            //int[] afterInsert = HeapOperations.insert(afterDeleteMax, 55, true);
+
+            log("\n" + "─".repeat(60));
+
+
+
+            // ==================== SPECIFIK OPGAVE: INSERT 7, INSERT 15, DELETE-MIN ====================
+            log("\n\n" + "=".repeat(60));
+            log("SPECIFIK OPGAVE: Priority Queue Operations");
+            log("=".repeat(60));
+            log("Operationer: 1. insert(7), 2. insert(15), 3. deleteMin()");
+
+            log("\n📊 START-MIN-HEAP (før operationer):");
+            log("  " + HeapBuilder.arrayToString(minHeapBuilt, true));
+            log("  Gyldig min-heap? " + HeapBuilder.isMinHeap(minHeapBuilt));
+
+// Trin 1: Insert 7
+            log("\n" + "─".repeat(40));
+            log("TRIN 1: insert(7)");
+            int[] afterInsert7 = HeapOperations.insert(minHeapBuilt, 7, false);
+            log("\n✅ Min-heap efter insert(7):");
+            log("  " + HeapBuilder.arrayToString(afterInsert7, true));
+            log("  Gyldig min-heap? " + HeapBuilder.isMinHeap(afterInsert7));
+
+// Trin 2: Insert 15 (PÅ DET NYE ARRAY fra insert(7))
+            log("\n" + "─".repeat(40));
+            log("TRIN 2: insert(15)");
+            int[] afterInsert15 = HeapOperations.insert(afterInsert7, 15, false); // Brug afterInsert7, ikke minHeapBuilt!
+            log("\n✅ Min-heap efter insert(15):");
+            log("  " + HeapBuilder.arrayToString(afterInsert15, true));
+            log("  Gyldig min-heap? " + HeapBuilder.isMinHeap(afterInsert15));
+
+// Trin 3: Delete min (PÅ DET NYE ARRAY fra insert(15))
+            log("\n" + "─".repeat(40));
+            log("TRIN 3: deleteMin()");
+            int[] afterDeleteMin = HeapOperations.deleteMin(afterInsert15); // Brug afterInsert15!
+            log("\n✅ Min-heap efter deleteMin():");
+            log("  " + HeapBuilder.arrayToString(afterDeleteMin, true));
+            log("  Gyldig min-heap? " + HeapBuilder.isMinHeap(afterDeleteMin));
+
+
+
             log("\n" + "=".repeat(60));
             log("ANALYSE FÆRDIG");
             log("=".repeat(60));
@@ -526,7 +813,6 @@ public class HeapAndPriorityQueue {
         } catch (IOException e) {
             System.err.println("Fejl ved oprettelse af logfil: " + e.getMessage());
         } finally {
-            // Luk filen
             if (fileWriter != null) {
                 fileWriter.close();
                 System.out.println("\n✅ Logfil gemt som: " + config.logFileName);
