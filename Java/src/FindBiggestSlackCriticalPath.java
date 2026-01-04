@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Klasse der repræsenterer en aktivitet/projektopgave
@@ -227,39 +229,39 @@ public class FindBiggestSlackCriticalPath {
         StringBuilder kritiskVej = new StringBuilder();
         int laengdeKritiskVej = 0;
 
-        int aktuelEvent = 1;
-        int indeks = 0;
-        int maxVarighedAktuelEvent = 0;
-        String maxTask = "";
+        // Find det største event-nummer
+        int maxEvent = 0;
+        for (Aktivitet a : aktiviteter) {
+            if (a.getEvent() > maxEvent) {
+                maxEvent = a.getEvent();
+            }
+        }
 
-        while (true) {
-            // Find den længste aktivitet for det aktuelle event
-            while (indeks < aktiviteter.size() &&
-                    aktiviteter.get(indeks).getEvent() == aktuelEvent) {
+        // Gå igennem alle events fra 1 til maxEvent
+        for (int event = 1; event <= maxEvent; event++) {
+            boolean eventHarAktiviteter = false;
+            int maxVarighed = 0;
+            String maxTask = "";
 
-                Aktivitet aktuelt = aktiviteter.get(indeks);
-                if (aktuelt.getDuration() > maxVarighedAktuelEvent) {
-                    maxVarighedAktuelEvent = aktuelt.getDuration();
-                    maxTask = aktuelt.getTask();
+            // Find den længste aktivitet for dette event
+            for (Aktivitet a : aktiviteter) {
+                if (a.getEvent() == event) {
+                    eventHarAktiviteter = true;
+                    if (a.getDuration() > maxVarighed) {
+                        maxVarighed = a.getDuration();
+                        maxTask = a.getTask();
+                    }
                 }
-                indeks++;
             }
 
-            // Tilføj den længste aktivitet til den kritiske vej
-            laengdeKritiskVej += maxVarighedAktuelEvent;
-            kritiskVej.append(maxTask);
-
-            // Nulstil for næste event
-            maxVarighedAktuelEvent = 0;
-            maxTask = "";
-
-            // Hvis vi er færdige med alle aktiviteter
-            if (indeks == aktiviteter.size()) {
-                break;
+            // Kun tilføj hvis event har aktiviteter (håndterer huller)
+            if (eventHarAktiviteter) {
+                if (kritiskVej.length() > 0) {
+                    kritiskVej.append(", ");
+                }
+                kritiskVej.append(maxTask);
+                laengdeKritiskVej += maxVarighed;
             }
-
-            // Gå til næste event
-            aktuelEvent = aktiviteter.get(indeks).getEvent();
         }
 
         return new String[]{kritiskVej.toString(), String.valueOf(laengdeKritiskVej)};
@@ -343,6 +345,34 @@ public class FindBiggestSlackCriticalPath {
 
             System.out.printf("%-5d\t%-9s\t%-8d\t%-11d\t%-5d%n",
                     a.getEvent(), a.getTask(), a.getDuration(), maxIEVENT, slack);
+        }
+    }
+
+    /**
+     * Tjekker om der er huller i events (valgfri ekstra funktion)
+     */
+    private static void checkForHuller(List<Aktivitet> aktiviteter) {
+        Set<Integer> events = new HashSet<>();
+        for (Aktivitet a : aktiviteter) {
+            events.add(a.getEvent());
+        }
+
+        int maxEvent = 0;
+        for (int e : events) {
+            if (e > maxEvent) {
+                maxEvent = e;
+            }
+        }
+
+        List<Integer> manglendeEvents = new ArrayList<>();
+        for (int i = 1; i <= maxEvent; i++) {
+            if (!events.contains(i)) {
+                manglendeEvents.add(i);
+            }
+        }
+
+        if (!manglendeEvents.isEmpty()) {
+            System.out.println("\n⚠️  Advarsel: Der er huller i events. Mangler: " + manglendeEvents);
         }
     }
 }

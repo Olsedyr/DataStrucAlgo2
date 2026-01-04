@@ -695,7 +695,7 @@ public class HeapAndPriorityQueue {
             log("=".repeat(60));
 
             // Original array
-            int[] originalArray = {5,9,11,14,18,19,21,33,17,27};
+            int[] originalArray = {0,4,17,12,20,25,15,38,22,30,24,45,67,18,40,42,36,56};
 
 
             log("\n⚠️  Vigtigt: Arrayet vises med 1-baseret indeksering");
@@ -764,7 +764,7 @@ public class HeapAndPriorityQueue {
 
             // Test INSERT på den opdaterede max-heap
             //log("\n" + "─".repeat(60));
-            //int[] afterInsert = HeapOperations.insert(afterDeleteMax, 55, true);
+            //int[] afterInsert = HeapOperations.insert(maxHeapBuilt, 12, true);
 
             log("\n" + "─".repeat(60));
 
