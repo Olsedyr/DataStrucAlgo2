@@ -282,11 +282,11 @@ public class HashCollisionHandlingAndRehashing_SameHashIndex {
 
     // ==================== MAIN ====================
     public static void main(String[] args) {
-        HashConfig config = new HashConfig(1, 13, 1 , true);
+        HashConfig config = new HashConfig(1, 17, 1 , true);
 
-        int[] asciiValues = {'C', 'L', 'P', 'U', 'Y', 'M', 'G', 'F','A','B','C','D','E',};
+        int[] asciiValues = {'C', 'L', 'P', 'U', 'Y', 'M', 'G', 'F'};
         for (int v : asciiValues) {
-            config.addElement(v, 3);  // Alle har samme hash index 5
+            config.addElement(v, 5);  // Alle har samme hash index 5
         }
 
         runCompleteAnalysis(config);
