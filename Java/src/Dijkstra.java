@@ -84,7 +84,7 @@ class DijkstraResult {
 
 public class Dijkstra {
 
-    private static final String START_NODE = "B"; // Ændret til A for bedre demonstration
+    private static final String START_NODE = "C"; // Ændret til A for bedre demonstration
 
     // OPDATERET GRAF - DAG (Directed Acyclic Graph) for topological sort
     private static final List<Edge> EDGES = Arrays.asList(

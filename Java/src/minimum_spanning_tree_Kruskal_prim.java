@@ -238,24 +238,13 @@ public class minimum_spanning_tree_Kruskal_prim {
         Graph graph = new Graph();
 
         // Tilføj kanter (samme som i Python)
-        graph.addEdge("A", "B", 22);
-        graph.addEdge("A", "D", 12);
-        graph.addEdge("A", "C", 9);
-        graph.addEdge("B", "C", 35);
-        graph.addEdge("B", "H", 34);
-        graph.addEdge("B", "F", 36);
-        graph.addEdge("C", "D", 4);
-        graph.addEdge("C", "E", 65);
-        graph.addEdge("C", "F", 42);
-        graph.addEdge("D", "E", 33);
-        graph.addEdge("D", "I", 30);
-        graph.addEdge("E", "F", 16);
-        graph.addEdge("E", "G", 23);
-        graph.addEdge("F", "G", 39);
-        graph.addEdge("F", "H", 24);
-        graph.addEdge("G", "H", 25);
-        graph.addEdge("G", "I", 21);
-        graph.addEdge("H", "I", 19);
+        graph.addEdge("A", "B", 1);
+        graph.addEdge("B", "C", 2);
+        graph.addEdge("C", "D", 3);
+        graph.addEdge("D", "E", 4);
+        graph.addEdge("E", "F", 5);
+        graph.addEdge("F", "G", 6);
+        graph.addEdge("G", "H", 7);
 
         System.out.println("\nGraf oprettet med " + graph.getNodeCount() + " noder og " +
                 graph.edges.size() + " kanter");
@@ -265,8 +254,8 @@ public class minimum_spanning_tree_Kruskal_prim {
         System.out.println("PRIM'S ALGORITME");
         System.out.println("=".repeat(60));
 
-        MSTResult primA = prim(graph, "A");
-        printMSTResult("Prim (startnode 'A')", primA);
+        MSTResult primA = prim(graph, "C");
+        printMSTResult("Prim (startnode 'C')", primA);
 
         MSTResult primF = prim(graph, "F");
         printMSTResult("\nPrim (startnode 'F')", primF);

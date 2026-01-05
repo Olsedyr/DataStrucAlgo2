@@ -1,6 +1,6 @@
 === DIJKSTRA PÅ RETTET GRAF ===
 Dijkstra algoritme - Trin for trin
-Startnode: B
+Startnode: C
 
 --- Trin 0 ---
 Startkonfiguration:
@@ -8,8 +8,8 @@ Startkonfiguration:
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Nej  |    0  |   -   |
-|  C   |  Nej  |  ∞    |   -   |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Nej  |    0  |   -   |
 |  D   |  Nej  |  ∞    |   -   |
 |  E   |  Nej  |  ∞    |   -   |
 |  F   |  Nej  |  ∞    |   -   |
@@ -18,13 +18,13 @@ Startkonfiguration:
 +------+-------+-------+-------+
 
 --- Trin 1 ---
-Markerer node B som 'Known'
+Markerer node C som 'Known'
 +------+-------+-------+-------+
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Nej  |  ∞    |   -   |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
 |  D   |  Nej  |  ∞    |   -   |
 |  E   |  Nej  |  ∞    |   -   |
 |  F   |  Nej  |  ∞    |   -   |
@@ -33,14 +33,14 @@ Markerer node B som 'Known'
 +------+-------+-------+-------+
 
 --- Trin 2 ---
-Markerer node C som 'Known'
+Markerer node D som 'Known'
 +------+-------+-------+-------+
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Nej  |  ∞    |   -   |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
+|  D   |  Ja   |    3  |    C  |
 |  E   |  Nej  |  ∞    |   -   |
 |  F   |  Nej  |  ∞    |   -   |
 |  G   |  Nej  |  ∞    |   -   |
@@ -48,78 +48,63 @@ Markerer node C som 'Known'
 +------+-------+-------+-------+
 
 --- Trin 3 ---
-Markerer node D som 'Known'
+Markerer node E som 'Known'
 +------+-------+-------+-------+
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Ja   |    5  |    C  |
-|  E   |  Nej  |  ∞    |   -   |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
+|  D   |  Ja   |    3  |    C  |
+|  E   |  Ja   |    7  |    D  |
 |  F   |  Nej  |  ∞    |   -   |
 |  G   |  Nej  |  ∞    |   -   |
 |  H   |  Nej  |  ∞    |   -   |
 +------+-------+-------+-------+
 
 --- Trin 4 ---
-Markerer node E som 'Known'
-+------+-------+-------+-------+
-| Node | Known |   dv  |   pv  |
-+------+-------+-------+-------+
-|  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Ja   |    5  |    C  |
-|  E   |  Ja   |    9  |    D  |
-|  F   |  Nej  |  ∞    |   -   |
-|  G   |  Nej  |  ∞    |   -   |
-|  H   |  Nej  |  ∞    |   -   |
-+------+-------+-------+-------+
-
---- Trin 5 ---
 Markerer node F som 'Known'
 +------+-------+-------+-------+
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Ja   |    5  |    C  |
-|  E   |  Ja   |    9  |    D  |
-|  F   |  Ja   |   14  |    E  |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
+|  D   |  Ja   |    3  |    C  |
+|  E   |  Ja   |    7  |    D  |
+|  F   |  Ja   |   12  |    E  |
 |  G   |  Nej  |  ∞    |   -   |
 |  H   |  Nej  |  ∞    |   -   |
 +------+-------+-------+-------+
 
---- Trin 6 ---
+--- Trin 5 ---
 Markerer node G som 'Known'
 +------+-------+-------+-------+
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Ja   |    5  |    C  |
-|  E   |  Ja   |    9  |    D  |
-|  F   |  Ja   |   14  |    E  |
-|  G   |  Ja   |   20  |    F  |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
+|  D   |  Ja   |    3  |    C  |
+|  E   |  Ja   |    7  |    D  |
+|  F   |  Ja   |   12  |    E  |
+|  G   |  Ja   |   18  |    F  |
 |  H   |  Nej  |  ∞    |   -   |
 +------+-------+-------+-------+
 
---- Trin 7 ---
+--- Trin 6 ---
 Markerer node H som 'Known'
 +------+-------+-------+-------+
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Ja   |    5  |    C  |
-|  E   |  Ja   |    9  |    D  |
-|  F   |  Ja   |   14  |    E  |
-|  G   |  Ja   |   20  |    F  |
-|  H   |  Ja   |   27  |    G  |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
+|  D   |  Ja   |    3  |    C  |
+|  E   |  Ja   |    7  |    D  |
+|  F   |  Ja   |   12  |    E  |
+|  G   |  Ja   |   18  |    F  |
+|  H   |  Ja   |   25  |    G  |
 +------+-------+-------+-------+
 
 === SLUTRESULTAT ===
@@ -127,19 +112,18 @@ Markerer node H som 'Known'
 | Node | Known |   dv  |   pv  |
 +------+-------+-------+-------+
 |  A   |  Nej  |  ∞    |   -   |
-|  B   |  Ja   |    0  |   -   |
-|  C   |  Ja   |    2  |    B  |
-|  D   |  Ja   |    5  |    C  |
-|  E   |  Ja   |    9  |    D  |
-|  F   |  Ja   |   14  |    E  |
-|  G   |  Ja   |   20  |    F  |
-|  H   |  Ja   |   27  |    G  |
+|  B   |  Nej  |  ∞    |   -   |
+|  C   |  Ja   |    0  |   -   |
+|  D   |  Ja   |    3  |    C  |
+|  E   |  Ja   |    7  |    D  |
+|  F   |  Ja   |   12  |    E  |
+|  G   |  Ja   |   18  |    F  |
+|  H   |  Ja   |   25  |    G  |
 +------+-------+-------+-------+
 
-Korteste veje fra B:
-B -> C: B -> C (vægt: 2)
-B -> D: B -> C -> D (vægt: 5)
-B -> E: B -> C -> D -> E (vægt: 9)
-B -> F: B -> C -> D -> E -> F (vægt: 14)
-B -> G: B -> C -> D -> E -> F -> G (vægt: 20)
-B -> H: B -> C -> D -> E -> F -> G -> H (vægt: 27)
+Korteste veje fra C:
+C -> D: C -> D (vægt: 3)
+C -> E: C -> D -> E (vægt: 7)
+C -> F: C -> D -> E -> F (vægt: 12)
+C -> G: C -> D -> E -> F -> G (vægt: 18)
+C -> H: C -> D -> E -> F -> G -> H (vægt: 25)
