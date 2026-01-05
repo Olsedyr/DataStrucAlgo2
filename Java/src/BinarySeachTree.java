@@ -652,21 +652,16 @@ class BinarySearchTree {
 
 
         // Add nodes
-        tree.add(100);
+        tree.add(45);
+        tree.add(15);
+        tree.add(79);
+        tree.add(10);
+        tree.add(20);
+        tree.add(55);
         tree.add(90);
-        tree.add(110);
-        tree.add(80);
-        tree.add(95);
-        tree.add(105);
-        tree.add(120);
-        tree.add(70);
-        tree.add(85);
-        tree.add(92);
-        tree.add(97);
-        tree.add(103);
-        tree.add(108);
-        tree.add(111);
-        tree.add(130);
+        tree.add(12);
+        tree.add(50);
+
 
 
         // Traversals Original
