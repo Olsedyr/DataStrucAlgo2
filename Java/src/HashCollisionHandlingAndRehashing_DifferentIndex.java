@@ -299,7 +299,7 @@ public class HashCollisionHandlingAndRehashing_DifferentIndex {
 
     // ========== MAIN ==========
     public static void main(String[] args) {
-        double threshold = 0.5; // Opgave siger maks 0.5 load factor
+        double threshold = 0.8; // Opgave siger maks 0.5 load factor
         System.out.println("=== ALLE 4 KOLLISIONSMETODER ===");
         System.out.println("Load Factor Threshold: " + threshold + "\n");
 
@@ -321,7 +321,7 @@ public class HashCollisionHandlingAndRehashing_DifferentIndex {
         System.out.println("=".repeat(50));
 
         // Indsæt samme elementer i alle tabeller
-        int[] keys = {2, 3, 6, 8, 10};
+        int[] keys = {2, 3, 6, 8, 10, 10};
         String[] values = {"V", "R", "P", "E", "E", "F"};
 
         System.out.print("Indsætter: ");
