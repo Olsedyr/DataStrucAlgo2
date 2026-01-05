@@ -4,120 +4,136 @@ public class HashCollosionHandlingAndRehashing_SameHashIndex {
 
     public static void main(String[] args) {
         // INPUT - Ændr kun her
-        int capacity = 17;
-        int commonHash = 5;
+        int capacity = 13;
+        int commonHash = 3;
+        double loadFactorThreshold = 0.5; // Standard load factor
 
-        // Indtast både bogstaver OG deres positioner
-        Map<Character, Integer> input = new LinkedHashMap<>();
-        input.put('G', 3);
-        input.put('F', 4);
-        input.put('C', 5);
-        input.put('L', 6);
-        input.put('P', 8);
-        input.put('U', 9);
-        input.put('Y', 13);
-        input.put('M', 14);
-
-        analyze(capacity, commonHash, input);
+        // Kør analysen
+        analyzeUntilRehash(capacity, commonHash, loadFactorThreshold);
     }
 
-    public static void analyze(int capacity, int commonHash, Map<Character, Integer> letterPositions) {
-        System.out.println("QUADRATIC PROBING ANALYSE");
+    public static void analyzeUntilRehash(int capacity, int commonHash, double loadFactorThreshold) {
+        System.out.println("QUADRATIC PROBING - IND TIL REHASHING");
         System.out.println("Kapacitet: " + capacity + ", Fælles hash: " + commonHash);
+        System.out.println("Load factor threshold: " + loadFactorThreshold);
         System.out.println();
 
-        // Beregn korrekte positioner via quadratic probing
-        System.out.println("Quadratic probing sekvens:");
-        List<Integer> correctPositions = new ArrayList<>();
-        Map<Integer, Integer> probeMap = new HashMap<>();
+        // Arrays til at gemme data
+        String[] table = new String[capacity];
+        int[] probeValues = new int[capacity];
+        Arrays.fill(table, "");
+        Arrays.fill(probeValues, -1);
 
-        for (int i = 0; correctPositions.size() < letterPositions.size(); i++) {
-            int pos = (commonHash + i * i) % capacity;
-            if (!correctPositions.contains(pos)) {
-                correctPositions.add(pos);
-                probeMap.put(pos, i);
-                System.out.printf("i=%d: (%d + %d²) mod %d = %d%n",
-                        i, commonHash, i, capacity, pos);
+        int size = 0;
+        int elementCount = 0;
+        boolean canContinue = true;
+
+        System.out.println("Indsættelsesproces og beregninger:");
+        System.out.println("===================================");
+
+        while (canContinue) {
+            elementCount++;
+            String elementLabel = "Y" + elementCount;
+
+            // Quadratic probing
+            int probe = 0;
+            int position = -1;
+            String calculation = "";
+
+            while (probe < capacity) {
+                int candidatePos = (commonHash + probe * probe) % capacity;
+
+                if (table[candidatePos].isEmpty()) {
+                    position = candidatePos;
+                    // Lav beregnings-strengen
+                    calculation = String.format("(%d + %d²) mod %d = %d",
+                            commonHash, probe, capacity, candidatePos);
+                    break;
+                }
+                probe++;
             }
-        }
 
-        System.out.println("\nKorrekte positioner for " + letterPositions.size() + " elementer:");
-        System.out.println(correctPositions);
-
-        // Find forkerte placeringer
-        List<Character> wrongLetters = new ArrayList<>();
-        List<Integer> wrongPositions = new ArrayList<>();
-        List<Integer> missingPositions = new ArrayList<>(correctPositions);
-
-        System.out.println("\nAnalyse af inputtede placeringer:");
-        for (Map.Entry<Character, Integer> entry : letterPositions.entrySet()) {
-            char letter = entry.getKey();
-            int position = entry.getValue();
-
-            if (correctPositions.contains(position)) {
-                missingPositions.remove(Integer.valueOf(position));
-                System.out.printf("%c på %d: Korrekt%n", letter, position);
+            if (position == -1) {
+                System.out.println("\n" + elementLabel + " kan ikke placeres - ingen ledige pladser!");
+                canContinue = false;
             } else {
-                wrongLetters.add(letter);
-                wrongPositions.add(position);
-                System.out.printf("%c på %d: Forkert!%n", letter, position);
-            }
-        }
+                // Tjek load factor
+                double projectedLoadFactor = (double) (size + 1) / capacity;
 
-        System.out.println("\n" + "=".repeat(50));
-        System.out.println("KONKLUSION:");
+                if (projectedLoadFactor > loadFactorThreshold) {
+                    System.out.printf("\n%s: %s%n", elementLabel, calculation);
+                    System.out.printf("Load factor vil blive %.3f > %.3f%n",
+                            projectedLoadFactor, loadFactorThreshold);
+                    System.out.println("REHASHING ER NU UUNDGÅELIGT!");
+                    canContinue = false;
+                } else {
+                    // Indsæt elementet
+                    table[position] = elementLabel;
+                    probeValues[position] = probe;
+                    size++;
 
-        if (wrongLetters.isEmpty()) {
-            System.out.println("Alle bogstaver er korrekt placeret!");
-        } else {
-            for (int i = 0; i < wrongLetters.size(); i++) {
-                char wrongLetter = wrongLetters.get(i);
-                int wrongPosition = wrongPositions.get(i);
-
-                if (!missingPositions.isEmpty()) {
-                    int correctPosition = missingPositions.get(i);
-                    int probe = probeMap.get(correctPosition);
-
-                    System.out.printf("%n'%c' er forkert placeret på index %d%n",
-                            wrongLetter, wrongPosition);
-                    System.out.printf("Skal være på index %d%n", correctPosition);
-                    System.out.printf("Beregning: (%d + %d²) mod %d = %d%n",
-                            commonHash, probe, capacity, correctPosition);
+                    System.out.printf("%s: %s → placeret på index %d%n",
+                            elementLabel, calculation, position);
                 }
             }
         }
 
-        // Vis korrekt tabel
-        System.out.println("\n" + "=".repeat(50));
-        System.out.println("KORREKT TABEL:");
+        // Vis den endelige tabel
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("TABEL NÅR REHASHING ER UUNDGÅELIGT");
+        System.out.println("=".repeat(60));
 
-        char[] table = new char[capacity];
-        Arrays.fill(table, '-');
+        displayTableWithProbeInfo(table, probeValues, capacity);
 
-        // Placer alle bogstaver korrekt
-        Map<Character, Integer> correctPlacement = new HashMap<>(letterPositions);
-
-        // Ret de forkerte
-        for (int i = 0; i < wrongLetters.size(); i++) {
-            if (i < missingPositions.size()) {
-                correctPlacement.put(wrongLetters.get(i), missingPositions.get(i));
+        // Vis alle beregninger
+        System.out.println("\nALLE BEREGNINGER:");
+        System.out.println("=================");
+        for (int i = 0; i < capacity; i++) {
+            if (!table[i].isEmpty()) {
+                int probe = probeValues[i];
+                System.out.printf("%s: i=%d, (%d + %d²) mod %d = %d%n",
+                        table[i], probe, commonHash, probe, capacity, i);
             }
         }
 
-        // Fyld tabellen
-        for (Map.Entry<Character, Integer> entry : correctPlacement.entrySet()) {
-            table[entry.getValue()] = entry.getKey();
+        // Vis statistik
+        System.out.println("\nSTATISTIK:");
+        System.out.println("Antal indsatte elementer: " + size);
+        System.out.printf("Aktuel load factor: %.3f%n", (double)size/capacity);
+        System.out.println("Load factor threshold: " + loadFactorThreshold);
+
+        // Vis hvilke i-værdier der er brugt
+        System.out.println("\nBrugte i-værdier:");
+        for (int i = 0; i < capacity; i++) {
+            if (!table[i].isEmpty()) {
+                System.out.printf("i=%d: %s på index %d%n",
+                        probeValues[i], table[i], i);
+            }
+        }
+    }
+
+    public static void displayTableWithProbeInfo(String[] table, int[] probeValues, int capacity) {
+        System.out.print("Indeks:    ");
+        for (int i = 0; i < capacity; i++) {
+            System.out.printf("%4d", i);
         }
 
-        // Print tabel
-        System.out.print("Indeks: ");
+        System.out.print("\nElement:   ");
         for (int i = 0; i < capacity; i++) {
-            System.out.printf("%3d", i);
+            if (table[i].isEmpty()) {
+                System.out.print("    ");
+            } else {
+                System.out.printf("%4s", table[i]);
+            }
         }
 
-        System.out.print("\nVærdi:  ");
+        System.out.print("\ni-værdi:   ");
         for (int i = 0; i < capacity; i++) {
-            System.out.printf("%3c", table[i]);
+            if (table[i].isEmpty()) {
+                System.out.print("    ");
+            } else {
+                System.out.printf("%4d", probeValues[i]);
+            }
         }
         System.out.println();
     }
