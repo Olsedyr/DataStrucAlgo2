@@ -138,11 +138,9 @@ public class bellman_ford_negativeEdge {
 
     public static void main(String[] args) {
         List<Edge> myGraph = Arrays.asList(
-                new Edge("A", "B", 4),
-                new Edge("B", "C", 2),
-                new Edge("A", "C", 3),
-                new Edge("C", "D", 1),
-                new Edge("D", "B", -1)
+                new Edge("A", "B", 1),
+                new Edge("B", "C", 1),
+                new Edge("C", "A", -3)
         );
 
         new bellman_ford_negativeEdge(myGraph).runAnalysis();
