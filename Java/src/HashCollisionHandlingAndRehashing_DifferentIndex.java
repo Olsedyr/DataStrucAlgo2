@@ -321,7 +321,7 @@ public class HashCollisionHandlingAndRehashing_DifferentIndex {
         System.out.println("=".repeat(50));
 
         // Indsæt samme elementer i alle tabeller
-        int[] keys = {2, 3, 6, 8, 10, 10};
+            int[] keys = {2, 3, 6, 8, 10, 10};
         String[] values = {"V", "R", "P", "E", "E", "F"};
 
         System.out.print("Indsætter: ");
