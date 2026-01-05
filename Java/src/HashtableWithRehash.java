@@ -344,10 +344,10 @@ public class HashtableWithRehash {
         HashTable table = new HashTable(11, 0.5);
 
         // Eksplicitte keys som i opgave 6
-        table.insert(1, "A");   // A = nøgle 1
-        table.insert(23, "W");  // W = nøgle 23
-        table.insert(3, "C");   // C = nøgle 3
-        table.insert(15, "O");  // O = nøgle 15
+        table.insert(1, "A");   // A = nøgle 1 (Første bogstav)
+        table.insert(23, "W");  // W = nøgle 23 (23' bogstav)
+        table.insert(3, "C");   // C = nøgle 3 osv
+        table.insert(15, "O");  // O = nøgle 15 osv
         table.insert(5, "E");   // E = nøgle 5
         table.insert(19, "S");  // S = nøgle 19
 
