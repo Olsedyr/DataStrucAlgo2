@@ -137,7 +137,7 @@ public class HashCollisionHandlingAndRehashing_SameHashIndex {
             if (!failedElements.isEmpty()) {
                 System.out.println("\nElementer der ikke kunne indsættes: " + failedElements.size());
                 for (HashConfig.Element e : failedElements) {
-                    System.out.println("  - " + e.value + " (hash index: " + e.hashIndex + ")");
+                    System.out.println("  - " + e.value + " (" + (char)e.value + "), hash index: " + e.hashIndex);
                 }
             }
         }
@@ -168,7 +168,7 @@ public class HashCollisionHandlingAndRehashing_SameHashIndex {
             while (probe < capacity) {
                 int index = (hashIndex + probe * probe) % capacity;
 
-                if (showSteps && probe < 5) {
+                if (showSteps && probe < capacity) {
                     System.out.println("  Probe " + probe +
                             ": (" + hashIndex + " + " + probe + "²) % " +
                             capacity + " = " + index);
@@ -282,11 +282,11 @@ public class HashCollisionHandlingAndRehashing_SameHashIndex {
 
     // ==================== MAIN ====================
     public static void main(String[] args) {
-        HashConfig config = new HashConfig(1, 17, 1.0, true);
+        HashConfig config = new HashConfig(1, 13, 1 , true);
 
-        int[] asciiValues = {'C', 'L', 'P', 'U', 'Y', 'M', 'G', 'F'};
+        int[] asciiValues = {'C', 'L', 'P', 'U', 'Y', 'M', 'G', 'F','A','B','C','D','E',};
         for (int v : asciiValues) {
-            config.addElement(v, 5);  // Alle har samme hash index 5
+            config.addElement(v, 3);  // Alle har samme hash index 5
         }
 
         runCompleteAnalysis(config);

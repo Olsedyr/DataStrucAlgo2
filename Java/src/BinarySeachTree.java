@@ -614,6 +614,36 @@ class BinarySearchTree {
         path.remove(path.size() - 1); // Backtrack
     }
 
+    // Method to check if another tree is a subtree of this tree
+    boolean isSubtree(BinarySearchTree other) {
+        if (other.root == null) return true; // Empty tree is always a subtree
+        if (root == null) return false; // Non-empty tree can't be subtree of empty tree
+        return isSubtreeRec(root, other.root);
+    }
+
+    // Recursive method to check if tree rooted at node2 is subtree of tree rooted at node1
+    private boolean isSubtreeRec(Node node1, Node node2) {
+        if (node2 == null) return true;
+        if (node1 == null) return false;
+
+        // Check if subtrees match starting from this node
+        if (node1.value == node2.value && matchTrees(node1, node2)) {
+            return true;
+        }
+
+        // Otherwise, check in left or right subtree
+        return isSubtreeRec(node1.left, node2) || isSubtreeRec(node1.right, node2);
+    }
+
+    // Helper method to check if two trees match exactly (structure and values)
+    private boolean matchTrees(Node n1, Node n2) {
+        if (n1 == null && n2 == null) return true;
+        if (n1 == null || n2 == null) return false;
+        return (n1.value == n2.value) &&
+                matchTrees(n1.left, n2.left) &&
+                matchTrees(n1.right, n2.right);
+    }
+
     // Main method to demonstrate all operations
     public static void main(String[] args) {
         BinarySearchTree tree = new BinarySearchTree();
@@ -717,6 +747,17 @@ class BinarySearchTree {
         tree2.add(79);
         System.out.println("\nAre tree and tree2 identical? " + tree.isIdentical(tree2)); // false
 
+        // Test subtree
+        System.out.println("\n--- Subtree Check Examples ---");
+        BinarySearchTree subtreeTrue = new BinarySearchTree();
+        subtreeTrue.add(80);
+        subtreeTrue.add(85);
+        subtreeTrue.add(70);
+        System.out.println("Is a subtree?" + tree.isSubtree(subtreeTrue)); // Should be true
+
+
+        //System.out.println("Is perfectTree a subtree? " + tree.isSubtree(perfectTree)); // Should be false
+
 
         //Operations on tree:
         System.out.println("\n--- Operations on the tree and new characterristics ---");
@@ -805,5 +846,17 @@ class BinarySearchTree {
         tree3.add(15);
         tree3.add(79);
         System.out.println("\nAre tree and tree2 identical? " + tree.isIdentical(tree2)); // false
+
+        // Test subtree after operations
+        System.out.println("\n--- Subtree Check Examples After Operations ---");
+        BinarySearchTree subtreeTrue2 = new BinarySearchTree();
+        subtreeTrue2.add(80);
+        subtreeTrue2.add(70);
+        subtreeTrue2.add(85);
+        System.out.println("Is (80 with 70 and 85) a subtree? " + tree.isSubtree(subtreeTrue2)); // Assuming it matches after changes
+
+        BinarySearchTree subtreeFalse2 = new BinarySearchTree();
+        subtreeFalse2.add(95); // Deleted
+        System.out.println("Is (95) a subtree? " + tree.isSubtree(subtreeFalse2)); // Should be false after delete
     }
 }
