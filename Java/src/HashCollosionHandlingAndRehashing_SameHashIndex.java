@@ -6,7 +6,7 @@ public class HashCollosionHandlingAndRehashing_SameHashIndex {
         // INPUT - Ændr kun her
         int capacity = 13;
         int commonHash = 3;
-        double loadFactorThreshold = 0.5; // Standard load factor
+        double loadFactorThreshold = 1; // Standard load factor
 
         // Kør analysen
         analyzeUntilRehash(capacity, commonHash, loadFactorThreshold);
