@@ -93,7 +93,9 @@ public class bellman_ford_negativeEdge {
         System.out.println("═".repeat(70));
         System.out.println("              BELLMAN-FORD ALGORITME");
         System.out.println("═".repeat(70));
-        System.out.println("Kanter: " + edges);  // Nu pænt!
+        System.out.println("Kanter: " + edges.stream()
+                .map(e -> "(" + e.from + "→" + e.to + ", " + e.weight + ")")
+                .toList());  // Nu pænt!
         System.out.println("Noder:  " + nodes);
         System.out.println("Startnode: " + startNode);
         System.out.println();
@@ -137,7 +139,7 @@ public class bellman_ford_negativeEdge {
     public static void main(String[] args) {
         List<Edge> myGraph = Arrays.asList(
                 new Edge("A", "B", 4),
-                new Edge("B", "C", -2),
+                new Edge("B", "C", 2),
                 new Edge("A", "C", 3),
                 new Edge("C", "D", 1),
                 new Edge("D", "B", -1)
