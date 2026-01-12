@@ -152,24 +152,23 @@ def char_to_key(c):
 
 def main():
     # Init hopscotch table med størrelse 16 og hop_range 4
-    table = HopscotchHashTable(size=16, hop_range=4)
+    table = HopscotchHashTable(size=20, hop_range=4)
 
     # Elementer og deres hash værdier (typisk key % size, men her som opgaven)
     elements = {
-        'A': 44,
-        'B': 45,
-        'C': 46,
-        'D': 47,
-        'E': 48,
-        'F': 49,
-        'G': 50,
-        'H': 51,
-        'I': 52,
-        'J': 53,
-        'K': 54,
-        'L': 55,
-        'M': 56,
-        'N': 57,
+        'A': 31,
+        'B': 25,
+        'C': 34,
+        'D': 27,
+        'E': 39,
+        'F': 23,
+        'G': 41,
+        'H': 29,
+        'I': 32,
+        'J': 31,
+        'K': 36,
+        'L': 27,
+
 
     }
 

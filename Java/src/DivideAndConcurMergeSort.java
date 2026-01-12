@@ -108,7 +108,6 @@ public class DivideAndConcurMergeSort {
             System.out.print("Merge: ");
             printPartialList(sorted);
             System.out.println();
-
             return sorted;
         }
 

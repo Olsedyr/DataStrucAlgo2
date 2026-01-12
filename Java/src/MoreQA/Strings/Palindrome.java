@@ -31,11 +31,9 @@ package MoreQA.Strings;//A palindrome is a word, phrase, number, or other sequen
     public static void main(String[] args) {
         // Test cases
         String[] testStrings = {
-                "A man, a plan, a canal, Panama",
-                "racecar",
-                "hello",
-                "Was it a car or a cat I saw?",
-                "No 'x' in Nixon"
+                "Min hat, den har tre buler. Tre buler har min hat!”",
+                "Anna betalte sine regninger",
+                "Olfert+ roede en tur i sin kajak",
         };
 
         // Check each test string and print the result

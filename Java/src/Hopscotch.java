@@ -291,19 +291,25 @@ public class Hopscotch {
     public static void main(String[] args) {
         // Original eksamen
         List<Element> examElements = new ArrayList<>();
-        examElements.add(new Element("A", 47));
-        examElements.add(new Element("B", 51));
-        examElements.add(new Element("C", 55));
-        examElements.add(new Element("D", 51));
-        examElements.add(new Element("E", 46));
-        examElements.add(new Element("F", 51));
-        examElements.add(new Element("G", 49));
-        examElements.add(new Element("H", 53));
-        examElements.add(new Element("I", 50));
-        examElements.add(new Element("J", 51));
-        examElements.add(new Element("K", 50));
+        examElements.add(new Element("A", 29));
+        examElements.add(new Element("B", 23));
+        examElements.add(new Element("C", 31));
+        examElements.add(new Element("D", 25));
+        examElements.add(new Element("E", 37));
+        examElements.add(new Element("F", 21));
+        examElements.add(new Element("G", 39));
+        examElements.add(new Element("H", 27));
+        examElements.add(new Element("I", 30));
+        examElements.add(new Element("J", 29));
+        examElements.add(new Element("K", 34));
+        examElements.add(new Element("K", 25));
+        examElements.add(new Element("M", 25));
+        examElements.add(new Element("N", 25));
+        examElements.add(new Element("O", 25));
+        examElements.add(new Element("P", 25));
+        examElements.add(new Element("Q", 25));
 
-        runExample("EKSAMENSOPGAVE", 10, 4, true, examElements);
+        runExample("EKSAMENSOPGAVE", 20, 4, true, examElements);
     }
 }
 

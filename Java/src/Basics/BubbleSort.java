@@ -36,13 +36,13 @@ public class BubbleSort {
     private static void printArray(int[] arr) {
         for (int num : arr) {
             System.out.print(num + " ");
+
         }
         System.out.println();
     }
 
     // Main metode til at teste Bubble Sort
     public static void main(String[] args) {
-        System.out.println("=== BUBBLE SORT TEST ===\n");
 
         // Test 1: Normalt array
         int[] numbers1 = {64, 34, 25, 12, 22, 11, 90};

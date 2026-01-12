@@ -9,16 +9,16 @@ public class CountPalindromeSubstrings {
 
         // Testing all approaches
         System.out.println("Approach 1 (Brute Force) - Count of palindromic substrings for str1: " + countPalindromesBruteForce(str1));
-        System.out.println("Approach 2 (Expand Around Center) - Count of palindromic substrings for str1: " + countPalindromesExpandAroundCenter(str1));
-        System.out.println("Approach 3 (Dynamic Programming) - Count of palindromic substrings for str1: " + countPalindromesDP(str1));
+        //System.out.println("Approach 2 (Expand Around Center) - Count of palindromic substrings for str1: " + countPalindromesExpandAroundCenter(str1));
+        //System.out.println("Approach 3 (Dynamic Programming) - Count of palindromic substrings for str1: " + countPalindromesDP(str1));
 
         System.out.println("Approach 1 (Brute Force) - Count of palindromic substrings for str2: " + countPalindromesBruteForce(str2));
-        System.out.println("Approach 2 (Expand Around Center) - Count of palindromic substrings for str2: " + countPalindromesExpandAroundCenter(str2));
-        System.out.println("Approach 3 (Dynamic Programming) - Count of palindromic substrings for str2: " + countPalindromesDP(str2));
+        //System.out.println("Approach 2 (Expand Around Center) - Count of palindromic substrings for str2: " + countPalindromesExpandAroundCenter(str2));
+       // System.out.println("Approach 3 (Dynamic Programming) - Count of palindromic substrings for str2: " + countPalindromesDP(str2));
 
-        System.out.println("Approach 1 (Brute Force) - Count of palindromic substrings for str3: " + countPalindromesBruteForce(str3));
-        System.out.println("Approach 2 (Expand Around Center) - Count of palindromic substrings for str3: " + countPalindromesExpandAroundCenter(str3));
-        System.out.println("Approach 3 (Dynamic Programming) - Count of palindromic substrings for str3: " + countPalindromesDP(str3));
+       System.out.println("Approach 1 (Brute Force) - Count of palindromic substrings for str3: " + countPalindromesBruteForce(str3));
+        //System.out.println("Approach 2 (Expand Around Center) - Count of palindromic substrings for str3: " + countPalindromesExpandAroundCenter(str3));
+        //System.out.println("Approach 3 (Dynamic Programming) - Count of palindromic substrings for str3: " + countPalindromesDP(str3));
     }
 
     // Approach 1: Brute Force (Check all substrings)

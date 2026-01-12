@@ -652,15 +652,22 @@ class BinarySearchTree {
 
 
         // Add nodes
-        tree.add(45);
-        tree.add(15);
-        tree.add(79);
-        tree.add(10);
-        tree.add(20);
+        tree.add(60);
+        tree.add(41);
+        tree.add(74);
+        tree.add(16);
+        tree.add(53);
+        tree.add(65);
+        tree.add(25);
+        tree.add(46);
         tree.add(55);
-        tree.add(90);
-        tree.add(12);
-        tree.add(50);
+        tree.add(63);
+        tree.add(70);
+        tree.add(42);
+        tree.add(62);
+        tree.add(64);
+
+
 
 
 

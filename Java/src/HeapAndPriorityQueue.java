@@ -695,7 +695,7 @@
                     log("=".repeat(60));
 
                     // Original array
-                    int[] originalArray = {14, 17, 16, 28, 22,65, 29, 31, 30, 26, 23, 89, 64, 35, 32, 48, 47, 46, 45};
+                    int[] originalArray = {11, 17, 28, 23,68, 49, 29, 25, 56, 97, 106, 118, 48, 65, 76, 69, 27, 68, 62};
 
 
                     log("\n⚠️  Vigtigt: Arrayet vises med 1-baseret indeksering");

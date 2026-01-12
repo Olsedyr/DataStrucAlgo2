@@ -6,22 +6,22 @@ public class SentencePalindrome {
 
     public static void main(String[] args) {
         // Test cases
-        String sentence1 = "A man, a plan, a canal, Panama"; // Palindrome
-        String sentence2 = "Hello, World!";                // Not a palindrome
-        String sentence3 = "No 'x' in Nixon";              // Palindrome
+        String sentence1 = "Min hat, den har tre buler. Tre buler har min hat!”"; // Palindrome
+        String sentence2 = "Anna betalte sine regninger”";                // Not a palindrome
+        String sentence3 = "rt+ roede en tur i sin kajak”";              // Palindrome
 
         // Testing all approaches
         System.out.println("Approach 1 (Reversed String) - Sentence 1 is palindrome: " + isPalindromeReversed(sentence1));
-        System.out.println("Approach 2 (Two-pointer technique) - Sentence 1 is palindrome: " + isPalindromeTwoPointer(sentence1));
-        System.out.println("Approach 3 (Stack-based) - Sentence 1 is palindrome: " + isPalindromeStack(sentence1));
+        //System.out.println("Approach 2 (Two-pointer technique) - Sentence 1 is palindrome: " + isPalindromeTwoPointer(sentence1));
+        //System.out.println("Approach 3 (Stack-based) - Sentence 1 is palindrome: " + isPalindromeStack(sentence1));
 
         System.out.println("Approach 1 (Reversed String) - Sentence 2 is palindrome: " + isPalindromeReversed(sentence2));
-        System.out.println("Approach 2 (Two-pointer technique) - Sentence 2 is palindrome: " + isPalindromeTwoPointer(sentence2));
-        System.out.println("Approach 3 (Stack-based) - Sentence 2 is palindrome: " + isPalindromeStack(sentence2));
+        //System.out.println("Approach 2 (Two-pointer technique) - Sentence 2 is palindrome: " + isPalindromeTwoPointer(sentence2));
+        //System.out.println("Approach 3 (Stack-based) - Sentence 2 is palindrome: " + isPalindromeStack(sentence2));
 
         System.out.println("Approach 1 (Reversed String) - Sentence 3 is palindrome: " + isPalindromeReversed(sentence3));
-        System.out.println("Approach 2 (Two-pointer technique) - Sentence 3 is palindrome: " + isPalindromeTwoPointer(sentence3));
-        System.out.println("Approach 3 (Stack-based) - Sentence 3 is palindrome: " + isPalindromeStack(sentence3));
+        //System.out.println("Approach 2 (Two-pointer technique) - Sentence 3 is palindrome: " + isPalindromeTwoPointer(sentence3));
+        //System.out.println("Approach 3 (Stack-based) - Sentence 3 is palindrome: " + isPalindromeStack(sentence3));
     }
 
     // Approach 1: Reversed String (Simplest approach)

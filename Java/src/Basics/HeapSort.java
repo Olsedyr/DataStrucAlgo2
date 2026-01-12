@@ -54,11 +54,22 @@ public class HeapSort {
     }
 
     // Hjælpemetode til at printe array
-    private static void printArray(int[] arr) {
+    private static boolean printArray(int[] arr) {
         for (int num : arr) {
+            if (num < num+1){
+                return false;
+            }
+
             System.out.print(num + " ");
+
         }
+
+        for (int i = 0; i < ; i++) {
+            
+        }
+
         System.out.println();
+        return false;
     }
 
     // Hjælpemetode til at printe heap som træ (simpel version)

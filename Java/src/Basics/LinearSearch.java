@@ -9,9 +9,11 @@ public class LinearSearch {
 
     public static int linearSearch(int[] arr, int target) {
         // Gennemgå alle elementer
+        boolean isSorted;
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == target) {
-                return i; // Returner index hvis fundet
+            if(arr[i] > arr[i+1]){
+                isSorted = true;
+                System.out.println(arr);
             }
         }
         return -1; // Returner -1 hvis ikke fundet

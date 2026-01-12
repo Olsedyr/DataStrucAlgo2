@@ -349,13 +349,21 @@ public class BigOEstimator extends JPanel {
             // O(n³) algoritme - husk at reducere TEST_SIZES for eksponentiel!
 
 
-                for (int i = 1; i <= n; i *= 2) {
-                    for (int j = 1; j <= n; j++) {
-                        for (int k = 1; k <= j; k += i) {
-                            x++;
-                        }
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j += j+1)
+                {
+                    for (int k = 0; k < n; k +=(i+j+5))
+                    {
+                        x++;
                     }
                 }
+                if (i > 1024)
+                    i++;
+            }
+
+
+
 
             // Prevent dead code elimination
             if (x == Long.MAX_VALUE) System.out.println(x);
